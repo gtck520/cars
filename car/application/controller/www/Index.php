@@ -48,7 +48,6 @@ class Index
         $secret = "kangvvip";
         // 校验发送位置，正确的情况下自动拉取代码，实现自动部署
         $signature = $_SERVER['HTTP_X_HUB_SIGNATURE'] ?? 0;
-        Log::write($signature. ':' . date('Y-m-d H-i-s'), 'error.log',  'gitpull');
         if ($signature) {
             $hash = "sha1=".hash_hmac('sha1', file_get_contents("php://input"), $secret);
             if (strcmp($signature, $hash) == 0) {
@@ -56,19 +55,19 @@ class Index
 
                 set_time_limit(3 * 60); //最大过期时间3分钟
                 $shellPath = "/www/wwwroot/ct.kanglan.vip";
-                $cmd = "cd $shellPath && sudo git pull && sudo chown -R www:www ./ && sudo chmod -R 777 ./";
+                $cmd = "cd $shellPath && sudo git stash && sudo git pull && sudo chown -R www:www ./ && sudo chmod -R 777 ./";
                 //$cmd = "cd $shellPath && sudo git pull && sudo /bin/bash CI.sh";
                 $res = $this -> doShell($cmd);
                 print_r($res); // 主要打印结果给github记录查看，自己测试时查看
-
+                Log::write(json_encode($res). ':' . date('Y-m-d H-i-s'), '.log',  'gitpull');
             }
         }else{
-            set_time_limit(3 * 60); //最大过期时间3分钟
-            $shellPath = "/www/wwwroot/ct.kanglan.vip";
-            $cmd = "cd $shellPath && sudo git pull && sudo chown -R www:www ./ && sudo chmod -R 777 ./";
-            //$cmd = "cd $shellPath && sudo git pull && sudo /bin/bash CI.sh";
-            $res = $this -> doShell($cmd);
-            print_r($res); // 主要打印结果给github记录查看，自己测试时查看
+//            set_time_limit(3 * 60); //最大过期时间3分钟
+//            $shellPath = "/www/wwwroot/ct.kanglan.vip";
+//            $cmd = "cd $shellPath && sudo git pull && sudo chown -R www:www ./ && sudo chmod -R 777 ./";
+//            //$cmd = "cd $shellPath && sudo git pull && sudo /bin/bash CI.sh";
+//            $res = $this -> doShell($cmd);
+//            print_r($res); // 主要打印结果给github记录查看，自己测试时查看
         }
     }
 
