@@ -18,31 +18,6 @@ class ManPower extends AdminController
     }
 
     //添加
-    /**
-     * @OA\Post(
-     *     path="/query/getpay",
-     *     tags={"车辆查询"},
-     *     summary="单次费用及余额查询",
-     *     @OA\Parameter(name="Authorization",in="header",description="登录用户权限",required=true),
-     *     @OA\Parameter(name="Content-Type",in="header",example="application/x-www-form-urlencoded",required=true),
-     *     @OA\RequestBody(
-     *         @OA\MediaType(
-     *             mediaType="application/x-www-form-urlencoded",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 @OA\Property(property="vin",type="string",description="车架号"),
-     *                 example={"vin": "sadf656s4df6465"}
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *       response=200,
-     *       description="请求成功",
-     *     ),
-     *     @OA\Response(response=401,description="权限验证失败"),
-     *     @OA\Response(response=400,description="请求失败")
-     * )
-     */
     public function add()
     {
         $req = P();

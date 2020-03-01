@@ -9,7 +9,31 @@ use app\validate\Login as LoginValidate;
 
 class Login
 {
-    //登录
+    /**
+     * @OA\Post(
+     *     path="/admin/logins",
+     *     tags={"用户管理"},
+     *     summary="登录",
+     *     @OA\Parameter(name="Content-Type",in="header",example="application/x-www-form-urlencoded",required=true),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(property="mobile",type="string",description="电话号码"),
+     *                 @OA\Property(property="password",type="string",description="密码"),
+     *                 example={"vin": "sadf656s4df6465"}
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *       response=200,
+     *       description="请求成功",
+     *     ),
+     *     @OA\Response(response=401,description="权限验证失败"),
+     *     @OA\Response(response=400,description="请求失败")
+     * )
+     */
     public function login(){
         $req = P();
         LoginValidate::checkInput($req);
