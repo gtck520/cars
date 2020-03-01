@@ -12,7 +12,6 @@ class Index
      */
     public function index(){
         $req=G();
-        echo "sdfsdfs1111";exit;
         if(isset($req['type'])&&$req['type']=="admin"){
             try {
                 $parentDirName = FCPATH . '../../car-manager/application/controller/www';
