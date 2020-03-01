@@ -1,7 +1,7 @@
 <?php
 return [
     //登录
-    'post::logins$'         => 'login/login',
+    'post::logins$'         => 'Login/login',
     'post::checkToken$'     => 'login/checkToken',
     'post::register$'       => 'User/register',
     'get::userinfo$'       => 'User/userInfo',

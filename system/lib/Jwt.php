@@ -8,7 +8,7 @@ use Firebase\JWT\JWT as JwtLib;
 
 class Jwt
 {
-    public static function getToken($data, $exp = 7200)
+    public static function getToken($data, $exp = 86400)
     {
         $time = time();
         $token['data'] = $data;

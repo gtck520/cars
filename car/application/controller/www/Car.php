@@ -11,6 +11,7 @@ class Car
     // 获取车的列表
     public function getList(){
         $req = G();
+        dd($req);
         // CarValidate::checkInput($req);
         $res = CarService::getList($req);
         Response::SendResponseJson($res['code'], $res['data']);

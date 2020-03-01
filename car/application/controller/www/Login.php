@@ -14,7 +14,7 @@ class Login
     public function login(){
         $req = P();
         LoginValidate::checkInput($req);
-        $res = LoginService::login($req['code']);
+        $res = LoginService::login($req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
     

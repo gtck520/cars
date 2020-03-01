@@ -16,6 +16,6 @@ return [
     'timezone' => 'PRC',
 
     //小程序
-    'appid' => '',
-    'secret' => '',
+    'app_id' => Env::get('wechat.app_id'),
+    'secret' =>Env::get('wechat.secret'),
 ];

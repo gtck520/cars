@@ -28,75 +28,84 @@ class Car
 
     public static function getList($req)
     {
+        // if (isset($req['p']) || !empty($req['search']) ) {
+        //     $where['notes like,raw'] = '%' . $req['search'] . '%';
+        // }
+
+        // if (isset($req['search']) || !empty($req['search']) ) {
+        //     $where['notes like,raw'] = '%' . $req['search'] . '%';
+        // }
+
         $p = $req['p'] ?? 1;
         $c = $req['c'] ?? 10;
         
+        dd($p);
         $where = [];
         $orderby = [];
         // 关键字搜索
-        if (!empty($req['search'])) {
-            $where['notes like,raw'] = '%' . $req['notes'] . '%';
+        if (isset($req['search']) || !empty($req['search']) ) {
+            $where['notes like,raw'] = '%' . $req['search'] . '%';
         }
 
         // 关键字搜索
-        if (!empty($req['city_id'])) {
+        if (!empty($req['city_id']) || isset($req['city_id'])) {
             $where['cheliangweizhi'] = $req['city_id'];
         }
 
         // 品牌搜索
-        if (!empty($req['pinpai'])) {
+        if (!empty($req['pinpai']) || isset($req['pinpai'])) {
             $where['pinpai'] = $req['pinpai'];
         }
 
         // 最小价格区间查询
-        if (!empty($req['low_price'])) {
+        if (!empty($req['low_price']) || isset($req['low_price'])) {
             $where['price <= '] = $req['low_price'];
         }
 
         // 最大价格区间查询
-        if (!empty($req['high_price'])) {
+        if (!empty($req['high_price']) || isset($req['high_price'])) {
             $where['price >= '] = $req['high_price'];
         }
 
         
         // 颜色搜索
-        if (!empty($req['colour_id'])) {
+        if (!empty($req['colour_id']) || isset($req['colour_id'])) {
             $where['colour_id'] = $req['colour_id'];
         }
 
         // 车辆类型搜索
-        if (!empty($req['car_type'])) {
+        if (!empty($req['car_type']) || isset($req['car_type'])) {
             $where['car_type'] = $req['car_type'];
         }
 
         // 变速箱搜索
-        if (!empty($req['biansu'])) {
+        if (!empty($req['biansu']) || isset($req['biansu'])) {
             $where['biansu'] = $req['biansu'];
         }
 
         // 车辆标签搜索
-        if (!empty($req['cheyuan_id'])) {
+        if (!empty($req['cheyuan_id']) || isset($req['cheyuan_id'])) {
             $where['cheyuan_id'] = $req['cheyuan_id'];
         }
 
         // 车辆里程搜索
-        if (!empty($req['licheng'])) {
+        if (!empty($req['licheng']) || isset($req['licheng'])) {
             $where['biaoxianlicheng'] = $req['licheng'];
         }
 
 
         // 最小车龄区间查询
-        if (!empty($req['low_age'])) {
+        if (!empty($req['low_age']) || isset($req['low_age'])) {
             $where['age <= '] = $req['low_age'];
         }
 
         // 最大车龄区间查询
-        if (!empty($req['high_age'])) {
+        if (!empty($req['high_age']) || isset($req['high_age'])) {
             $where['age >= '] = $req['high_age'];
         }
 
         // 排序
-        if (!empty($req['sort'])) {
+        if (!empty($req['sort']) || isset($req['sort'])) {
             switch ($req['sort']) {
                 case '1':
                     // 价格最低
@@ -114,7 +123,7 @@ class Car
             }
             
         }
-
+dd($where);
         $field = ['id', 'cheliangweizhi', 'price', 'chexing_id', 'biaoxianlicheng', 'create_time'];
         $car_list = CarModel::field($field)->where($where)->orderby($orderby)->page($c, $p);
         if ($car_list['total'] > 0) {
