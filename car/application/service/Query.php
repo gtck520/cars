@@ -207,7 +207,7 @@ class Query
         //用户等级表
         $users_level=UserModel::setTable('user u')
             ->field('ul.*')
-            ->join('user_level ul', 'a.level_id = ul.id')
+            ->join('user_level ul', 'u.level_id = ul.id')
             ->where([
                 'u.id' => $user_id
             ])
