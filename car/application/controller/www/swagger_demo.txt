@@ -1,0 +1,138 @@
+/**
+* @OA\Info(title="My First API", version="0.1")
+*/
+
+// 读取
+/**
+* @Get(
+*     path="/hello/{id}",
+*     @Parameter(
+*       name="id",
+*       in="path",
+*       required=true,
+*       description="123123",
+*       @Schema(type="integer")
+*     ),
+*     @Response(
+*         response=200,
+*         description="SUCCESS/成功",
+*         @MediaType(
+*             mediaType="application/json",
+*             @Schema(
+*              @Property(property="code", type="integer", format="int32", description="标识"),
+*              @Property(property="msg", type="string", format="int32", description="描述"),
+*              @Property(property="data",type="object",description="返回数据",
+*                 @Property(property="no",type="string",description="版本号"),
+*                 @Property(property="account",type="string",description="用户"),
+*                 @Property(property="real_name",type="string",description="权限名称"),
+*             ),
+*         ),
+*         example={"code": 0,"msg": "success","data": {"no": "1.3","account": "admin","real_name": "god"}}
+*        )
+*     )
+* )
+*/
+
+// 增加
+/**
+* @Post(
+*     path="/hello/file-upload",
+*     tags={"admin-member"},
+*     summary="Upload one user document",
+*     description="Upload one user document",
+*     @RequestBody(
+*      @MediaType(mediaType="application/x-www-form-urlencoded",
+*          @Schema(
+*              type="object",
+*              required={"file", "id", "type"},
+*              @Property(property="file", type="string", format="binary", description="user document file"),
+*              @Property(property="id", type="integer", description="user id"),
+*              @Property(property="type", type="string", enum={"verification_file","id_card_file","credit_card_file"})
+*          )
+*      )),
+*     @Response(
+*          response=200,
+*          description="successful operation"
+*     )
+* )
+*/
+
+/**
+* @Post(
+*     path="/hello/xx-yy",
+*     tags={"admin-sales-type"},
+*     summary="Store a newly created sales type item in storage",
+*     description="Store a newly created sales type item in storage",
+*     @RequestBody(required=true, @JsonContent(
+*           required={"sales_name", "handle_fee", "commission", "status", "visible", "keywords", "sales_name_abbr", "charge_full_domestic", "default", "tiers"},
+*           @Property(property="sales_name", type="string", description="sales name"),
+*           @Property(property="handle_fee", type="number", format="float", description="handle fee", example="15.00"),
+*           @Property(property="status", type="integer", enum={1, 0}),
+*           @Property(property="charge_full_domestic", type="integer", description="charge full domestic"),
+*           @Property(property="default", type="string", enum={1, 0}),
+*           @Property(property="tiers", type="array", description="tiers",
+*              @Items(
+*                  @Property(property="type", type="string", enum={"flat", "basic", "subtract", "platform"}),
+*                  @Property(property="from", type="integer", description="from", example="0")
+*              )
+*          ),
+*     )),
+*     @Response(
+*          response="200",
+*          description="successful operation"
+*      )
+* )
+*/
+
+// 修改
+/**
+* @Patch(
+*     path="/admin/member/{id}",
+*     tags={"admin-member"},
+*     summary="get member info",
+*     description="get member info",
+*     @RequestBody(required=true, @JsonContent(
+*           @Property(property="name", type="string", description="user name"),
+*           @Property(property="display_currency", type="string", enum={"USD","JPY"})
+*     )),
+*     @Parameter(
+*      name="id", in="path", description="member id",
+*      required=true, @Schema(type="integer")),
+*     @Response(
+*          response=200,
+*          description="successful operation"
+*     )
+* )
+*/
+
+// 删除
+/**
+* @Delete(
+*     path="/hello/delete/{id}",
+*     tags={"admin-member"},
+*     summary="Remove the specified resource from storage",
+*     description="Remove the specified resource from storage",
+*     @Parameter(
+*      name="id", in="path", description="member id",
+*      required=true, @Schema(type="integer")),
+*     @Response(
+*          response=200,
+*          description="successful operation"
+*     )
+* )
+*/
+
+// 加密认证
+/**
+* @SecurityScheme(
+*     type="http",
+*     description="xxx sign",
+*     in="header",
+*     scheme="bearer"
+* )
+*/
+
+设置公共头
+/**
+*@Server(url="http://local.publichomestead.com/hello",description="asdfasdasdf")
+*/

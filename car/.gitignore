@@ -1,0 +1,15 @@
+.idea
+/application/log/*.log.php
+/tests/bulid
+/tests/.phpunit.result.cache
+/application/vendor
+/push.sh
+/public/.htaccess
+/public/upload
+._.*
+/deploy
+*.conf
+.DS_Store
+.env_local
+.env_testing
+composer.lock

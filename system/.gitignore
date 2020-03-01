@@ -1,0 +1,6 @@
+.idea
+/push.sh
+._.*
+*.conf
+._.*
+.DS_Store

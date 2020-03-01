@@ -1,0 +1,19 @@
+stages:
+    - dev
+    - prod
+dev:
+    stage: dev
+    script:
+        - sh /home/gitlab-runner/.gitlab-api.sh system
+    only:
+        - develop
+    tags:
+        - api
+prod:
+    stage: prod
+    script:
+        - sh /home/gitlab-runner/.gitlab-system-pub.sh system
+    only:
+        - master
+    tags:
+        - api

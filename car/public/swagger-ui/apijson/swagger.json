@@ -1,0 +1,263 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "车塘小程序API",
+        "version": "0.1"
+    },
+    "paths": {
+        "/query/getpay": {
+            "post": {
+                "tags": [
+                    "车辆查询"
+                ],
+                "summary": "单次费用及余额查询",
+                "operationId": "app\\controller\\www\\Query::getPay",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "登录用户权限",
+                        "required": true
+                    },
+                    {
+                        "name": "Content-Type",
+                        "in": "header",
+                        "required": true,
+                        "example": "application/x-www-form-urlencoded"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "vin": {
+                                        "description": "车架号",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "vin": "sadf656s4df6465"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "请求成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/query_getpay"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "权限验证失败"
+                    },
+                    "400": {
+                        "description": "请求失败"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "query_getpay": {
+                "properties": {
+                    "spu_id": {
+                        "description": "商品Spu编码",
+                        "type": "integer",
+                        "example": 520
+                    },
+                    "sku_id": {
+                        "description": "商品SKU编码",
+                        "type": "integer",
+                        "example": 14507
+                    },
+                    "goods_name": {
+                        "description": "商品名称",
+                        "type": "string",
+                        "example": "商品名称417"
+                    },
+                    "brand_name": {
+                        "description": "品牌-中文描述",
+                        "type": "string",
+                        "example": "品牌864"
+                    },
+                    "status": {
+                        "description": "商品最终状态",
+                        "$ref": "#components/schemas/query_getpay_status"
+                    },
+                    "delete_status": {
+                        "description": "删除最终状态",
+                        "$ref": "#components/schemas/query_getpay_delete_status"
+                    },
+                    "is_listing": {
+                        "description": "是否上架",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "tag_remark": {
+                        "description": "tag描述",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "tag描述"
+                        }
+                    },
+                    "gallery": {
+                        "description": "相册",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#components/schemas/query_getpay_gallery"
+                        }
+                    },
+                    "category": {
+                        "description": "",
+                        "$ref": "#components/schemas/query_getpay_category"
+                    }
+                },
+                "type": "object"
+            },
+            "query_getpay_status": {
+                "properties": {
+                    "key": {
+                        "description": "状态",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "value": {
+                        "description": "状态中文描述",
+                        "type": "string",
+                        "example": "上架"
+                    }
+                },
+                "type": "object"
+            },
+            "query_getpay_delete_status": {
+                "properties": {
+                    "key": {
+                        "description": "状态",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "value": {
+                        "description": "状态中文描述",
+                        "type": "string",
+                        "example": "删除"
+                    }
+                },
+                "type": "object"
+            },
+            "query_getpay_gallery": {
+                "properties": {
+                    "big": {
+                        "description": "大图片地址",
+                        "type": "string",
+                        "example": "https://img13.360buyimg.com/n7/jfs/t1/41729/34/1969/283035/5cc80ed4Eab41eae2/dc784f471bc44ce2.jpg"
+                    },
+                    "small": {
+                        "description": "小图片地址",
+                        "type": "string",
+                        "example": "https://img13.360buyimg.com/n5/jfs/t1/41729/34/1969/283035/5cc80ed4Eab41eae2/dc784f471bc44ce2.jpg"
+                    }
+                },
+                "type": "object"
+            },
+            "query_getpay_category": {
+                "properties": {
+                    "id": {
+                        "description": "类目ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "pid": {
+                        "description": "上级类目ID",
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "name": {
+                        "description": "类目名称",
+                        "type": "string",
+                        "example": "一级类目名称"
+                    },
+                    "img_url": {
+                        "description": "类目图片地址",
+                        "type": "string",
+                        "example": "https://img.com/2312/2434/1342/1.png"
+                    },
+                    "child": {
+                        "description": "三级子类目",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#components/schemas/query_getpay_category_child"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "query_getpay_category_child": {
+                "properties": {
+                    "id": {
+                        "description": "类目ID",
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "pid": {
+                        "description": "上级类目ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "类目名称",
+                        "type": "string",
+                        "example": "二级类目名称"
+                    },
+                    "img_url": {
+                        "description": "类目图片地址",
+                        "type": "string",
+                        "example": "https://img.com/2312/2434/1342/1.png"
+                    },
+                    "child": {
+                        "description": "三级子类目",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#components/schemas/query_getpay_category_child_child"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "query_getpay_category_child_child": {
+                "properties": {
+                    "id": {
+                        "description": "类目ID",
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "pid": {
+                        "description": "上级类目ID",
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "name": {
+                        "description": "类目名称",
+                        "type": "string",
+                        "example": "三级类目名称"
+                    },
+                    "img_url": {
+                        "description": "类目图片地址",
+                        "type": "string",
+                        "example": "https://img.com/2312/2434/1342/1.png"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    }
+}
