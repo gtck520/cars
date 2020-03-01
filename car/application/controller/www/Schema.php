@@ -55,5 +55,10 @@ namespace app\controller\www;
  *     @OA\Property(property="name",type="string",description="类目名称",example="三级类目名称"),
  *     @OA\Property(property="img_url",type="string",description="类目图片地址",example="https://img.com/2312/2434/1342/1.png"),
  *  ),
+ *  @OA\Schema(
+ *     schema="login_easylogin",
+ *     @OA\Property(property="status",type="integer",description="状态",example=0),
+ *     @OA\Property(property="token",type="string",description="token",example="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7InVzZXJfaWQiOjEwMDAwLCJvcGVuaWQiOiIxMjMxMjMxMjMiLCJzZXNzaW9uX2tleSI6IiIsInRpbWUiOjE1ODMwNTM1MjR9LCJpYXQiOjE1ODMwNTM1MjQsImV4cCI6MTU4MzEzOTkyNH0.lQmk0hbJZFTQ54VBMBLYNQ1SVTMs_FPyEzHgspgJANs"),
+ *  ),
 
 */

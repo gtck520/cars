@@ -34,7 +34,7 @@ class Login
      *       description="请求成功",
      *           @OA\MediaType(
      *             mediaType="application/json",
-     *             @OA\Schema(ref="#/components/schemas/query_getpay"),
+     *             @OA\Schema(ref="#/components/schemas/login_easylogin"),
      *          ),
      *     ),
      *     @OA\Response(response=401,description="权限验证失败"),
@@ -69,7 +69,7 @@ class Login
      *       description="请求成功",
      *           @OA\MediaType(
      *             mediaType="application/json",
-     *             @OA\Schema(ref="#/components/schemas/query_getpay"),
+     *             @OA\Schema(ref="#/components/schemas/login_easylogin"),
      *          ),
      *     ),
      *     @OA\Response(response=401,description="权限验证失败"),
