@@ -1,7 +1,5 @@
 <?php
 return [
-    //webhook
-    'post::index/go$'         => 'Index/go',
     //登录
     'post::logins$'         => 'login/login',
     'post::checkToken$'     => 'login/checkToken',
