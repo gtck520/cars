@@ -47,8 +47,16 @@ $def = <<<EOL
     ],
 ],
 EOL;
-
+$jsonstr = isset($_POST['php_json']) && $_POST['php_json'] ? $_POST['php_json'] : '';
 $str = isset($_POST['php_code']) && $_POST['php_code'] ? $_POST['php_code'] : $def;
+if($jsonstr!="")
+{
+    $jsonstr=trim($jsonstr);
+    $jsonstr=str_replace("{","[",$jsonstr);
+    $jsonstr=str_replace("}","]",$jsonstr);
+    $jsonstr=str_replace(":","=>",$jsonstr);
+    $str=$jsonstr;
+}
 $swaggerName = isset($_POST['schemae']) && $_POST['schemae'] ? $_POST['schemae'] : 'schemae_' . uniqid();
 
 ?>
@@ -61,7 +69,14 @@ $swaggerName = isset($_POST['schemae']) && $_POST['schemae'] ? $_POST['schemae']
 <form action="phpToSwagger.php" method="post">
     schemae: <input type="text" name="schemae" value="<?php echo $swaggerName;?>" style="height: 26px;width: 300px;"/>
     <br/><br/>
-    PHP代码:
+    JSON代码:
+    <br/>
+    <textarea name="php_json" rows="20" cols="150">
+<?php  print_r($jsonstr); ?>
+    </textarea>
+    <br/>
+    <br/>
+    PHP数组代码:
     <br/>
     <textarea name="php_code" rows="20" cols="150">
 <?php  print_r($str); ?>
