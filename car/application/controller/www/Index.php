@@ -3,6 +3,7 @@
 namespace app\controller\www;
 
 
+use king\lib\Log;
 class Index
 {
     //生成swagger文档并跳转至文档页面
@@ -49,6 +50,8 @@ class Index
         $secret = "kangvvip";
         // 校验发送位置，正确的情况下自动拉取代码，实现自动部署
         $signature = $_SERVER['HTTP_X_HUB_SIGNATURE'];
+
+        Log::write($signature. ':' . date('Y-m-d H-i-s'), 'error.log',  'gitpull');
         if ($signature) {
             $hash = "sha1=".hash_hmac('sha1', file_get_contents("php://input"), $secret);
             if (strcmp($signature, $hash) == 0) {
