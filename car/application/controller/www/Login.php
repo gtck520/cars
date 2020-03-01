@@ -47,7 +47,43 @@ class Login
         $res = LoginService::login($req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
-    
+
+    /**
+     * @OA\Post(
+     *     path="/easylogin",
+     *     tags={"用户中心"},
+     *     summary="便捷登录",
+     *     @OA\Parameter(name="Content-Type",in="header",example="application/x-www-form-urlencoded",required=true),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(property="openid",type="string",description="openid"),
+     *                 example={"openid": "sadf656s4df6465"}
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *       response=200,
+     *       description="请求成功",
+     *           @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(ref="#/components/schemas/query_getpay"),
+     *          ),
+     *     ),
+     *     @OA\Response(response=401,description="权限验证失败"),
+     *     @OA\Response(response=400,description="请求失败")
+     * )
+     */
+    public function easylogin(){
+        $req = P();
+        if(empty($req['openid'])){
+            return ['code' => 400, 'data' => "openid不能为空"];
+        }
+        $res = LoginService::easylogin($req);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
     public function register(){
         $req = P();
         UserValidate::checkInput($req);

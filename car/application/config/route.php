@@ -2,6 +2,7 @@
 return [
     //登录
     'post::logins$'         => 'Login/login',
+    'post::easylogin$'         => 'Login/easylogin',
     'post::checkToken$'     => 'login/checkToken',
     'post::register$'       => 'User/register',
     'get::userinfo$'       => 'User/userInfo',

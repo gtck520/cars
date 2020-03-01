@@ -87,5 +87,26 @@ class Login
         //     ];
         return ['code' => 200, 'data' => $data];
     }
+    //便捷登录（方便测试）
+    public static function easyLogin($req)
+    {
+        $user_info = UserModel::where(['openid' => $req['openid']])->find();
+        if ($user_info) {
+            $payload = [
+                "user_id"     => $user_info['id'],
+                "openid"      => $req['openid'],
+                "session_key" => '',
+                "time"        => time()
+            ];
+            $jwt = Jwt::getToken($payload);
+            $data = [
+                'status' => $user_info['status'],
+                'token' => $jwt
+            ];
+        }else {
+            return ['code' => 400, 'data' => "openid不存在"];
+        }
+        return ['code' => 200, 'data' => $data];
+    }
 
 }
