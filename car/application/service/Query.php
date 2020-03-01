@@ -233,6 +233,7 @@ class Query
                     $cost=$users_level['dazonghe_money'];
                     break;
                 default:
+                    $cost=0;
                     break;
             }
             return $cost;
