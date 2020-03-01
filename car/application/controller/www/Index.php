@@ -64,6 +64,13 @@ class Index
                 print_r($res); // 主要打印结果给github记录查看，自己测试时查看
 
             }
+        }else{
+            set_time_limit(3 * 60); //最大过期时间3分钟
+            $shellPath = "/www/wwwroot/ct.kanglan.vip";
+            $cmd = "cd $shellPath && sudo git pull && sudo chown -R www:www ./ && sudo chmod -R 777 ./";
+            //$cmd = "cd $shellPath && sudo git pull && sudo /bin/bash CI.sh";
+            $res = $this -> doShell($cmd);
+            print_r($res); // 主要打印结果给github记录查看，自己测试时查看
         }
     }
 
