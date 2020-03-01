@@ -259,6 +259,7 @@ class Query
                 $back_type=4;
                 break;
             default:
+                $back_type=5;
                 break;
         }
         $user=UserModel::where(["id"=>$req['user_id']])->find();
