@@ -20,7 +20,7 @@ class Query extends UserController
      *             mediaType="application/x-www-form-urlencoded",
      *             @OA\Schema(
      *                 type="object",
-     *                 @OA\Property(property="type",type="string",description="查询类型-- maintenance：维保查询，collision：碰撞查询，vehicleCondition：汽车状态，regulations：违章查询，smallUnion：小综合，bigUnion：大综合，"),
+     *                 @OA\Property(property="type",type="string",description="查询类型-- maintenance：维保查询|collision：碰撞查询|vehicleCondition：汽车状态|regulations：违章查询|smallUnion：小综合|bigUnion：大综合，"),
      *             )
      *         )
      *     ),
@@ -38,7 +38,11 @@ class Query extends UserController
      */
     public function getPay(){
         $req = P();
-        Common::checkVin($req);
+        if(empty($req['type']))
+        {
+            return ['code' => 400, 'data' => "查询类型不能为空"];
+        }
+        //Common::checkVin($req);
         $req['user_id'] = parent::$user_id;
         $res = QueryService::getPay($req,$req['type']);
         Response::SendResponseJson($res['code'], $res['data']);
