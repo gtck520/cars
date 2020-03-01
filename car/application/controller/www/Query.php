@@ -13,7 +13,7 @@ class Query extends UserController
      *     path="/query/getpay",
      *     tags={"车辆查询"},
      *     summary="单次费用及余额查询",
-     *     @OA\Parameter(name="Authorization",in="header",example="token_string",description="登录用户权限",required=true),
+     *     @OA\Parameter(name="token",in="header",example="token_string",description="登录用户权限",required=true),
      *     @OA\Parameter(name="Content-Type",in="header",example="application/x-www-form-urlencoded",required=true),
      *     @OA\RequestBody(
      *         @OA\MediaType(
@@ -49,7 +49,7 @@ class Query extends UserController
      *     path="/query/maintenance",
      *     tags={"车辆查询"},
      *     summary="维保查询",
-     *     @OA\Parameter(name="Authorization",in="header",example="token_string",description="登录用户权限",required=true),
+     *     @OA\Parameter(name="token",in="header",example="token_string",description="登录用户权限",required=true),
      *     @OA\Parameter(name="Content-Type",in="header",example="application/x-www-form-urlencoded",required=true),
      *     @OA\RequestBody(
      *         @OA\MediaType(
