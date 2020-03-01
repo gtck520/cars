@@ -44,7 +44,35 @@ class Query extends UserController
         $res = QueryService::getPay($req,"maintenance");
         Response::SendResponseJson($res['code'], $res['data']);
     }
-    //维保查询
+    /**
+     * @OA\Post(
+     *     path="/query/getpay",
+     *     tags={"车辆查询"},
+     *     summary="维保查询",
+     *     @OA\Parameter(name="Authorization",in="header",example="token_string",description="登录用户权限",required=true),
+     *     @OA\Parameter(name="Content-Type",in="header",example="application/x-www-form-urlencoded",required=true),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(property="vin",type="string",description="车架号"),
+     *                 example={"vin": "sadf656s4df6465"}
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *       response=200,
+     *       description="请求成功",
+     *           @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(ref="#/components/schemas/query_getpay"),
+     *          ),
+     *     ),
+     *     @OA\Response(response=401,description="权限验证失败"),
+     *     @OA\Response(response=400,description="请求失败")
+     * )
+     */
     public function maintenance(){
 
         $req = P();
