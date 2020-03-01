@@ -1,14 +1,14 @@
 <?php
 return [
     //登录
-    'post::logins$'         => 'login/login',
-    'post::checkToken$'     => 'login/checkToken',
+    'post::logins$'         => 'Login/login',
+    'post::checkToken$'     => 'Login/checkToken',
 
     //管理员
-    'get::admins$'          => 'admin/getList',
-    'post::admins$'         => 'admin/add',
-    'put::admins/(\d+)$'    => 'admin/modify',
-    'delete::admins/(\d+)$' => 'admin/delete',
+    'get::admins$'          => 'Admin/getList',
+    'post::admins$'         => 'Admin/add',
+    'put::admins/(\d+)$'    => 'Admin/modify',
+    'delete::admins/(\d+)$' => 'Admin/delete',
 
     //权限管理
     'get::manPower$'          => 'ManPower/getList',
