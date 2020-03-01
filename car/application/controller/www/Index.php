@@ -11,7 +11,7 @@ class Index
      * @OA\Info(title="车塘小程序API", version="0.1")
      */
     public function index(){
-        echo "22222";exit;
+        echo "11";exit;
         $req=G();
         if(isset($req['type'])&&$req['type']=="admin"){
 
