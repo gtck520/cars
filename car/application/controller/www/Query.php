@@ -46,7 +46,7 @@ class Query extends UserController
     }
     /**
      * @OA\Post(
-     *     path="/query/getpay",
+     *     path="/query/maintenance",
      *     tags={"车辆查询"},
      *     summary="维保查询",
      *     @OA\Parameter(name="Authorization",in="header",example="token_string",description="登录用户权限",required=true),
