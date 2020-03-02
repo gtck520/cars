@@ -4,9 +4,11 @@ namespace app\service;
 
 use app\cache\Token;
 use app\helper\Helper;
+use app\model\CarSc as CarScModel;
 use app\model\City as CityModel;
 use app\model\User as UserModel;
 use app\model\Shop as ShopModel;
+use app\model\CarBrowse as CarBrowseModel;
 
 class User
 {
@@ -68,5 +70,35 @@ class User
         $user_info['mobile'] =  substr_replace($user_info['mobile'], '****', 3, 4);
         unset($user_info['shop_id']);
         return ['code' => 200, 'data' => $user_info];
+    }
+
+    // 车辆收藏
+    public static function enshrine($user_id, $car_id)
+    {
+        $res = CarScModel::where(['user_id' => $user_id, 'car_id' => $car_id])->find();
+        if ($res) {
+            return ['code' => 400, 'data' => '已经收藏过了!'];
+        }else{
+            CarScModel::insert([
+                'user_id' => $user_id,
+                'car_id' => $car_id,
+                'create_time' => time(),
+            ]);
+        }
+        return ['code' => 200, 'data' => ''];
+    }
+
+    //删除收藏
+    public static function enshrineDel($user_id, $car_id)
+    {
+        CarScModel::where(['user_id' => $user_id, 'car_id' => $car_id])->delete();
+        return ['code' => 200, 'data' => ''];
+    }
+
+    //删除浏览
+    public static function browseDel($user_id, $car_id)
+    {
+        CarBrowseModel::where(['user_id' => $user_id, 'car_id' => $car_id])->delete();
+        return ['code' => 200, 'data' => ''];
     }
 }
