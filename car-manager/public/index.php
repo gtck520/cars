@@ -1,6 +1,5 @@
 <?php
 
-echo 111;die;
 header('Access-Control-Allow-Origin: *');
 error_reporting(E_ALL);
 define('DS', DIRECTORY_SEPARATOR);
