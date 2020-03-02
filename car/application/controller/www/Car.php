@@ -6,14 +6,13 @@ use king\lib\Response;
 use app\service\Car as CarService;
 use app\validate\Car as CarValidate;
 
-class Car
+class Car extends UserController
 {
     // 获取车的列表
     public function getList(){
         $req = G();
-        dd($req);
-        // CarValidate::checkInput($req);
-        $res = CarService::getList($req);
+        CarValidate::checkPage($req);
+        $res = CarService::getList(parent::$user_id, $req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
 

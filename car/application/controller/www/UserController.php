@@ -14,6 +14,7 @@ class UserController
 
     public function __construct()
     {
+    	header('Access-Control-Allow-Origin: *');
         if (!self::loginId()) {
             Response::SendResponseJson(401, '未登录');
         }
