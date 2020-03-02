@@ -13,4 +13,23 @@ class User extends UserController
         $res = UserService::userInfo($user_id);
         Response::SendResponseJson($res['code'], $res['data']);
     } 
+
+    public function enshrine($car_id){
+        $user_id = self::$user_id;
+        $res = UserService::enshrine($user_id, $car_id);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+    
+    public function enshrineDel($car_id){
+        $user_id = self::$user_id;
+        $res = UserService::enshrineDel($user_id, $car_id);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
+    public function browseDel($car_id){
+        $user_id = self::$user_id;
+        $res = UserService::browseDel($user_id, $car_id);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+    
 }

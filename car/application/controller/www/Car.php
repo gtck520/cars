@@ -8,7 +8,7 @@ use app\validate\Car as CarValidate;
 
 class Car extends UserController
 {
-    // 获取车的列表
+    //获取车的列表
     public function getList(){
         $req = G();
         CarValidate::checkPage($req);
@@ -33,7 +33,8 @@ class Car extends UserController
     // 车辆详情
     public function getCarInfo($car_id)
     {
-        $res = CarService::getCarInfo($car_id);
+        $user_id = parent::$user_id;
+        $res = CarService::getCarInfo($user_id, $car_id);
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
@@ -59,7 +60,24 @@ class Car extends UserController
     public function add(){
         $req = P();
         CarValidate::checkInput($req);
-        $res = CarService::add($req);
+        $user_id = parent::$user_id;
+        $res = CarService::add($user_id, $req);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
+    //浏览记录列表
+    public function getCarBrowseList(){
+        $req = G();
+        CarValidate::checkPage($req);
+        $res = CarService::getCarBrowseList(parent::$user_id, $req);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
+     //收藏记录列表
+     public function getCarEnshrinesList(){
+        $req = G();
+        CarValidate::checkPage($req);
+        $res = CarService::getCarEnshrinesList(parent::$user_id, $req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
 }
