@@ -10,7 +10,7 @@ class Index
 {
     //登录
     public function index(){
-        echo "success";
+        echo "success1";
     }
     
 
