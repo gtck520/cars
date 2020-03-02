@@ -77,6 +77,7 @@ class Login
      * )
      */
     public function easylogin(){
+        header('Access-Control-Allow-Origin: *');
         $req = P();
         if(empty($req['openid'])){
             return ['code' => 400, 'data' => "openid不能为空"];
