@@ -18,6 +18,7 @@ class AdminController
     //构造方法 验证登录状态
     public function __construct()
     {
+        header('Access-Control-Allow-Origin: *');
         if (!self::isLogin()) {
             Response::SendResponseJson(401, '未登录');
         }
