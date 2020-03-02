@@ -201,7 +201,7 @@ class Input extends Instance
     private static function clearKey($str)//安全性处理
     {
         if (!preg_match('/^[a-zA-Z0-9:_.-]+$/u', $str)) {
-            exit('Sorry,not allowed:'.$str);
+            exit('Sorry,not allowed:');
         }
         return $str;
     }
