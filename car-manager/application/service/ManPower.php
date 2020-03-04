@@ -57,12 +57,12 @@ class ManPower
         $powername = $req['powername'];
         $sort = $req['sort'];
 
-        $res = ManPowerModel::where(['controller' => $controller, 'action' => $action])->find();
+        $res = ManPowerModel::where(['controller' => $controller, 'action' => $action, 'id <>' => $id])->find();
         if ($res) {
             return ['code' => 400, 'data' => "控制器:$controller 已存在方法:$action "];
         }
         //
-        $old_value = ManPowerModel::field(['controller', 'action', 'powername', 'sort'])->where(['id' => $id])->get();
+        $old_value = ManPowerModel::field(['controller', 'action', 'powername', 'sort'])->where(['id' => $id])->find();
 
         ManPowerModel::where(['id' => $id])->update([
             'controller' => $controller,
@@ -92,5 +92,14 @@ class ManPower
 
         Helper::saveToLog($admin_id, '', '', '', "删除权限ID:$id [{$res['powername']}:{$res['controller']}:{$res['action']}]");
         return ['code' => 200, 'data' => ''];
+    }
+
+    //
+    public static function getPowerNameList()
+    {
+        $field = ['id', 'powername'];
+        $orderby = ['sort' => 'desc'];
+        $res = ManPowerModel::field($field)->orderby($orderby)->get();
+        return ['code' => 200, 'data' => $res];
     }
 }
