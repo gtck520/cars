@@ -37,4 +37,8 @@ return [
     'post::impeachs$'         => 'Impeach/add',
     'put::impeach/(\d+)$'    => 'Impeach/modify',
     'delete::impeach/(\d+)$' => 'Impeach/delete',
+
+    //各项设置
+    'post::cityarea$'         => 'Set/getCity',
+
 ];
