@@ -43,4 +43,8 @@ return [
     'get::user/(\d+)$'    => 'User/getUserInfo',
     'put::user/(\d+)$'    => 'User/modify',
     'delete::user/(\d+)$' => 'User/delete',
+
+    //各项设置
+    'post::cityarea$'         => 'Set/getCity',
+
 ];
