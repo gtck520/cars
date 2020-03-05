@@ -18,8 +18,10 @@ class Common
     }
 
     //
-    public static function checkPage($req)
+    public static function checkPage(&$req)
     {
+        $req['p'] = $req['p'] ?? 1;
+    	$req['c'] = $req['c'] ?? 10;
         $valid = Valid::getClass($req);
         $valid->addRule('p', 'gt,0|isInt|lt,100000', '页数');
         $valid->addRule('c', 'gt,0|isInt|lt,500', '每页显示数量');

@@ -37,4 +37,10 @@ return [
     'post::impeachs$'         => 'Impeach/add',
     'put::impeach/(\d+)$'    => 'Impeach/modify',
     'delete::impeach/(\d+)$' => 'Impeach/delete',
+
+    //用户管理
+    'get::users$'          => 'User/getList',
+    'get::user/(\d+)$'    => 'User/getUserInfo',
+    'put::user/(\d+)$'    => 'User/modify',
+    'delete::user/(\d+)$' => 'User/delete',
 ];
