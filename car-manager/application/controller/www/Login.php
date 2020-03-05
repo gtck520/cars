@@ -20,9 +20,8 @@ class Login
      *             mediaType="application/x-www-form-urlencoded",
      *             @OA\Schema(
      *                 type="object",
-     *                 @OA\Property(property="mobile",type="string",description="电话号码"),
-     *                 @OA\Property(property="password",type="string",description="密码"),
-     *                 example={"vin": "sadf656s4df6465"}
+     *                 @OA\Property(property="mobile",example="18695732896",type="string",description="电话号码"),
+     *                 @OA\Property(property="password",example="prw123",type="string",description="密码")
      *             )
      *         )
      *     ),

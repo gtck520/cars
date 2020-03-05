@@ -12,6 +12,7 @@ class Set extends AdminController
      *     path="/admin/cityarea",
      *     tags={"会员管理"},
      *     summary="城市筛选接口",
+     *     @OA\Parameter(name="Authorization",in="header",example="e0170cf7ad742072e4cdd3316a7dc5c5",required=true),
      *     @OA\Parameter(name="Content-Type",in="header",example="application/x-www-form-urlencoded",required=true),
      *     @OA\RequestBody(
      *         @OA\MediaType(
