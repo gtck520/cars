@@ -44,6 +44,12 @@ return [
     'put::user/(\d+)$'    => 'User/modify',
     'delete::user/(\d+)$' => 'User/delete',
 
+    //车辆管理
+    'get::cars$'          => 'Car/getList',
+    'get::car/(\d+)$'    => 'Car/getCarInfo',
+    'put::car/(\d+)$'    => 'Car/modify',
+    'delete::car/(\d+)$' => 'Car/delete',
+
     //各项设置
     'post::cityarea$'         => 'Set/getCity',
 
