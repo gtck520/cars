@@ -30,8 +30,8 @@ class Car
 
     public static function getList($user_id, $req)
     {
-        $user_info = UserModel::field(['city_id', 'shop_id'])->where(['user_id' => $user_id])->find();
-        dd($user_info);
+        // $user_info = UserModel::field(['city_id', 'shop_id'])->where(['user_id' => $user_id])->find();
+        // dd($user_info);
         $orderby = ['a.create_time' => 'desc', 'a.id' => 'asc'];
 
         $field = ['a.id', 'a.cheliangweizhi', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.create_time', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TYPE_NAME'];
@@ -173,7 +173,7 @@ class Car
         $car_info['city_name'] = CityModel::where(['id' => $car_info['cheliangweizhi']])->value(['fullname']);
         $car_info['realname'] = UserModel::where(['id' => $car_info['user_id']])->value(['realname']);
         $car_info['realname'] = Helper::encryptName($car_info['realname']);
-        $car_info['chexing'] = CarTypeModel::field(['MODEL_NAME', 'ENGINE_CAPACITY'])->where(['ID' => $car_info['cheixng_id']])->find();
+        $car_info['chexing'] = CarTypeModel::field(['MODEL_NAME', 'ENGINE_CAPACITY'])->where(['ID' => $car_info['chexing_id']])->find();
         unset($car_info['yanse_id'], $car_info['status'], $car_info['cheixng_id'], $car_info['id']);
 
         return ['code' => 200, 'data' => $car_info];
@@ -245,7 +245,7 @@ class Car
     {
         $user_browse_arr = CarBrowseModel::field(['car_id'])->where(['user_id' => $user_id])->get();
         $orderby = ['a.create_time' => 'desc', 'a.id' => 'asc'];
-
+        
         $field = ['a.id', 'a.price', 'a.chexing_id', 'a.biaoxianlicheng', 'a.create_time', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TYPE_NAME'];
 
         $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('user_id','in',array_values($user_browse_arr))->orderby($orderby)->page($req['c'], $req['p']);
