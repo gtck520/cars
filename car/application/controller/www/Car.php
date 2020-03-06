@@ -80,4 +80,12 @@ class Car extends UserController
         $res = CarService::getCarEnshrinesList(parent::$user_id, $req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
+
+    //添加收藏
+    public function addEnshrines($car_id)
+    {
+        $res = CarService::addEnshrines(parent::$user_id, $car_id);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
 }

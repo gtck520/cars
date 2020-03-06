@@ -4,6 +4,8 @@ namespace app\service;
 
 use app\cache\Token;
 use app\helper\Helper;
+use app\model\CarPrice as CarPriceModel;
+use app\model\Car as CarModel;
 use app\model\CarSc as CarScModel;
 use app\model\City as CityModel;
 use app\model\User as UserModel;
@@ -72,33 +74,36 @@ class User
         return ['code' => 200, 'data' => $user_info];
     }
 
-    // 车辆收藏
-    public static function enshrine($user_id, $car_id)
-    {
-        $res = CarScModel::where(['user_id' => $user_id, 'car_id' => $car_id])->find();
-        if ($res) {
-            return ['code' => 400, 'data' => '已经收藏过了!'];
-        }else{
-            CarScModel::insert([
-                'user_id' => $user_id,
-                'car_id' => $car_id,
-                'create_time' => time(),
-            ]);
-        }
-        return ['code' => 200, 'data' => ''];
-    }
-
     //删除收藏
     public static function enshrineDel($user_id, $car_id)
     {
-        CarScModel::where(['user_id' => $user_id, 'car_id' => $car_id])->delete();
+        CarScModel::delete(['user_id' => $user_id, 'car_id' => $car_id]);
         return ['code' => 200, 'data' => ''];
     }
 
     //删除浏览
     public static function browseDel($user_id, $car_id)
     {
-        CarBrowseModel::where(['user_id' => $user_id, 'car_id' => $car_id])->delete();
+        CarBrowseModel::delete(['user_id' => $user_id, 'car_id' => $car_id]);
+        return ['code' => 200, 'data' => ''];
+    }
+
+    //车辆出价  
+    public static function addPrice($user_id, $req){
+        if (!isset($req['car_id'])) {
+            return ['code' => 400, 'data' => '车辆id没有定义'];
+        }
+
+        if (!isset($req['price']) || !is_numeric($req['price'])) {
+            return ['code' => 400, 'data' => '价格没有定义或者非法'];
+        }
+        CarPriceModel::insert([
+            'user_id' => $user_id,
+            'price'  => $req['price'],
+            'car_id' => $req['car_id'],
+            'create_time' => time(),
+        ]);
+
         return ['code' => 200, 'data' => ''];
     }
 }
