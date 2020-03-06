@@ -156,7 +156,7 @@ class Car
     public static function getCarInfo($user_id, $car_id)
     {
         //添加浏览记录
-        $user_browse = CarBrowseModel::where(['user_id' => $user_id])->find();
+        $user_browse = CarBrowseModel::where(['user_id' =>  $user_id, 'car_id' => $car_id])->find();
         if (!$user_browse) {
             CarBrowseModel::insert([
                 'user_id' => $user_id,
@@ -245,10 +245,10 @@ class Car
     {
         $user_browse_arr = CarBrowseModel::field(['car_id'])->where(['user_id' => $user_id])->get();
         $orderby = ['a.create_time' => 'desc', 'a.id' => 'asc'];
-        
-        $field = ['a.id', 'a.price', 'a.chexing_id', 'a.biaoxianlicheng', 'a.create_time', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TYPE_NAME'];
 
-        $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('user_id','in',array_values($user_browse_arr))->orderby($orderby)->page($req['c'], $req['p']);
+        $field = ['a.id', 'a.price', 'a.chexing_id', 'a.biaoxianlicheng', 'a.shangpai_time', 'a.cheliangweizhi','a.create_time', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TYPE_NAME'];
+       
+        $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id','in', array_column($user_browse_arr, 'car_id'))->orderby($orderby)->page($req['c'], $req['p']);
         if ($car_list['total'] > 0) {
             foreach ($car_list['rs'] as &$value) {
                 $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
@@ -268,9 +268,9 @@ class Car
          $user_browse_arr = CarScModel::field(['car_id'])->where(['user_id' => $user_id])->get();
          $orderby = ['a.create_time' => 'desc', 'a.id' => 'asc'];
  
-         $field = ['a.id', 'a.price', 'a.chexing_id', 'a.biaoxianlicheng', 'a.create_time', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TYPE_NAME'];
-        dd($user_browse_arr);
-         $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('user_id','in',array_values($user_browse_arr))->orderby($orderby)->page($req['c'], $req['p']);
+         $field = ['a.id', 'a.price', 'a.chexing_id', 'a.biaoxianlicheng', 'a.shangpai_time', 'a.cheliangweizhi','a.create_time', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TYPE_NAME'];
+        
+         $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id','in',array_column($user_browse_arr, 'car_id'))->orderby($orderby)->page($req['c'], $req['p']);
          if ($car_list['total'] > 0) {
              foreach ($car_list['rs'] as &$value) {
                  $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
@@ -283,4 +283,21 @@ class Car
  
          return ['code' => 200, 'data' => $car_list];
      }
+
+     // 添加收藏
+    public static function addEnshrines($user_id, $car_id)
+    {
+        $res = CarScModel::where(['user_id' => $user_id, 'car_id' => $car_id])->find();
+        if ($res) {
+            return ['code' => 400, 'data' => '您已经收藏过了!'];
+        } else {
+            CarScModel::insert([
+                'user_id' => $user_id,
+                'car_id' => $car_id,
+                'create_time' => time(),
+            ]);
+
+            return ['code' => 200, 'data' => ''];
+        }
+    }
 }
