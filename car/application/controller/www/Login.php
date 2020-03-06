@@ -59,8 +59,7 @@ class Login
      *             mediaType="application/x-www-form-urlencoded",
      *             @OA\Schema(
      *                 type="object",
-     *                 @OA\Property(property="openid",type="string",description="openid"),
-     *                 example={"openid": "sadf656s4df6465"}
+     *                 @OA\Property(property="openid",type="string",example="10086",description="openid")
      *             )
      *         )
      *     ),

@@ -300,4 +300,31 @@ class Query
             return ['code' => 400, 'data' => ["msg"=>'查询失败，请检查vin号码后重试','cardata'=>$detail_data]];
         }
     }
+    //车辆vin扫码识别
+    public static function vinOcr($req){
+        $AppKey=C('query.appkey');
+        $AppSecret=C('query.appsecret');
+        header("content-type:text/html;charset=utf-8");
+        $url = C('query.ocr_http')."?wsdl";
+        $method = "level.vehicle.vin.ocr";
+        $data = "<root><appkey>".$AppKey."</appkey><appsecret>".$AppSecret."</appsecret><method>".$method."</method><requestformat>json</requestformat><imgbase64>".$req['imgbase64']."</imgbase64></root>";
+
+        $client = new \SoapClient($url);
+        $addResult = $client->__soapCall($method,array(array('xmlInput'=>$data)));
+        return ['code' => 200, 'data' => $addResult->LevelDataResult];
+        //var_dump( $addResult->LevelDataResult);
+    }
+    //车辆vin读取车辆信息
+    public static function vinGetinfo($req){
+        $AppKey=C('query.appkey');
+        $AppSecret=C('query.appsecret');
+        header("content-type:text/html;charset=utf-8");
+        $url = C('query.ocr_http')."?wsdl";
+        $method = "level.vehicle.vin.mix";
+        $data = "<root><appkey>".$AppKey."</appkey><appsecret>".$AppSecret."</appsecret><method>".$method."</method><requestformat>json</requestformat><vin>".$req['vin']."</vin></root>";
+        $client = new \SoapClient($url);
+        $addResult = $client->__soapCall($method,array(array('xmlInput'=>$data)));
+        return ['code' => 200, 'data' => $addResult->LevelDataResult];
+
+    }
 }

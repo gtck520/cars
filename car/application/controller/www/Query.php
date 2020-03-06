@@ -127,4 +127,69 @@ class Query extends UserController
         $res = QueryService::query($req,"bigUnion");
         Response::SendResponseJson($res['code'], $res['data']);
     }
+    /**
+     * @OA\Post(
+     *     path="/query/getVin",
+     *     tags={"车辆查询"},
+     *     summary="扫码识别VIN",
+     *     @OA\Parameter(name="token",in="header",example="token_string",description="登录用户权限",required=true),
+     *     @OA\Parameter(name="Content-Type",in="header",example="application/x-www-form-urlencoded",required=true),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(property="imgbase64",type="string",description="base64图片串"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *       response=200,
+     *       description="请求成功"
+     *     ),
+     *     @OA\Response(response=401,description="权限验证失败"),
+     *     @OA\Response(response=400,description="请求失败")
+     * )
+     */
+    public function vinOcr(){
+        $req = P();
+        if(empty($req['imgbase64'])){
+            return ['code' => 400, 'data' => "imgbase64图片错误"];
+        }
+        $req['user_id'] = parent::$user_id;
+        $res = QueryService::vinOcr($req);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/query/getCarInfo",
+     *     tags={"车辆查询"},
+     *     summary="VIN码获取车辆信息",
+     *     @OA\Parameter(name="token",in="header",example="token_string",description="登录用户权限",required=true),
+     *     @OA\Parameter(name="Content-Type",in="header",example="application/x-www-form-urlencoded",required=true),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(property="vin",type="string",description="车架号vin"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *       response=200,
+     *       description="请求成功"
+     *     ),
+     *     @OA\Response(response=401,description="权限验证失败"),
+     *     @OA\Response(response=400,description="请求失败")
+     * )
+     */
+    public function vinGetinfo(){
+        $req = P();
+        Common::checkVin($req);
+        $req['user_id'] = parent::$user_id;
+        $res = QueryService::vinGetinfo($req);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
 }

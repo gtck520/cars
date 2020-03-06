@@ -26,5 +26,7 @@ return [
 
     //查询接口
     'post::query/getpay' => 'Query/getPay',
+    'post::query/getVin' => 'Query/vinOcr', //扫码识别车辆vin
+    'post::query/getCarInfo' => 'Query/vinGetinfo', //vin获取车辆信息
 
 ];

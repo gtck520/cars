@@ -9,4 +9,9 @@ return [
     'maintenance_url' => Env::get('queryurl.maintenance'),
     'collision_url' => Env::get('queryurl.collision'),
     'vehicleCondition_url' => Env::get('queryurl.vehicleCondition'),
+
+    'appkey' => Env::get('vin.appkey'),
+    'appsecret' => Env::get('vin.appsecret'),
+    'ocr_http' => Env::get('vin.ocr_http'),
+    'ocr_mix' => Env::get('vin.ocr_mix'),
 ];
