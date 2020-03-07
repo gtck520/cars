@@ -28,6 +28,16 @@ class Car
         CarCache::update($car_id, $new);
     }
 
+    /**
+     * 首页搜索
+     * 1、正式会员  -> 分析用户信息 得到相同门店 搜索优先查询相同门店内符合条件的车辆  
+     * 如果车辆不足 查询正常条件下车辆补齐8条数据  还不足择从同市 同省查询符合条件车辆补齐8条数据
+     * 2、  游客用户 -> 正常按条件筛选分页
+     *
+     * @param [type] $user_id
+     * @param [type] $req
+     * @return array
+     */
     public static function getList($user_id, $req)
     {
         // $user_info = UserModel::field(['city_id', 'shop_id'])->where(['user_id' => $user_id])->find();
@@ -38,7 +48,7 @@ class Car
 
         // 关键字搜索
         $query = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID');
-        if (isset($req['search']) || !empty($req['search'])) {
+        if (isset($req['search']) && !empty($req['search'])) {
             $search = $req['search'];
             $query->andWhere(function ($query) use ($search) {
                 $query->where('b.MODEL_SERIES', 'like', '%' . $search . '%');
@@ -50,63 +60,64 @@ class Car
         }
 
         // 关键字搜索
-        if (!empty($req['city_id']) || isset($req['city_id'])) {
+        if (!empty($req['city_id']) && isset($req['city_id'])) {
+            dd(empty($req['city_id']) );
             $query->where('a.cheliangweizhi', '=', $req['city_id']);
         }
 
         // 品牌搜索
-        if (!empty($req['pinpai']) || isset($req['pinpai'])) {
+        if (!empty($req['pinpai']) && isset($req['pinpai'])) {
             $query->where('a.pinpai', '=', $req['pinpai']);
         }
 
         // 最小价格区间查询
-        if (!empty($req['low_price']) || isset($req['low_price'])) {
+        if (!empty($req['low_price']) && isset($req['low_price'])) {
             $query->where('a.price', '<=', $req['low_price']);
         }
 
         // 最大价格区间查询
-        if (!empty($req['high_price']) || isset($req['high_price'])) {
+        if (!empty($req['high_price']) && isset($req['high_price'])) {
             $query->where('a.price', '>=', $req['high_price']);
         }
 
 
         // 颜色搜索
-        if (!empty($req['colour_id']) || isset($req['colour_id'])) {
+        if (!empty($req['colour_id']) && isset($req['colour_id'])) {
             $query->where('a.colour_id', '=', $req['colour_id']);
         }
 
         // 车辆类型搜索
-        if (!empty($req['car_type']) || isset($req['car_type'])) {
+        if (!empty($req['car_type']) && isset($req['car_type'])) {
             $query->where('a.car_type', '=', $req['car_type']);
         }
 
         // 变速箱搜索
-        if (!empty($req['biansu']) || isset($req['biansu'])) {
+        if (!empty($req['biansu']) && isset($req['biansu'])) {
             $query->where('a.biansu', '=', $req['biansu']);
         }
 
         // 车辆标签搜索
-        if (!empty($req['cheyuan_id']) || isset($req['cheyuan_id'])) {
+        if (!empty($req['cheyuan_id']) && isset($req['cheyuan_id'])) {
             $query->where('a.cheyuan_id', '=', $req['cheyuan_id']);
         }
 
         // 车辆里程搜索
-        if (!empty($req['licheng']) || isset($req['licheng'])) {
+        if (!empty($req['licheng']) && isset($req['licheng'])) {
             $query->where('a.biaoxianlicheng', '=', $req['licheng']);
         }
 
         // 最小车龄区间查询
-        if (!empty($req['low_age']) || isset($req['low_age'])) {
+        if (!empty($req['low_age']) && isset($req['low_age'])) {
             $query->where('a.age', '<=', $req['low_age']);
         }
 
         // 最大车龄区间查询
-        if (!empty($req['high_age']) || isset($req['high_age'])) {
+        if (!empty($req['high_age']) && isset($req['high_age'])) {
             $query->where('a.age', '>=', $req['high_age']);
         }
 
         // 排序
-        if (!empty($req['sort']) || isset($req['sort'])) {
+        if (!empty($req['sort']) && isset($req['sort'])) {
             switch ($req['sort']) {
                 case '1':
                     // 价格最低
