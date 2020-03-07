@@ -171,7 +171,7 @@ class Query extends UserController
      *                 type="object",
      *                 @OA\Property(property="vin",type="string",example="LB37722Z1JH072318",description="车架号"),
      *                 @OA\Property(property="hpzl",type="string",example="02",description="号牌种类"),
-     *                 @OA\Property(property="hphm",type="string",example="闽JJP600",description="车架号"),
+     *                 @OA\Property(property="hphm",type="string",example="闽JJP600",description="号牌号码"),
      *                 @OA\Property(property="fdjh",type="string",example="J4CA0335669",description="发动机号")
      *             )
      *         )

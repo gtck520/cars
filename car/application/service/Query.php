@@ -5,7 +5,7 @@ namespace app\service;
 use king\lib\Request;
 use king\lib\Log;
 use app\cache\Token;
-use app\helper\Helper;
+use app\service\Money as MoneyService;
 use app\model\User as UserModel;
 use app\model\QueryDetail as QueryDetailModel;
 use app\model\QueryOrder as QueryOrderModel;
@@ -137,6 +137,7 @@ class Query
             $detail_data=[];
             switch ($type){
                 case "maintenance":
+                    $mem='维保查询';
                     $backdata=self::maintenance($req,$order_id);
                     if($backdata['code']==888){
                         $detail_data['maintenance']= $backdata['msg'];
@@ -149,6 +150,7 @@ class Query
                     }
                     break;
                 case "collision":
+                    $mem='碰撞查询';
                     $backdata=self::collision($req,$order_id);
                     if($backdata['code']==888){
                         $detail_data['collision']= $backdata['msg'];
@@ -161,6 +163,7 @@ class Query
                     }
                     break;
                 case "vehicleCondition":
+                    $mem='汽车状态查询';
                     $backdata=self::vehicleCondition($req,$order_id);
                     if($backdata['code']==10000){
                         $detail_data['vehicleCondition']= $backdata['msg'];
@@ -173,6 +176,7 @@ class Query
                     }
                     break;
                 case "smallUnion":
+                    $mem='小综合查询';
                     $maintenance=self::maintenance($req,$order_id);
                     $collision=self::collision($req,$order_id);
                     if($maintenance['code']==888&&$collision['code']==888){
@@ -200,6 +204,7 @@ class Query
 
                     break;
                 case "bigUnion":
+                    $mem='大综合查询';
                     $maintenance=self::maintenance($req,$order_id);
                     $collision=self::collision($req,$order_id);
                     $vehicleCondition=self::vehicleCondition($req,$order_id);
@@ -236,7 +241,7 @@ class Query
                 default:
                     break;
             }
-            return self::saveData($req['vin'],$order_id,$up_order,$detail_data);
+            return self::saveData($req,$order_id,$up_order,$detail_data,$state,$mem);
        }
     //获取某个类型查询所需的费用（$type不填则将所有类型扣费列出来）
     public static function  getCost($user_id,$type=""){
@@ -313,13 +318,56 @@ class Query
         return $state;
     }
     //查询完成修改订单状态，并保存查询成功的结果数据
-    private static function saveData($vin,$order_id,$up_order,$detail_data){
+    private static function saveData($req,$order_id,$up_order,$detail_data,$state,$mem){
         QueryOrderModel::where(["id"=>$order_id])->update($up_order);
-        if($up_order['status']==3){//全部查询成功，直接扣除费用
+        if($up_order['status']==3) {//全部查询成功，直接扣除费用
+            if (!empty($detail_data['vehicleCondition'])) {
+                $query_detail = QueryDetailModel::where(["order_id" => $order_id])->find();
+                if (empty($query_detail)) {
+                    $insert_data['vehicleCondition'] = $detail_data['vehicleCondition'];
+                    $insert_data['order_id'] = $order_id;
+                    $insert_data['vin'] = $req['vin'];
+                    $insert_data['add_time'] = time();
+                    QueryDetailModel::insert($insert_data);
+                }else{
+                    $updata_data['vehicleCondition'] = $detail_data['vehicleCondition'];
+                    QueryDetailModel::where(["order_id" => $order_id])->update($updata_data);
 
+                }
+            }
+            if($state['cost']>0) {//花费的费用大于0才记录扣款
+                MoneyService::moneyChange(-$state['cost'], 3, $mem, $req['user_id']);
+            }
             return ['code' => 200, 'data' => ["msg"=>'全部成功','cardata'=>$detail_data]];
         }elseif ($up_order['status']==4){//部分查询成功，返还查询失败的费用
-            //返还失败费用
+
+            if($state['cost']>0){//花费的费用大于0才记录扣款
+                MoneyService::moneyChange(-$state['cost'],3,$mem,$req['user_id']);
+                //返还失败费用
+                if($state['type']==3){//如果是小综合查询
+                    if(empty($detail_data['collision'])){
+                        $cost=self::getCost($req['user_id'],"collision");//查询该用户该类型需退款的单笔费用
+                        MoneyService::moneyChange($cost,4,$mem."：碰撞查询失败退款",$req['user_id']);
+                    }
+                    if(empty($detail_data['maintenance'])){
+                        $cost=self::getCost($req['user_id'],"maintenance");//查询该用户该类型需退款的单笔费用
+                        MoneyService::moneyChange($cost,4,$mem."：维保查询失败退款",$req['user_id']);
+                    }
+                }elseif ($state['type']==4){//如果是大综合查询
+                    if(empty($detail_data['collision'])){
+                        $cost=self::getCost($req['user_id'],"collision");//查询该用户该类型需退款的单笔费用
+                        MoneyService::moneyChange($cost,4,$mem."：碰撞查询失败退款",$req['user_id']);
+                    }
+                    if(empty($detail_data['maintenance'])){
+                        $cost=self::getCost($req['user_id'],"maintenance");//查询该用户该类型需退款的单笔费用
+                        MoneyService::moneyChange($cost,4,$mem."：维保查询失败退款",$req['user_id']);
+                    }
+                    if(empty($detail_data['vehicleCondition'])){
+                        $cost=self::getCost($req['user_id'],"vehicleCondition");//查询该用户该类型需退款的单笔费用
+                        MoneyService::moneyChange($cost,4,$mem."：车辆信息查询失败退款",$req['user_id']);
+                    }
+                }
+            }
             return ['code' => 200, 'data' => json_encode(["msg"=>'部分成功','cardata'=>$detail_data])];
         }else{//全部失败 不做扣费处理
             return ['code' => 400, 'data' => json_encode(["msg"=>'查询失败，请检查vin号码后重试','cardata'=>$detail_data])];

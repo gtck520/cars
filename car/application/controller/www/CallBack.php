@@ -28,6 +28,10 @@ class CallBack
                 $detail_data['vin']=$req['vin'];
                 $detail_data['add_time']=time();
                 QueryDetailModel::insert($detail_data);
+            }else{
+                $detail_data['maintenance']=$req['result'];
+                QueryDetailModel::where(["order_id" => $req['orderid']])->update($detail_data);
+
             }
             echo '{"result": "SUCCESS"}';
         }else{
@@ -52,6 +56,10 @@ class CallBack
                 $detail_data['vin']=$req['vin'];
                 $detail_data['add_time']=time();
                 QueryDetailModel::insert($detail_data);
+            }else{
+                $detail_data['collision']=$req['result'];
+                QueryDetailModel::where(["order_id" => $req['orderid']])->update($detail_data);
+
             }
             echo '{"result": "SUCCESS"}';
         }else{
