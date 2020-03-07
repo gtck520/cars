@@ -35,4 +35,12 @@ class User extends UserController
         $res = UserService::addPrice($user_id, $req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
+
+    // 充值余额
+    public function recharge()
+    {
+        $req = P();
+        UserValidate::rechargeValidate($req);
+        UserService::recharge(parent::$user_id, $req);
+    }
 }

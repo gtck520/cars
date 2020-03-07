@@ -33,4 +33,21 @@ class Car extends Common
         }
     }
 
+    public static function searchInput($post)
+    {
+        $valid = Valid::getClass($post);
+        $valid->addRule('city_id', 'int', '地区');
+        $valid->addRule('biaoxianlicheng', 'gt,0', '表显里程');
+        $valid->addRule('colour_id', 'minLength,1', '颜色');
+        $valid->addRule('low_price', 'gt,0', '最小价格区间查询');
+        $valid->addRule('high_price', 'lt,9999999999999', '最大价格区间查询');
+        $valid->addRule('cheliangweizhi', 'int', '车辆位置');
+        $valid->addRule('low_age', 'gt,0', ' 最小车龄区间查询');
+        $valid->addRule('high_age', 'lt,1000', '最大车龄区间查询');
+        $valid->addRule('sort', 'in,1,2,3', '排序');
+        if (!$valid->run()) {
+            Response::SendResponseJson(400, $valid->getError());
+        }
+    }
+    
 }

@@ -13,6 +13,7 @@ use app\model\CarType as CarTypeModel;
 use app\model\Impeach as ImpeachModel;
 use app\model\CarColour as CarColourModel;
 use app\model\CarBrowse as CarBrowseModel;
+use app\model\CarCheYuan as CarCheYuanModel;
 
 class Car
 {
@@ -40,15 +41,18 @@ class Car
      */
     public static function getList($user_id, $req)
     {
-        // $user_info = UserModel::field(['city_id', 'shop_id'])->where(['user_id' => $user_id])->find();
-        // dd($user_info);
+        $car_num = 8;
+        $is_bu = true;
+        $user_info = UserModel::field(['city_id', 'shop_id'])->where(['id' => $user_id])->find();
         $orderby = ['a.create_time' => 'desc', 'a.id' => 'asc'];
 
-        $field = ['a.id', 'a.cheliangweizhi', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.create_time', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TYPE_NAME'];
+        $field = ['a.id', 'a.cheliangweizhi', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.create_time', 'a.shop_id', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TYPE_NAME'];
 
         // 关键字搜索
         $query = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID');
+
         if (isset($req['search']) && !empty($req['search'])) {
+            $is_bu = false;
             $search = $req['search'];
             $query->andWhere(function ($query) use ($search) {
                 $query->where('b.MODEL_SERIES', 'like', '%' . $search . '%');
@@ -66,52 +70,62 @@ class Car
 
         // 品牌搜索
         if (!empty($req['pinpai']) && isset($req['pinpai'])) {
+            $is_bu = false;
             $query->where('a.pinpai', '=', $req['pinpai']);
         }
 
         // 最小价格区间查询
         if (!empty($req['low_price']) && isset($req['low_price'])) {
+            $is_bu = false;
             $query->where('a.price', '<=', $req['low_price']);
         }
 
         // 最大价格区间查询
         if (!empty($req['high_price']) && isset($req['high_price'])) {
+            $is_bu = false;
             $query->where('a.price', '>=', $req['high_price']);
         }
 
 
         // 颜色搜索
         if (!empty($req['colour_id']) && isset($req['colour_id'])) {
+            $is_bu = false;
             $query->where('a.yanse_id', '=', $req['colour_id']);
         }
 
         // 车辆类型搜索
         if (!empty($req['car_type']) && isset($req['car_type'])) {
-            $query->where('a.car_type', '=', $req['car_type']);
+            $is_bu = false;
+            $query->where('a.type_name', '=', $req['car_type']);
         }
 
         // 变速箱搜索
         if (!empty($req['biansu']) && isset($req['biansu'])) {
+            $is_bu = false;
             $query->where('a.biansu', '=', $req['biansu']);
         }
 
         // 车辆标签搜索
         if (!empty($req['cheyuan_id']) && isset($req['cheyuan_id'])) {
+            $is_bu = false;
             $query->where('a.cheyuan_id', '=', $req['cheyuan_id']);
         }
 
         // 车辆里程搜索
         if (!empty($req['licheng']) && isset($req['licheng'])) {
+            $is_bu = false;
             $query->where('a.biaoxianlicheng', '=', $req['licheng']);
         }
 
         // 最小车龄区间查询
         if (!empty($req['low_age']) && isset($req['low_age'])) {
+            $is_bu = false;
             $query->where('a.age', '<=', $req['low_age']);
         }
 
         // 最大车龄区间查询
         if (!empty($req['high_age']) && isset($req['high_age'])) {
+            $is_bu = false;
             $query->where('a.age', '>=', $req['high_age']);
         }
 
@@ -132,10 +146,26 @@ class Car
                     break;
             }
         }
-
+        //
         $car_list = $query->orderby($orderby)->page($req['c'], $req['p']);
         if ($car_list['total'] > 0) {
+            if ($is_bu) {
+                if ($car_list['total'] < $car_num) {
+                    //现有车辆
+                    $car_id_arr = array_column($car_list['rs'], 'id');
+                    $city_arr =  array_column(CityModel::where(['pid' => CityModel::where(['id' => $user_info['city_id']])->value('pid')])->get(), 'id') ;
+                    $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr)->where('a.cheliangweizhi', 'in', $city_arr)->limit(0, $car_num - $car_list['total'])->get()) ;
+                    $car_list_count = count($car_list['rs']);
+                    //还不够
+                    if ($car_list_count < $car_num) {
+                        $car_id_arr_h = array_column($car_list['rs'], 'id');
+                        $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr_h)->limit(0, $car_num - $car_list_count)->get());
+                    }
+                }
+            }
+            
             foreach ($car_list['rs'] as &$value) {
+
                 $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
                 $value['city_name'] = CityModel::where(['id' => $value['cheliangweizhi']])->value(['name']);
                 $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['TYPE_NAME']}";
@@ -147,18 +177,33 @@ class Car
         return ['code' => 200, 'data' => $car_list];
     }
 
-    // 
+    //所有车辆名称
     public static function getCarName()
     {
-        $car_name = CarCache::get();
+        $car_name = CarCache::getCarName();
+        return ['code' => 200, 'data' => $car_name];
+    }
+
+    //所有车辆类型
+    public static function getCarType()
+    {
+        $car_name = CarCache::getCarType();
+        return ['code' => 200, 'data' => $car_name];
+    }
+
+    //所有车辆类型
+    public static function getCarBS()
+    {
+        $car_name = CarCache::getCarBS();
         return ['code' => 200, 'data' => $car_name];
     }
 
     //更新缓存
     public static function setCache()
     {
-        $cars = CarTypeModel::field(['distinct MAKE_NAME', 'FIRST_LETTER'])->get();
-        CarCache::set($cars);
+        CarCache::setCarName();
+        CarCache::setCarType();
+        CarCache::setCarBS();
         return ['code' => 200, 'data' => '更新成功!'];
     }
 
@@ -188,6 +233,8 @@ class Car
 
         return ['code' => 200, 'data' => $car_info];
     }
+
+
 
     //举报
     public static function impeach($user_id, $car_id, $type_id)
@@ -310,4 +357,17 @@ class Car
             return ['code' => 200, 'data' => ''];
         }
     }
+
+    //车辆颜色
+    public static function getColourList()
+    {
+        return CarColourModel::get();
+    }
+
+    //车辆颜色
+    public static function getCheyuanList()
+    {
+        return CarCheYuanModel::get();
+    }
+    
 }
