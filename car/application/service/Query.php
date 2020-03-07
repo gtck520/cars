@@ -15,7 +15,7 @@ class Query
     //维保查询
     private static function maintenance($req,$order_id){
         $api_key=C('query.other_key');
-        $call_back=C('query.call_back')."?orderid=".$order_id;
+        $call_back=urlencode(C('query.call_back')."?orderid=".$order_id);
         $req['engine']=$req['engine'] ?? '';
         $request = Request::getClass(C('query.maintenance_url') . '?api_key=' . $api_key . '&vin=' . $req['vin'] . '&engine=' . $req['engine'] . '&callbackUrl=' . $call_back, 'get');
         //$request->header = ['Authorization' => $token];
@@ -110,7 +110,7 @@ class Query
                     if($backdata['code']==888){
                         $detail_data['maintenance']= $backdata['msg'];
                         $up_order['status']=3;//查询成功
-                        $up_order['msg']="成功";
+                        $up_order['msg']=$backdata['msg'];
                     }
                     else{
                         $up_order['status']=5;//查询失败
