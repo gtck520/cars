@@ -53,4 +53,10 @@ return [
     //各项设置
     'post::cityarea$'         => 'Set/getCity',
 
+    //城市活动
+    'get::cityactives$'          => 'CityActive/getList',
+    'post::cityactive$'    => 'CityActive/add',
+    'put::cityactive/(\d+)$'    => 'CityActive/modify',
+    'delete::cityactive/(\d+)$' => 'CityActive/delete',
+
 ];
