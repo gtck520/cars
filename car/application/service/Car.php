@@ -59,9 +59,8 @@ class Car
             });
         }
 
-        // 关键字搜索
+        // 城市搜索
         if (!empty($req['city_id']) && isset($req['city_id'])) {
-            dd(empty($req['city_id']) );
             $query->where('a.cheliangweizhi', '=', $req['city_id']);
         }
 
@@ -83,7 +82,7 @@ class Car
 
         // 颜色搜索
         if (!empty($req['colour_id']) && isset($req['colour_id'])) {
-            $query->where('a.colour_id', '=', $req['colour_id']);
+            $query->where('a.yanse_id', '=', $req['colour_id']);
         }
 
         // 车辆类型搜索
