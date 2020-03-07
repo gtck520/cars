@@ -14,6 +14,8 @@ class Query
 {
     //维保查询
     private static function maintenance($req,$order_id){
+
+        return json_decode("{\"code\":888,\"msg\":30959}", true);exit;
         $api_key=C('query.other_key');
         $call_back=urlencode(C('query.call_back')."/maintenance?orderid=".$order_id);
         $req['engine']=$req['engine'] ?? '';
@@ -31,9 +33,11 @@ class Query
         return json_decode($res, true);
     }
     //碰撞查询
-    private static function collision($req){
+    private static function collision($req,$order_id){
         $api_key=C('query.other_key');
-        $request = Request::getClass(C('query.collision_url') . '?api_key=' . $api_key . '&vin=' . $req['vin'] . '&engine=' . $req['engine']. '&callbackUrl=' . $req['callbackUrl'], 'get');
+        $req['engine']=$req['engine'] ?? '';
+        $call_back=urlencode(C('query.call_back')."/collision?orderid=".$order_id);
+        $request = Request::getClass(C('query.collision_url') . '?api_key=' . $api_key . '&vin=' . $req['vin'] . '&engine=' . $req['engine']. '&callbackUrl=' . $call_back, 'get');
         //$request->header = ['Authorization' => $token];
         $request->sendRequest();
         $httpcode = $request->getResponseInfo();
@@ -46,8 +50,9 @@ class Query
         return json_decode($res, true);
     }
     //汽车状态查询
-    private static function vehicleCondition($req){
+    private static function vehicleCondition($req,$order_id){
         $api_key=C('query.other_key');
+        $req['engine']=$req['engine'] ?? '';
         $request = Request::getClass(C('query.vehicleCondition_url') . '?api_key=' . $api_key . '&vin=' . $req['vin'] . '&engine=' . $req['engine'], 'get');
         //$request->header = ['Authorization' => $token];
         $request->sendRequest();
@@ -118,11 +123,11 @@ class Query
                     }
                     break;
                 case "collision":
-                    $backdata=self::collision($req);
+                    $backdata=self::collision($req,$order_id);
                     if($backdata['code']==888){
-                        $detail_data['maintenance']= $backdata['msg'];
+                        $detail_data['collision']= $backdata['msg'];
                         $up_order['status']=3;//查询成功
-                        $up_order['msg']="成功";
+                        $up_order['msg']=$backdata['msg'];
                     }
                     else{
                         $up_order['status']=5;//查询失败
@@ -130,11 +135,11 @@ class Query
                     }
                     break;
                 case "vehicleCondition":
-                    $backdata=self::vehicleCondition($req);
+                    $backdata=self::vehicleCondition($req,$order_id);
                     if($backdata['code']==10000){
                         $detail_data['vehicleCondition']= $backdata['msg'];
                         $up_order['status']=3;//查询成功
-                        $up_order['msg']="成功";
+                        $up_order['msg']=$backdata['msg'];
                     }
                     else{
                         $up_order['status']=5;//查询失败
@@ -142,8 +147,8 @@ class Query
                     }
                     break;
                 case "smallUnion":
-                    $maintenance=self::maintenance($req);
-                    $collision=self::collision($req);
+                    $maintenance=self::maintenance($req,$order_id);
+                    $collision=self::collision($req,$order_id);
                     if($maintenance['code']==888&&$collision['code']==888){
                         $detail_data['maintenance']= $maintenance['msg'];
                         $detail_data['collision']= $collision['msg'];
@@ -169,9 +174,9 @@ class Query
 
                     break;
                 case "bigUnion":
-                    $maintenance=self::maintenance($req);
-                    $collision=self::collision($req);
-                    $vehicleCondition=self::vehicleCondition($req);
+                    $maintenance=self::maintenance($req,$order_id);
+                    $collision=self::collision($req,$order_id);
+                    $vehicleCondition=self::vehicleCondition($req,$order_id);
                     if($maintenance['code']==888&&$collision['code']==888&&$vehicleCondition['code']==10000){
                         $detail_data['maintenance']= $maintenance['msg'];
                         $detail_data['collision']= $collision['msg'];
@@ -285,6 +290,7 @@ class Query
     private static function saveData($vin,$order_id,$up_order,$detail_data){
         QueryOrderModel::where(["id"=>$order_id])->update($up_order);
         if($up_order['status']==3){//全部查询成功，直接扣除费用
+
             return ['code' => 200, 'data' => ["msg"=>'全部成功','cardata'=>$detail_data]];
         }elseif ($up_order['status']==4){//部分查询成功，返还查询失败的费用
             //返还失败费用

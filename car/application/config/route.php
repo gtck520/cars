@@ -26,6 +26,12 @@ return [
 
     //查询接口
     'post::query/getpay' => 'Query/getPay',
+    'post::query/maintenance' => 'Query/maintenance',//维保查询
+    'post::query/collision' => 'Query/collision',//碰撞查询
+    'post::query/vehicleCondition' => 'Query/vehicleCondition',//汽车状态查询
+    'post::query/regulations' => 'Query/regulations',//违章查询
+    'post::query/smallUnion' => 'Query/smallUnion',//小综合查询
+    'post::query/bigUnion' => 'Query/bigUnion',//大综合查询
     'post::query/getVin' => 'Query/vinOcr', //扫码识别车辆vin
     'post::query/getCarInfo' => 'Query/vinGetinfo', //vin获取车辆信息
 

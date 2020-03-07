@@ -83,7 +83,34 @@ class Query extends UserController
         $res = QueryService::query($req,"maintenance");
         Response::SendResponseJson($res['code'], $res['data']);
     }
-    //碰撞查询
+    /**
+     * @OA\Post(
+     *     path="/query/collision",
+     *     tags={"车辆查询"},
+     *     summary="碰撞查询",
+     *     @OA\Parameter(name="token",in="header",example="token_string",description="登录用户权限",required=true),
+     *     @OA\Parameter(name="Content-Type",in="header",example="application/x-www-form-urlencoded",required=true),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(property="vin",type="string",example="LSVFD26R1B2722145",description="车架号")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *       response=200,
+     *       description="请求成功",
+     *           @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(ref="#/components/schemas/query_getpay"),
+     *          ),
+     *     ),
+     *     @OA\Response(response=401,description="权限验证失败"),
+     *     @OA\Response(response=400,description="请求失败")
+     * )
+     */
     public function collision(){
         $req = P();
         Common::checkVin($req);
@@ -92,6 +119,34 @@ class Query extends UserController
         Response::SendResponseJson($res['code'], $res['data']);
     }
     //汽车状态查询
+    /**
+     * @OA\Post(
+     *     path="/query/vehicleCondition",
+     *     tags={"车辆查询"},
+     *     summary="汽车状态查询",
+     *     @OA\Parameter(name="token",in="header",example="token_string",description="登录用户权限",required=true),
+     *     @OA\Parameter(name="Content-Type",in="header",example="application/x-www-form-urlencoded",required=true),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(property="vin",type="string",example="LSVFD26R1B2722145",description="车架号")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *       response=200,
+     *       description="请求成功",
+     *           @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(ref="#/components/schemas/query_getpay"),
+     *          ),
+     *     ),
+     *     @OA\Response(response=401,description="权限验证失败"),
+     *     @OA\Response(response=400,description="请求失败")
+     * )
+     */
     public function vehicleCondition(){
         $req = P();
         Common::checkVin($req);
@@ -102,6 +157,34 @@ class Query extends UserController
 
     }
     //违章查询
+    /**
+     * @OA\Post(
+     *     path="/query/regulations",
+     *     tags={"车辆查询"},
+     *     summary="违章查询",
+     *     @OA\Parameter(name="token",in="header",example="token_string",description="登录用户权限",required=true),
+     *     @OA\Parameter(name="Content-Type",in="header",example="application/x-www-form-urlencoded",required=true),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(property="vin",type="string",example="LSVFD26R1B2722145",description="车架号")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *       response=200,
+     *       description="请求成功",
+     *           @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(ref="#/components/schemas/query_getpay"),
+     *          ),
+     *     ),
+     *     @OA\Response(response=401,description="权限验证失败"),
+     *     @OA\Response(response=400,description="请求失败")
+     * )
+     */
     public function regulations(){
         $req = P();
         Common::checkVin($req);
@@ -110,6 +193,34 @@ class Query extends UserController
         Response::SendResponseJson($res['code'], $res['data']);
     }
     //小综合（维保+碰撞）查询
+    /**
+     * @OA\Post(
+     *     path="/query/smallUnion",
+     *     tags={"车辆查询"},
+     *     summary="小综合（维保+碰撞）查询",
+     *     @OA\Parameter(name="token",in="header",example="token_string",description="登录用户权限",required=true),
+     *     @OA\Parameter(name="Content-Type",in="header",example="application/x-www-form-urlencoded",required=true),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(property="vin",type="string",example="LSVFD26R1B2722145",description="车架号")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *       response=200,
+     *       description="请求成功",
+     *           @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(ref="#/components/schemas/query_getpay"),
+     *          ),
+     *     ),
+     *     @OA\Response(response=401,description="权限验证失败"),
+     *     @OA\Response(response=400,description="请求失败")
+     * )
+     */
     public function smallUnion(){
         $req = P();
         Common::checkVin($req);
@@ -119,6 +230,34 @@ class Query extends UserController
         Response::SendResponseJson($res['code'], $res['data']);
     }
     //大综合（维保+碰撞+汽车状态）
+    /**
+     * @OA\Post(
+     *     path="/query/bigUnion",
+     *     tags={"车辆查询"},
+     *     summary="大综合（维保+碰撞+汽车状态）",
+     *     @OA\Parameter(name="token",in="header",example="token_string",description="登录用户权限",required=true),
+     *     @OA\Parameter(name="Content-Type",in="header",example="application/x-www-form-urlencoded",required=true),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(property="vin",type="string",example="LSVFD26R1B2722145",description="车架号")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *       response=200,
+     *       description="请求成功",
+     *           @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(ref="#/components/schemas/query_getpay"),
+     *          ),
+     *     ),
+     *     @OA\Response(response=401,description="权限验证失败"),
+     *     @OA\Response(response=400,description="请求失败")
+     * )
+     */
     public function bigUnion(){
         $req = P();
         Common::checkVin($req);
