@@ -2,6 +2,8 @@
 
 namespace app\service;
 
+use king\lib\Request;
+use king\lib\Log;
 use app\cache\Token;
 use app\helper\Helper;
 use app\model\User as UserModel;
@@ -11,9 +13,11 @@ use app\model\QueryOrder as QueryOrderModel;
 class Query
 {
     //维保查询
-    private static function maintenance($req){
+    private static function maintenance($req,$order_id){
         $api_key=C('query.other_key');
-        $request = Request::getClass(C('query.maintenance_url') . '?api_key=' . $api_key . '&vin=' . $req['vin'] . '&engine=' . $req['engine'], 'get');
+        $call_back=C('query.call_back')."?orderid=".$order_id;
+        $req['engine']=$req['engine'] ?? '';
+        $request = Request::getClass(C('query.maintenance_url') . '?api_key=' . $api_key . '&vin=' . $req['vin'] . '&engine=' . $req['engine'] . '&callbackUrl=' . $call_back, 'get');
         //$request->header = ['Authorization' => $token];
         $request->sendRequest();
         $httpcode = $request->getResponseInfo();
@@ -28,7 +32,7 @@ class Query
     //碰撞查询
     private static function collision($req){
         $api_key=C('query.other_key');
-        $request = Request::getClass(C('query.collision_url') . '?api_key=' . $api_key . '&vin=' . $req['vin'] . '&engine=' . $req['engine'], 'get');
+        $request = Request::getClass(C('query.collision_url') . '?api_key=' . $api_key . '&vin=' . $req['vin'] . '&engine=' . $req['engine']. '&callbackUrl=' . $req['callbackUrl'], 'get');
         //$request->header = ['Authorization' => $token];
         $request->sendRequest();
         $httpcode = $request->getResponseInfo();
@@ -295,9 +299,9 @@ class Query
             //扣除总费用
 
             //返还失败费用
-            return ['code' => 200, 'data' => ["msg"=>'部分成功','cardata'=>$detail_data]];
+            return ['code' => 200, 'data' => json_encode(["msg"=>'部分成功','cardata'=>$detail_data])];
         }else{//全部失败 不做扣费处理
-            return ['code' => 400, 'data' => ["msg"=>'查询失败，请检查vin号码后重试','cardata'=>$detail_data]];
+            return ['code' => 400, 'data' => json_encode(["msg"=>'查询失败，请检查vin号码后重试','cardata'=>$detail_data])];
         }
     }
     //车辆vin扫码识别
@@ -322,6 +326,7 @@ class Query
         $url = C('query.ocr_http')."?wsdl";
         $method = "level.vehicle.vin.mix";
         $data = "<root><appkey>".$AppKey."</appkey><appsecret>".$AppSecret."</appsecret><method>".$method."</method><requestformat>json</requestformat><vin>".$req['vin']."</vin></root>";
+        echo $data;
         $client = new \SoapClient($url);
         $addResult = $client->__soapCall($method,array(array('xmlInput'=>$data)));
         return ['code' => 200, 'data' => $addResult->LevelDataResult];

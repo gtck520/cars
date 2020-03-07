@@ -59,8 +59,7 @@ class Query extends UserController
      *             mediaType="application/x-www-form-urlencoded",
      *             @OA\Schema(
      *                 type="object",
-     *                 @OA\Property(property="vin",type="string",description="车架号"),
-     *                 example={"vin": "sadf656s4df6465"}
+     *                 @OA\Property(property="vin",type="string",example="LSVFD26R1B2722145",description="车架号")
      *             )
      *         )
      *     ),
