@@ -59,7 +59,7 @@ class Query extends UserController
      *             mediaType="application/x-www-form-urlencoded",
      *             @OA\Schema(
      *                 type="object",
-     *                 @OA\Property(property="vin",type="string",example="LSVFD26R1B2722145",description="车架号")
+     *                 @OA\Property(property="vin",type="string",example="LB37722Z1JH072318",description="车架号")
      *             )
      *         )
      *     ),
@@ -95,7 +95,7 @@ class Query extends UserController
      *             mediaType="application/x-www-form-urlencoded",
      *             @OA\Schema(
      *                 type="object",
-     *                 @OA\Property(property="vin",type="string",example="LSVFD26R1B2722145",description="车架号")
+     *                 @OA\Property(property="vin",type="string",example="LB37722Z1JH072318",description="车架号")
      *             )
      *         )
      *     ),
@@ -131,7 +131,7 @@ class Query extends UserController
      *             mediaType="application/x-www-form-urlencoded",
      *             @OA\Schema(
      *                 type="object",
-     *                 @OA\Property(property="vin",type="string",example="LSVFD26R1B2722145",description="车架号")
+     *                 @OA\Property(property="vin",type="string",example="LB37722Z1JH072318",description="车架号")
      *             )
      *         )
      *     ),
@@ -169,7 +169,10 @@ class Query extends UserController
      *             mediaType="application/x-www-form-urlencoded",
      *             @OA\Schema(
      *                 type="object",
-     *                 @OA\Property(property="vin",type="string",example="LSVFD26R1B2722145",description="车架号")
+     *                 @OA\Property(property="vin",type="string",example="LB37722Z1JH072318",description="车架号"),
+     *                 @OA\Property(property="hpzl",type="string",example="02",description="号牌种类"),
+     *                 @OA\Property(property="hphm",type="string",example="闽JJP600",description="车架号"),
+     *                 @OA\Property(property="fdjh",type="string",example="J4CA0335669",description="发动机号")
      *             )
      *         )
      *     ),
@@ -190,8 +193,9 @@ class Query extends UserController
         Common::checkVin($req);
         $req['user_id'] = parent::$user_id;
         $res = QueryService::regulations($req);
-        Response::SendResponseJson($res['code'], $res['data']);
+        Response::SendResponseJson(200, $res);
     }
+
     //小综合（维保+碰撞）查询
     /**
      * @OA\Post(
@@ -205,7 +209,7 @@ class Query extends UserController
      *             mediaType="application/x-www-form-urlencoded",
      *             @OA\Schema(
      *                 type="object",
-     *                 @OA\Property(property="vin",type="string",example="LSVFD26R1B2722145",description="车架号")
+     *                 @OA\Property(property="vin",type="string",example="LB37722Z1JH072318",description="车架号")
      *             )
      *         )
      *     ),

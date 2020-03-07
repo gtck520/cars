@@ -8,7 +8,7 @@ return [
     'regulations_url' => Env::get('queryurl.regulations'),
     'maintenance_url' => Env::get('queryurl.maintenance'),
     'collision_url' => Env::get('queryurl.collision'),
-    'vehicleCondition_url' => Env::get('queryurl.vehicleCondition'),
+    'vehicle_url' => Env::get('queryurl.vehiclecondition'),
     'call_back' => Env::get('queryurl.callback'),
 
     'appkey' => Env::get('vin.appkey'),

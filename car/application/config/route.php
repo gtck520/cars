@@ -29,6 +29,7 @@ return [
     'post::query/maintenance' => 'Query/maintenance',//维保查询
     'post::query/collision' => 'Query/collision',//碰撞查询
     'post::query/vehicleCondition' => 'Query/vehicleCondition',//汽车状态查询
+    'post::common/getHpzl' => 'Common/getHpzl',//号牌种类
     'post::query/regulations' => 'Query/regulations',//违章查询
     'post::query/smallUnion' => 'Query/smallUnion',//小综合查询
     'post::query/bigUnion' => 'Query/bigUnion',//大综合查询

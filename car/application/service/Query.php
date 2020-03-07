@@ -15,7 +15,11 @@ class Query
     //维保查询
     private static function maintenance($req,$order_id){
 
-        return json_decode("{\"code\":888,\"msg\":30959}", true);exit;
+        if($req['vin']=="123"){
+            return json_decode( '{"code":809,"msg":"车辆信息获取失败！请检查你的车架号信息是否正确！"}', true);exit;
+        }else{
+            return json_decode("{\"code\":888,\"msg\":47816}", true);exit;
+        }
         $api_key=C('query.other_key');
         $call_back=urlencode(C('query.call_back')."/maintenance?orderid=".$order_id);
         $req['engine']=$req['engine'] ?? '';
@@ -34,6 +38,11 @@ class Query
     }
     //碰撞查询
     private static function collision($req,$order_id){
+        if($req['vin']=="123"){
+            return json_decode( '{"code":809,"msg":"车辆信息获取失败！请检查你的车架号信息是否正确！"}', true);exit;
+        }else{
+            return json_decode("{\"code\":888,\"msg\":47816}", true);exit;
+        }
         $api_key=C('query.other_key');
         $req['engine']=$req['engine'] ?? '';
         $call_back=urlencode(C('query.call_back')."/collision?orderid=".$order_id);
@@ -51,23 +60,40 @@ class Query
     }
     //汽车状态查询
     private static function vehicleCondition($req,$order_id){
+        if($req['vin']=="123"){
+            return json_decode( '{"code":10006,"message":"获取发动机号失败","data":null}', true);exit;
+        }else{
+            return json_decode("{\"code\":10000,\"message\":\"成功\",\"data\":{\"order_id\":131992,\"result\":{\"totalPmCons\":\"一致\",\"zc_date\":\"2012-01-09\",\"licenseType\":\"小型汽车\",\"respCode\":\"1\",\"car_no\":\"闽A0512V\",\"zt\":\"正常\",\"ztCode\":\"A\",\"engine\":\"M10540\"}}}", true);exit;
+        }
         $api_key=C('query.other_key');
         $req['engine']=$req['engine'] ?? '';
-        $request = Request::getClass(C('query.vehicleCondition_url') . '?api_key=' . $api_key . '&vin=' . $req['vin'] . '&engine=' . $req['engine'], 'get');
+        $request = Request::getClass(C('query.vehicle_url') . '?api_key=' . $api_key . '&vin=' . $req['vin'] . '&engine=' . $req['engine'], 'get');
         //$request->header = ['Authorization' => $token];
         $request->sendRequest();
         $httpcode = $request->getResponseInfo();
         $res = $request->getResponseBody();
         $httpcode = $httpcode['http_code'];
         if ($httpcode != '200') {
-            Log::write($httpcode . ':' . $res . ':' . C('query.vehicleCondition_url') . '?api_key=' . $api_key . '&vin=' . $req['vin'] . '&engine=' . $req['engine'] . ':' . date('Y-m-d H-i-s'), 'vehicleCondition.log',  'error_query');
+            Log::write($httpcode . ':' . $res . ':' . C('query.vehicle_url') . '?api_key=' . $api_key . '&vin=' . $req['vin'] . '&engine=' . $req['engine'] . ':' . date('Y-m-d H-i-s'), 'vehicleCondition.log',  'error_query');
             return false;
         }
+       // Log::write($res . ':' . date('Y-m-d H-i-s'), 'vehicleCondition.log',  'callback_query');
         return json_decode($res, true);
     }
     //违章查询
     public static function regulations($req){
-
+        $api_key=C('query.regulations_key');
+        $request = Request::getClass(C('query.regulations_url') . '?key=' . $api_key . '&hpzl=' . $req['hpzl'] . '&hphm=' . $req['hphm']. '&fdjh=' . $req['fdjh']. '&cjh=' . $req['vin'], 'get');
+        //$request->header = ['Authorization' => $token];
+        $request->sendRequest();
+        $httpcode = $request->getResponseInfo();
+        $res = $request->getResponseBody();
+        $httpcode = $httpcode['http_code'];
+        if ($httpcode != '200') {
+            Log::write($httpcode . ':' . $res . ':' . C('query.regulations_url') . '?api_key=' . $api_key . '&vin=' . $req['vin'] . '&engine=' . $req['engine'] . ':' . date('Y-m-d H-i-s'), 'regulations_url.log',  'error_query');
+            return false;
+        }
+        return $res;
     }
     //判断余额，余额不够，可以选择单次付款
     public static function getPay($req,$type){
