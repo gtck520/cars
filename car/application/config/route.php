@@ -20,6 +20,14 @@ return [
     'get::enshrines$'  => 'Car/getCarEnshrinesList',
     //添加收藏
     'post::cars/(\d+)/enshrines$'   => 'Car/addEnshrines',
+    //车辆颜色
+    'get::colour$'  => 'Car/getColourList',
+    //车源标签
+    'get::cheyuan$'  => 'Car/getCheyuanList',
+    //车辆类型列表
+    'get::cartype$'  => 'Car/getCarType',
+    //车辆变速箱列表
+    'get::carbs$'  => 'Car/getCarBS',
 
     //帮助文本
     'get::text$'        => 'Text/get',

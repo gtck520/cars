@@ -22,7 +22,7 @@ class Common
     {
         $valid = Valid::getClass($req);
         $req['p'] = $req['p'] ?? 1;
-    	$req['c'] = $req['c'] ?? 8;
+    	$req['c'] = $req['c'] ??  10;
         $valid->addRule('p', 'gt,0|isInt|lt,100000', '页数');
         $valid->addRule('c', 'gt,0|isInt|lt,500', '每页显示数量');
         if (!$valid->run()) {

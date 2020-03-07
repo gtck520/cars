@@ -12,6 +12,7 @@ class Car extends UserController
     public function getList(){
         $req = G();
         CarValidate::checkPage($req);
+        CarValidate::searchInput($req);
         $res = CarService::getList(parent::$user_id, $req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
@@ -20,6 +21,20 @@ class Car extends UserController
     public function getCarName()
     {
         $res = CarService::getCarName();
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
+    // 获取所有车辆类型
+    public function getCarType()
+    {
+        $res = CarService::getCarType();
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
+    // 获取所有车辆变速箱
+    public function getCarBS()
+    {
+        $res = CarService::getCarBS();
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
@@ -88,4 +103,15 @@ class Car extends UserController
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
+    //车辆颜色
+    public function getColourList()
+    {
+        Response::SendResponseJson(200, CarService::getColourList());
+    }
+
+     //车源标签
+     public function getCheyuanList()
+     {
+         Response::SendResponseJson(200, CarService::getCheyuanList());
+     }
 }
