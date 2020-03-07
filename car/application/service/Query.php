@@ -15,7 +15,7 @@ class Query
     //维保查询
     private static function maintenance($req,$order_id){
         $api_key=C('query.other_key');
-        $call_back=urlencode(C('query.call_back')."?orderid=".$order_id);
+        $call_back=urlencode(C('query.call_back')."/maintenance?orderid=".$order_id);
         $req['engine']=$req['engine'] ?? '';
         $request = Request::getClass(C('query.maintenance_url') . '?api_key=' . $api_key . '&vin=' . $req['vin'] . '&engine=' . $req['engine'] . '&callbackUrl=' . $call_back, 'get');
 
@@ -301,11 +301,14 @@ class Query
         $url = C('query.ocr_http')."?wsdl";
         $method = "level.vehicle.vin.ocr";
         $data = "<root><appkey>".$AppKey."</appkey><appsecret>".$AppSecret."</appsecret><method>".$method."</method><requestformat>json</requestformat><imgbase64>".$req['imgbase64']."</imgbase64></root>";
-
         $client = new \SoapClient($url);
-        $addResult = $client->__soapCall($method,array(array('xmlInput'=>$data)));
-        return ['code' => 200, 'data' => $addResult->LevelDataResult];
-        //var_dump( $addResult->LevelDataResult);
+        $addResult = $client->__soapCall("LevelData",array(array('xmlInput'=>$data)));
+        $result = $addResult->LevelDataResult;
+        if(isset($result['Info']['Success'])&&$result['Info']['Success']==1){
+            return ['code' => 200, 'data' => $addResult->LevelDataResult];
+        }else{
+            return ['code' => 400, 'data' => $addResult->LevelDataResult];
+        }
     }
     //车辆vin读取车辆信息
     public static function vinGetinfo($req){
@@ -315,10 +318,14 @@ class Query
         $url = C('query.ocr_http')."?wsdl";
         $method = "level.vehicle.vin.mix";
         $data = "<root><appkey>".$AppKey."</appkey><appsecret>".$AppSecret."</appsecret><method>".$method."</method><requestformat>json</requestformat><vin>".$req['vin']."</vin></root>";
-        echo $data;
         $client = new \SoapClient($url);
-        $addResult = $client->__soapCall($method,array(array('xmlInput'=>$data)));
-        return ['code' => 200, 'data' => $addResult->LevelDataResult];
+        $addResult = $client->__soapCall("LevelData",array(array('xmlInput'=>$data)));
+        $result = json_decode($addResult->LevelDataResult,true);
+        if(isset($result['Info']['Success'])&&$result['Info']['Success']==1){
+            return ['code' => 200, 'data' => $addResult->LevelDataResult];
+        }else{
+            return ['code' => 400, 'data' => $addResult->LevelDataResult];
+        }
 
     }
 }
