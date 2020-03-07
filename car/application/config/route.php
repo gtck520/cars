@@ -8,6 +8,8 @@ return [
     'get::userinfo$'       => 'User/userInfo',
     'delete::enshrine/(\d+)$'  => 'User/enshrineDel',
     'delete::browse/(\d+)$'  => 'User/browseDel',
+    //充值
+    'post::recharge$'   => 'User/recharge',
 
     //车 
     'get::cars$'        => 'Car/getList',

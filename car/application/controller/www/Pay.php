@@ -9,9 +9,9 @@ use app\validate\Pay as PayValidate;
 class Pay
 {
     //支付宝支付回调
-    public function aliNotify()
+    public function wechatNotify()
     {
-        echo PayService::notify('alipay');
+        echo PayService::notify('wechat');
     }
 
     //订单查询
@@ -19,14 +19,14 @@ class Pay
     {
         $pay_trade_no = G('pay_trade_no', '');
 
-        $res = PayService::find($pay_trade_no, 'alipay', 'web');
+        $res = PayService::find($pay_trade_no, 'wechat', 'miniapp');
         Response::sendResponseJson($res['code'], $res['data']);
     }
 
     //支付宝回调地址
-    public function aliReturn()
+    public function wechatReturn()
     {
-        PayService::aliReturn();
+        PayService::wechatReturn();
     }
 
     //订单退款

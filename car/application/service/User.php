@@ -4,6 +4,8 @@ namespace app\service;
 
 use app\cache\Token;
 use app\helper\Helper;
+use app\model\PayRecords as  PayRecordsModel;
+use app\service\Pay as PayService;
 use app\model\CarPrice as CarPriceModel;
 use app\model\Car as CarModel;
 use app\model\CarSc as CarScModel;
@@ -105,5 +107,33 @@ class User
         ]);
 
         return ['code' => 200, 'data' => ''];
+    }
+
+    // 用户充值
+    public static function recharge($user_id, $param)
+    {   
+        $pay_type = $param['pay_type'];
+        $type = $param['type'];
+        $method = $param['method'];
+        $amount = sprintf($param['amount'], 2);
+        //生成订单号
+        $trade_no = Helper::getMicrotime();
+
+        // 数据库添加待支付订单
+        $rs = PayRecordsModel::insert([
+            'trade_no'     => $trade_no,
+            'user_id'      => $user_id,
+            'type'         => $type,
+            'pay_type'     => $pay_type,
+            'pay_amount'   => $amount,
+            'status'       => 0,
+            'pay_trade_no' => '',
+            'paid_time'    => 0,
+            'created_time' => time(),
+            'updated_time' => time(),
+        ]);
+        if ($rs) {
+            PayService::pay($trade_no, $amount, $pay_type, $method);
+        }
     }
 }

@@ -16,13 +16,6 @@ use king\lib\Response;
 
 class Pay
 {
-    /**
-     * 获取相应pay对象
-     *
-     * @param String $pay_type  wechat  ||  alipay
-     * @param String $method
-     * @return Object 
-     */
     public static function getPay($pay_type, $method = '')
     {
         if ($pay_type == 'wechat') {
@@ -33,41 +26,24 @@ class Pay
         return PayTool::$pay_type($config);
     }
 
-    /**
-     * 发送内容 
-     *
-     * @param number $union_no 订单号码
-     * @param number $total_price  商品价格  扩展包 alipay 单位是 元  微信 单位是分
-     * @param String $pay_type  wechat  ||  alipay
-     * @return Array  
-     */
     public static function payContent($union_no, $total_price, $pay_type)
     {
         if ($pay_type == 'alipay') {
             $data = [
                 'out_trade_no' => $union_no,
-                'subject' => '商の脉-订单付款',
+                'subject' => '车塘-订单付款',
                 'total_amount' => sprintf("%.2f", $total_price)
             ];
         } else {
             $data = [
                 'out_trade_no' => $union_no,
-                'body' => '商の脉-订单付款',
+                'body' => '车塘-订单付款',
                 'total_fee' => $total_price * 100
             ];
         }
         return $data;
     }
 
-    /**
-     * 发送请求
-     *
-     * @param Object $pay  支付对象
-     * @param Array  $content  发送内容
-     * @param String $pay_type  alipay || wechat
-     * @param String $method  使用方法 web 支付  app 支付等
-     * @return void
-     */
     public static function send($pay, $content, $pay_type, $method)
     {
         try {
