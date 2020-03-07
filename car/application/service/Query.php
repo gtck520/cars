@@ -27,6 +27,7 @@ class Query
             Log::write($httpcode . ':' . $res . ':' . C('query.maintenance_url') . '?api_key=' . $api_key . '&vin=' . $req['vin'] . '&engine=' . $req['engine'] . ':' . date('Y-m-d H-i-s'), 'maintenance.log',  'error_query');
             return false;
         }
+        Log::write($res . ':' . date('Y-m-d H-i-s'), 'maintenance.log',  'callback_query');
         return json_decode($res, true);
     }
     //碰撞查询
