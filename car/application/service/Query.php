@@ -105,7 +105,7 @@ class Query
             $detail_data=[];
             switch ($type){
                 case "maintenance":
-                    $backdata=self::maintenance($req);
+                    $backdata=self::maintenance($req,$order_id);
                     if($backdata['code']==888){
                         $detail_data['maintenance']= $backdata['msg'];
                         $up_order['status']=3;//查询成功
