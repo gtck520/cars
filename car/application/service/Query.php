@@ -284,20 +284,8 @@ class Query
     private static function saveData($vin,$order_id,$up_order,$detail_data){
         QueryOrderModel::where(["id"=>$order_id])->update($up_order);
         if($up_order['status']==3){//全部查询成功，直接扣除费用
-            $detail_data['order_id']=$order_id;
-            $detail_data['vin']=$vin;
-            $detail_data['add_time']=time();
-            QueryOrderModel::insert($detail_data);
-            //扣除费用
-
             return ['code' => 200, 'data' => ["msg"=>'全部成功','cardata'=>$detail_data]];
         }elseif ($up_order['status']==4){//部分查询成功，返还查询失败的费用
-            $detail_data['order_id']=$order_id;
-            $detail_data['vin']=$vin;
-            $detail_data['add_time']=time();
-            QueryOrderModel::insert($detail_data);
-            //扣除总费用
-
             //返还失败费用
             return ['code' => 200, 'data' => json_encode(["msg"=>'部分成功','cardata'=>$detail_data])];
         }else{//全部失败 不做扣费处理
