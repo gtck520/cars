@@ -63,4 +63,9 @@ return [
     'put::cityactive/(\d+)$'    => 'CityActive/modify',
     'delete::cityactive/(\d+)$' => 'CityActive/delete',
 
+    //账户记录
+    'get::paycost$'          => 'Account/getPayList',//会员缴费记录
+    'get::invitecost$'          => 'Account/getInviteList',//会员推荐奖励记录
+
+
 ];
