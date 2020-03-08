@@ -11,6 +11,6 @@ class U extends UserController
     {
         $upload = Upload::getClass();
         $url = $upload->save('', '', 1,'images');
-        Response::SendResponseJson(200, $url);
+        Response::SendResponseJson(200, C('domain').$url);
     }
 }
