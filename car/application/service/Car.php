@@ -176,7 +176,7 @@ class Car
             }
             
             $same_shop_car = [];
-            foreach ($car_list['rs'] as &$value) {
+            foreach ($car_list['rs'] as $key =>&$value) {
                 //格式化返回
                 $shop_id = $user_info['shop_id'];
                 $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
@@ -186,7 +186,7 @@ class Car
                 unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TYPE_NAME']);
                 if ($value['shop_id'] == $shop_id) {
                     $same_shop_car[] = $value;
-                    unset($value);
+                    unset($car_list['rs'][$key]);
                 }
             }
             //发现相同门店的置顶
