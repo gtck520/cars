@@ -33,19 +33,27 @@ class User
                 'address'     => $req['shop_address'],
                 'create_time' => time(),
             ]);
-            $city_fullname = CityModel::where(['id' => $req['city_id']])->find();
-            if (!$city_fullname) {
-                return ['code' => 400, 'data' => '无此地区!'];
+            $city = CityModel::where(['id' => $req['area_id']])->find();
+            if (!$city) {
+                return ['code' => 400, 'data' => '无此城市!'];
             }
+
+            if ($city['level'] != 3) {
+                return ['code' => 400, 'data' => '城市级别错误!'];
+            }
+
+            $city_id = explode($city, ',');
 
             $data = [
                 'mobile'          => $req['mobile'],
                 'nickname'        => $req['nickname'],
                 'avatar'          => $req['avatar'],
                 'realname'        => $req['realname'],
-                'city_fullname'   => $city_fullname,
+                'city_fullname'   => $city['fullname'],
                 'shop_id'         => $shop_id,
-                'city_id'         => $req['city_id'],
+                'province_id'  => $city_id[0],
+                'area_id'  => $city_id[2],
+                'city_id'         => $city_id[1],
                 'level_id'        => $req['level_id'],
                 'openid'          => $req['openid'],
                 'quan_guo'        => 0,
@@ -135,5 +143,38 @@ class User
         if ($rs) {
             PayService::pay($trade_no, $amount, $pay_type, $method);
         }
+    }
+
+    //发布的车  
+    public static function Cars($user_id){
+        $field = ['a.id', 'a.area_id', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.create_time', 'a.liulan_num', 'a.phone_num', 'a.bangmai_num', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TYPE_NAME'];
+        $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.user_id', '=', $user_id)->get();
+
+        foreach ($car_list as &$value) {
+            //格式化返回
+            $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
+            $value['city_name'] = CityModel::where(['id' => $value['area_id']])->value(['name']);
+            $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['TYPE_NAME']}";
+            $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
+            $value['price_num'] = CarPriceModel::where(['user_id' => $user_id])->count();
+            unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TYPE_NAME']);
+            
+        }
+
+        return ['code' => 200, 'data' => $car_list];
+    }
+
+    //添加电话量
+    public static function addPhoneNum($user_id, $car_id)
+    {
+        CarModel::where(['id' => $car_id])->update(['phone_num +' => 1]);
+        return ['code' => 200, 'data' => ''];
+    }
+
+    //获取出价记录   未完待续..
+    public static function getPrice($user_id)
+    {
+        CarPriceModel::where(['user_id' => $user_id])->get();
+        return ['code' => 200, 'data' => ''];
     }
 }

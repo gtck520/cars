@@ -43,4 +43,32 @@ class User extends UserController
         UserValidate::rechargeValidate($req);
         UserService::recharge(parent::$user_id, $req);
     }
+
+    //发布的车
+    public function Cars()
+    {
+        $req = G();
+        if (!in_array($req['status'],['-1','1', '0'])) {
+            Response::SendResponseJson(400, 'status 不正确');
+        }
+        $user_id = self::$user_id;
+        $res = UserService::Cars($user_id);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
+    //添加电话量
+    public function addPhoneNum($car_id)
+    {
+        $user_id = self::$user_id;
+        $res = UserService::addPhoneNum($user_id, $car_id);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
+    //获取出价记录
+    public function getPrice()
+    {
+        $user_id = self::$user_id;
+        $res = UserService::getPrice($user_id);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
 }
