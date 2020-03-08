@@ -43,6 +43,9 @@ return [
     'get::user/(\d+)$'    => 'User/getUserInfo',
     'put::user/(\d+)$'    => 'User/modify',
     'delete::user/(\d+)$' => 'User/delete',
+    //会员等级相关规则
+    'get::levels'          => 'User/getLevelList',
+    'put::level/(\d+)$'    => 'User/updateLevel',
 
     //车辆管理
     'get::cars$'          => 'Car/getList',

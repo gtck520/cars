@@ -4,6 +4,7 @@ namespace app\controller\www;
 
 use king\lib\Response;
 use app\service\User as UserService;
+use app\service\UserLevel as UserLevelService;
 use app\validate\User as UserValidate;
 
 class User extends AdminController
@@ -30,6 +31,22 @@ class User extends AdminController
         }
         $admin_id = parent::$admin_id;
         $res = UserService::update($admin_id, $req['User']);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
+    //获取等级列表
+    public function getLevelList(){
+        $res = UserLevelService::get();
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+    //修改等级相关规则
+    public function updateLevel($id){
+        $req = json_decode(Put(), true);
+        if(empty($req)){
+            Response::SendResponseJson(400, '未做任何修改');
+        }
+        $admin_id = parent::$admin_id;
+        $res = UserLevelService::update($admin_id,$id,$req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
 }
