@@ -48,6 +48,7 @@ return [
     'get::cars$'          => 'Car/getList',
     'get::car/(\d+)$'    => 'Car/getCarInfo',
     'put::car/(\d+)$'    => 'Car/modify',
+    'put::car/updateStatus/(\d+)$'    => 'Car/updateStatus',
     'delete::car/(\d+)$' => 'Car/delete',
 
     //各项设置

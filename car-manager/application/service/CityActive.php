@@ -26,15 +26,7 @@ class CityActive
     //添加
     public static function add($admin_id, $req)
     {
-        if(!empty($req["pronvice_id"])){
-            $current_id=$req["pronvice_id"];
-        }
-        if(!empty($req["city_id"])){
-            $current_id=$req["city_id"];
-         }
-        if(!empty($req["area_id"])){
-            $current_id=$req["area_id"];
-        }
+        $current_id=self::getCurrentCity($req);
         if(empty($current_id)){
             return ['code' => 400, 'data' => "您未选择任何城市或省份"];
         }
@@ -65,18 +57,27 @@ class CityActive
     //修改
     public static function modify($admin_id, $id, $req)
     {
+        $current_id=self::getCurrentCity($req);
+        if(empty($current_id)){
+            return ['code' => 400, 'data' => "您未选择任何城市或省份"];
+        }
+        if($req["start_time"]<=0){
+            return ['code' => 400, 'data' => "开始日期不对"];
+        }
+        if($req["end_time"]<=0){
+            return ['code' => 400, 'data' => "结束日期不对"];
+        }
         $array = [
-            'current_id'=>$req["current_id"],
+            'current_id'=>$current_id,
             'pronvice_id'=>$req["pronvice_id"],
             'city_id'=>$req["city_id"],
             'area_id'=>$req["area_id"],
-            'level'=>$req["level"],
             'start_time'=>$req["start_time"],
             'end_time'=>$req["end_time"],
             'add_time'=>time()
         ];
 
-        $res = CityActiveModel::where(['current_id' => $req["current_id"]])->find();
+        $res = CityActiveModel::where(['current_id' =>$current_id])->find();
         if ($res) {
             return ['code' => 400, 'data' => "该城市已添加"];
         }
@@ -99,5 +100,18 @@ class CityActive
         CityActiveModel::delete(['id' => $id]);
         Helper::saveToLog($admin_id, '', '', '', "管理员ID:$admin_id 删除城市活动ID: $id [{$res['name']}]");
         return ['code' => 200, 'data' => ''];
+    }
+    //获取当前选中的城市
+    public static function getCurrentCity($req){
+        if(!empty($req["pronvice_id"])){
+            $current_id=$req["pronvice_id"];
+        }
+        if(!empty($req["city_id"])){
+            $current_id=$req["city_id"];
+        }
+        if(!empty($req["area_id"])){
+            $current_id=$req["area_id"];
+        }
+        return $current_id;
     }
 }

@@ -8,7 +8,7 @@ use app\validate\Car as CarValidate;
 
 class Car extends AdminController
 {
-    // 用户列表
+    // 车辆列表
     public function getList(){
         $req = G();
         CarValidate::checkPage($req);
@@ -16,7 +16,7 @@ class Car extends AdminController
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
-    // 用户详情
+    // 车辆详情
     public function getCarInfo($Car_id){
         $res = CarService::getCarInfo($Car_id);
         Response::SendResponseJson($res['code'], $res['data']);
@@ -30,6 +30,14 @@ class Car extends AdminController
         }
         $admin_id = parent::$admin_id;
         $res = CarService::update($admin_id, $req['Car']);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
+    //修改文本
+    public function updateStatus($id){
+        $req = json_decode(Put(), true);
+        $admin_id = parent::$admin_id;
+        $res = CarService::modifyStatus($admin_id,$id,$req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
 }
