@@ -6,13 +6,17 @@ return [
     'post::checkToken$'     => 'login/checkToken',
     'post::register$'       => 'User/register',
     'get::userinfo$'       => 'User/userInfo',
+    'get::user/cars$'       => 'User/Cars',  //我的车源
+    'get::user/price$'       => 'User/getPrice',  //我的出价记录  未完成...
     'delete::enshrine/(\d+)$'  => 'User/enshrineDel',
     'delete::browse/(\d+)$'  => 'User/browseDel',
     //充值
     'post::recharge$'   => 'User/recharge',
+    //添加电话量
+    'post::car/(\d+)/phone$'   => 'User/addPhoneNum',
 
     //车 
-    'get::cars$'        => 'Car/getList',
+    'get::cars$'        => 'Car/getList',    //有bug 待修复..
     'get::cars/name$'   => 'Car/getCarName',
     'post::cars/cache$' => 'Car/setCache',
     'post::cars$'       => 'Car/add',
@@ -48,4 +52,7 @@ return [
 
     //添加出价
     'post::car/price' => 'User/addPrice',
+
+    //上传图片
+    'post::upload/images' => 'U/images',
 ];

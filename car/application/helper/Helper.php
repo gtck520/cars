@@ -5,6 +5,7 @@ namespace app\helper;
 use king\lib\Request;
 use king\lib\Response;
 use app\model\Log as LogModel;
+use app\model\City as CityModel;
 use app\model\Admin as AdminModel;
 use king\lib\Input;
 
