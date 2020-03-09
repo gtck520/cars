@@ -90,7 +90,7 @@ class Query
         $res = $request->getResponseBody();
         $httpcode = $httpcode['http_code'];
         if ($httpcode != '200') {
-            Log::write($httpcode . ':' . $res . ':' . C('query.regulations_url') . '?api_key=' . $api_key . '&vin=' . $req['vin'] . '&engine=' . $req['engine'] . ':' . date('Y-m-d H-i-s'), 'regulations_url.log',  'error_query');
+            Log::write($httpcode . ':' . $res . ':' . C('query.regulations_url') . '?api_key=' . $api_key . '&hpzl=' . $req['hpzl'] . '&hphm=' . $req['hphm']. '&fdjh=' . $req['fdjh']. '&cjh=' . $req['vin'] . ':' . date('Y-m-d H-i-s'), 'regulations_url.log',  'error_query');
             return false;
         }
         return $res;
@@ -384,7 +384,8 @@ class Query
         $client = new \SoapClient($url);
         $addResult = $client->__soapCall("LevelData",array(array('xmlInput'=>$data)));
         $result = $addResult->LevelDataResult;
-        if(isset($result['Info']['Success'])&&($result['Info']['Success']==1||$result['Info']['Success']==true)){
+        $resultarray=json_decode($result,true);
+        if(isset($resultarray['Info']['Success'])&&($resultarray['Info']['Success']==1||$resultarray['Info']['Success']==true)){
             return ['code' => 200, 'data' => $addResult->LevelDataResult];
         }else{
             return ['code' => 400, 'data' => $addResult->LevelDataResult];
