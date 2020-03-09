@@ -276,12 +276,16 @@ class Car
     // 发布车
     public static function add($user_id, $req)
     {
-        $city_res = CityModel::where(['id' => $req['area_id']])->find();
+        $city_res = CityModel::where(['id' => $req['city_id']])->find();
         if (!$city_res) {
             return ['code' => 400, 'data' => '没有查询到这个城市!'];
         }
+
+        if ($city_res['level'] == 1 || $city_res['level'] == 2) {
+            return ['code' => 400, 'data' => '城市参数错误!'];
+        }
         
-        $yanse_res = CarColour::where(['id' => $req['yanse_id']])->find();
+        $yanse_res = CarColourModel::where(['id' => $req['yanse_id']])->find();
         if (!$yanse_res) {
             return ['code' => 400, 'data' => '没有查询到这个颜色!'];
         }
@@ -289,13 +293,55 @@ class Car
         if (!is_numeric($req['price'])) {
             return ['code' => 400, 'data' => '价格非法!'];
         }
-
-        $age = Helper::birthday2($req['shangpai_time']);
+        //车龄
+        // $age = Helper::birthday2($req['shangpai_time']);
+        //省级县id
+        $city_ids = explode(',', $city_res['path']) ;
         //添加车库
+        // CityModel::insert([
+        //     'user_id'  => $user_id,
+        //     'area_id'=>$req['area_id'],
+        //     'chejiahao'=>$req['chejiahao'],
+        //     'pinpai'=>$req['pinpai'],
+        //     'chexing_id'=> '',
+        //     'shangpai_time'=>$req['shangpai_time'],
+        //     'price'=>$req['price'],
+        //     'biaoxianlicheng'=>$req['biaoxianlicheng'],
+        //     'yanse_id'=>$req['yanse'],
+        //     'nianjiandaoqi'=>$req['nianjian_time'],
+        //     'qiangxiandaoqi'=>$req['qiangxian_time'],
+        //     'weixiujilu'=>$req['weixiujilu'],
+        //     'pengzhuangjilu'=>$req['pengzhuang'],
+        //     'notes'=>$req['notes'],
+        //     'images_url'=>$req['images'],
+        //     'status'=> 0,
+        //     'create_time' => time(),
+        //     'age' =>$age,
+        //     'biansu' => $req['biansuxiang'],
+        //     'cheyuan_id' => '',
+        //     'zhengming' => $req['zhemgming'],
+        // ]);
+
+        //如果出现新车 添加车型
+        $chexing_id = CarTypeModel::where([
+            'MAKE_NAME' => $req['pinpai'],
+            'MODEL_NAME' => $req['chexing'],
+            'VEHICLE_CLASS' => $req['type_name'],
+            'TRANSMISSION' => $req['biansuxiang'],
+        ])->find();
+        if (!$chexing_id) {
+            //没这个车型添加.
+            CarTypeModel::insert([
+                
+            ]);
+        }
+
         CityModel::insert([
-            'user_id'  => $user_id,
-            'area_id'=>$req['area_id'],
-            'chejiahao'=>$req['chejiahao'],
+            'user_id' => $user_id,
+            'province_id' =>  $city_ids[0],
+            'city_id' => $city_ids[1],
+            'area_id' => $city_ids[2],
+            'chejiahao' => $req['chejiahao'],
             'pinpai'=>$req['pinpai'],
             'chexing_id'=> '',
             'shangpai_time'=>$req['shangpai_time'],
@@ -309,16 +355,14 @@ class Car
             'notes'=>$req['notes'],
             'images_url'=>$req['images'],
             'status'=> 0,
+            'is_hidden' => 0,
             'create_time' => time(),
             'age' =>$age,
             'biansu' => $req['biansuxiang'],
-            'cheyuan_id' => '',
+            'cheyuan_id' =>$req['cheyuan_id'],
             'zhengming' => $req['zhemgming'],
+            'type_name' => $req['type_name'],
         ]);
-        //如果出现新车 添加车型
-        
-        //可能还需要添加扫描结果
-
 
         //更新各种列表缓存
         self::setCache();
