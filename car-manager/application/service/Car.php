@@ -10,7 +10,7 @@ use app\model\CarColour as CarColourModel;
 use app\model\CarBrowse as CarBrowseModel;
 use app\model\CarSc as CarScModel;
 use app\model\Car as CarModel;
-use app\service\CityActive as CityActiveModel;
+use app\service\CityActive as CityActiveService;
 
 class Car
 {
@@ -125,7 +125,7 @@ class Car
         if ($car_list['total'] > 0) {
             foreach ($car_list['rs'] as &$value) {
                 $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
-                $current_id=CityActiveModel::getCurrentCity($value);
+                $current_id=CityActiveService::getCurrentCity($value);
                 $value['city_name'] = CityAreaModel::where(['id' => $current_id])->value(['fullname']);
                 $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['TYPE_NAME']}";
                 $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
@@ -144,7 +144,7 @@ class Car
         $car_info = Helper::formatTimt($car_info, ['shangpai_time', 'nianjiandaoqi', 'qiangxiandaoqi', 'create_time']);
         $car_info['yanse'] = CarColourModel::where(['id' => $car_info['yanse_id']])->value('name');
         $car_info['biaoxianlicheng'] = $car_info['biaoxianlicheng'] . '万公里';
-        $current_id=CityActiveModel::getCurrentCity($car_info);
+        $current_id=CityActiveService::getCurrentCity($car_info);
         $car_info['city_name'] = CityAreaModel::where(['id' => $current_id])->value(['fullname']);
         $car_info['title'] = "{$car_info['MODEL_NAME']} {$car_info['TYPE_SERIES']} {$car_info['TYPE_NAME']}";
         $car_info['chexing'] = CarTypeModel::field(['MODEL_NAME', 'ENGINE_CAPACITY'])->where(['ID' => $car_info['chexing_id']])->find();

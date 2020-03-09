@@ -384,7 +384,7 @@ class Query
         $client = new \SoapClient($url);
         $addResult = $client->__soapCall("LevelData",array(array('xmlInput'=>$data)));
         $result = $addResult->LevelDataResult;
-        if(isset($result['Info']['Success'])&&$result['Info']['Success']==1){
+        if(isset($result['Info']['Success'])&&($result['Info']['Success']==1||$result['Info']['Success']==true)){
             return ['code' => 200, 'data' => $addResult->LevelDataResult];
         }else{
             return ['code' => 400, 'data' => $addResult->LevelDataResult];

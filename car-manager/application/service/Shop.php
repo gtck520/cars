@@ -3,18 +3,42 @@
 namespace app\service;
 
 use app\helper\Helper;
+use app\model\CityArea as CityAreaModel;
 use app\model\Shop as ShopModel;
+use app\service\CityActive as CityActiveService;
 
 class Shop
 {
     //列表
-    public static function getList()
+    public static function getList($req)
+    {
+
+        $query=ShopModel::setTable('shop');
+        // 城市筛选
+        if (!empty($req['province_id'])) {
+            $query->where('province_id', '=', $req['province_id']);
+        }
+        if (!empty($req['city_id']) ) {
+            $query->where('city_id', '=', $req['city_id']);
+        }
+        if (!empty($req['area_id'])) {
+            $query->where('area_id', '=', $req['area_id']);
+        }
+        $res = $query->page($req['c'], $req['p']);
+        foreach ($res['rs'] as $key=>$value){
+            $res['rs'][$key]['create_time']=date('Y-m-d H:i:s',$value['create_time']);
+            $current_id=CityActiveService::getCurrentCity($value);
+            $res['rs'][$key]['city_fullname']=CityAreaModel::where(['id' => $current_id])->value(['fullname']);
+        }
+        return ['code' => 200, 'data' => $res];
+    }
+    //列表
+    public static function getListCity()
     {
         $field = ['id', 'name'];
         $res = ShopModel::field($field)->get();
         return ['code' => 200, 'data' => $res];
     }
-
     //添加
     public static function add($admin_id, $req)
     {

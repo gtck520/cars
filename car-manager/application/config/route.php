@@ -54,6 +54,12 @@ return [
     'put::car/updateStatus/(\d+)$'    => 'Car/updateStatus',
     'delete::car/(\d+)$' => 'Car/delete',
 
+    //门店管理
+    'get::shops$'          => 'Shop/getList',
+    'post::shops$'         => 'Shop/add',
+    'put::shops/(\d+)$'    => 'Shop/modify',
+    'delete::shops/(\d+)$' => 'Shop/delete',
+
     //各项设置
     'post::cityarea$'         => 'Set/getCity',
 
