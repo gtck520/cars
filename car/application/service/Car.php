@@ -9,6 +9,7 @@ use app\model\Car as CarModel;
 use app\model\City as CityModel;
 use app\model\User as UserModel;
 use app\model\CarSc as CarScModel;
+use app\model\CarBm  as CarBMModel;
 use app\model\CarType as CarTypeModel;
 use app\model\Impeach as ImpeachModel;
 use app\model\CarColour as CarColourModel;
@@ -376,7 +377,7 @@ class Car
         
         $field = ['a.create_time','b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.status', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TYPE_NAME'];
 
-        $car_list = CarModel::setTable('car_browse a')->join('car b', 'a.car_id = b.id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->orderby($orderby)->get();
+        $car_list = CarModel::setTable('car_browse a')->join('car b', 'a.car_id = b.id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->where('a.user_id', '=', $user_id)->orderby($orderby)->get();
 
         if ($car_list) {
             foreach ($car_list as &$value) {
@@ -397,7 +398,7 @@ class Car
         
         $field = ['a.create_time','b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.status', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TYPE_NAME'];
 
-        $car_list = CarModel::setTable('car_sc a')->join('car b', 'a.car_id = b.id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->orderby($orderby)->get();
+        $car_list = CarModel::setTable('car_sc a')->join('car b', 'a.car_id = b.id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->where('a.user_id', '=', $user_id)->orderby($orderby)->get();
 
         if ($car_list) {
             foreach ($car_list as &$value) {
@@ -440,4 +441,41 @@ class Car
         return CarCheYuanModel::get();
     }
     
+    // 添加帮卖
+    public static function addBM($user_id, $car_id)
+    {
+        $res = CarBMModel::where(['user_id' => $user_id, 'car_id' => $car_id])->find();
+        if ($res) {
+            return ['code' => 400, 'data' => '您已经帮卖过了!'];
+        } else {
+            CarBMModel::insert([
+                'user_id' => $user_id,
+                'car_id' => $car_id,
+                'create_time' => time(),
+            ]);
+
+            return ['code' => 200, 'data' => ''];
+        }
+    }
+
+    //帮卖记录列表
+    public static function  getCarBMList($user_id, $req)
+    {
+    $orderby = ['a.create_time' => 'desc'];
+    
+    $field = ['a.create_time','b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.status', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TYPE_NAME'];
+
+    $car_list = CarModel::setTable('car_bm a')->join('car b', 'a.car_id = b.id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->where('a.user_id', '=', $user_id)->orderby($orderby)->get();
+
+    if ($car_list) {
+        foreach ($car_list as &$value) {
+            $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
+            $value['city_name'] = CityModel::where(['id' => $value['area_id']])->value(['name']);
+            $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['TYPE_NAME']}";
+            $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
+            unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TYPE_NAME']);
+        }
+    }
+    return ['code' => 200, 'data' => $car_list];
+    }
 }

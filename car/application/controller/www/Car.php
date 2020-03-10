@@ -114,4 +114,21 @@ class Car extends UserController
      {
          Response::SendResponseJson(200, CarService::getCheyuanList());
      }
+
+    //添加帮卖
+    public function addBM($car_id)
+    {
+        $res = CarService::addBM(parent::$user_id, $car_id);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
+    //收藏记录列表
+    public function getCarBMList()
+    {
+        $req = G();
+        CarValidate::checkPage($req);
+        $res = CarService::getCarBMList(parent::$user_id, $req);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
 }

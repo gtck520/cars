@@ -24,6 +24,10 @@ return [
     'post::cars/(\d+)/impeach$'   => 'Car/impeach',
     'get::browse$'  => 'Car/getCarBrowseList',
     'get::enshrines$'  => 'Car/getCarEnshrinesList',
+    //添加帮卖
+    'post::car/(\d+)/bm$'  => 'Car/addBM',
+    //帮卖列表
+    'get::carbm$'  => 'Car/getCarBMList',
     //添加收藏
     'post::cars/(\d+)/enshrines$'   => 'Car/addEnshrines',
     //车辆颜色
