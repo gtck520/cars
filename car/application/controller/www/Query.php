@@ -4,7 +4,7 @@ namespace app\controller\www;
 
 use king\lib\Response;
 use app\service\Query as QueryService;
-use app\validate\Common as CommonValidate;
+use app\validate\Query as QueryValidate;
 
 class Query extends UserController
 {
@@ -78,7 +78,7 @@ class Query extends UserController
     public function maintenance(){
 
         $req = P();
-        CommonValidate::checkVin($req);
+        QueryValidate::checkVin($req);
         $req['user_id'] = parent::$user_id;
         $res = QueryService::query($req,"maintenance");
         Response::SendResponseJson($res['code'], $res['data']);
@@ -113,7 +113,7 @@ class Query extends UserController
      */
     public function collision(){
         $req = P();
-        CommonValidate::checkVin($req);
+        QueryValidate::checkVin($req);
         $req['user_id'] = parent::$user_id;
         $res = QueryService::query($req,"collision");
         Response::SendResponseJson($res['code'], $res['data']);
@@ -149,7 +149,7 @@ class Query extends UserController
      */
     public function vehicleCondition(){
         $req = P();
-        CommonValidate::checkVin($req);
+        QueryValidate::checkVin($req);
         $req['engine']= $req['engine'] ?? '';
         $req['user_id'] = parent::$user_id;
         $res = QueryService::query($req,"vehicleCondition");
@@ -190,7 +190,7 @@ class Query extends UserController
      */
     public function regulations(){
         $req = P();
-        CommonValidate::checkVin($req);
+        QueryValidate::checkInput($req);
         $req['user_id'] = parent::$user_id;
         $res = QueryService::regulations($req);
         Response::SendResponseJson(200, $res);
@@ -227,7 +227,7 @@ class Query extends UserController
      */
     public function smallUnion(){
         $req = P();
-        CommonValidate::checkVin($req);
+        QueryValidate::checkVin($req);
         $req['engine']= $req['engine'] ?? '';
         $req['user_id'] = parent::$user_id;
         $res = QueryService::query($req,"smallUnion");
@@ -264,7 +264,7 @@ class Query extends UserController
      */
     public function bigUnion(){
         $req = P();
-        CommonValidate::checkVin($req);
+        QueryValidate::checkVin($req);
         $req['user_id'] = parent::$user_id;
         $res = QueryService::query($req,"bigUnion");
         Response::SendResponseJson($res['code'], $res['data']);
@@ -329,7 +329,7 @@ class Query extends UserController
      */
     public function vinGetinfo(){
         $req = P();
-        CommonValidate::checkVin($req);
+        QueryValidate::checkVin($req);
         $req['user_id'] = parent::$user_id;
         $res = QueryService::vinGetinfo($req);
         Response::SendResponseJson($res['code'], $res['data']);
@@ -352,7 +352,7 @@ class Query extends UserController
      */
     public function getQueryRecord(){
         $req=G();
-        CommonValidate::checkPage($req);
+        QueryValidate::checkPage($req);
         $req['user_id'] = parent::$user_id;
         $res = QueryService::getQueryRecord($req);
         Response::SendResponseJson($res['code'], $res['data']);
