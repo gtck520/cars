@@ -24,6 +24,7 @@ class CallBack
             $query_detail=QueryDetailModel::where(["order_id"=>$req['orderid']])->find();
             if(empty($query_detail)){
                 $detail_data['maintenance']=$req['result'];
+                $detail_data['user_id'] = $query_order['user_id'];
                 $detail_data['order_id']=$req['orderid'];
                 $detail_data['vin']=$req['vin'];
                 $detail_data['add_time']=time();
@@ -52,6 +53,7 @@ class CallBack
             $query_detail=QueryDetailModel::where(["order_id"=>$req['orderid']])->find();
             if(empty($query_detail)){
                 $detail_data['collision']=$req['result'];
+                $detail_data['user_id'] = $query_order['user_id'];
                 $detail_data['order_id']=$req['orderid'];
                 $detail_data['vin']=$req['vin'];
                 $detail_data['add_time']=time();

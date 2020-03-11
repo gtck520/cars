@@ -55,6 +55,7 @@ if($jsonstr!="")
     $jsonstr=str_replace("{","[",$jsonstr);
     $jsonstr=str_replace("}","]",$jsonstr);
     $jsonstr=str_replace(":","=>",$jsonstr);
+    $jsonstr=str_replace('\\"',"'",$jsonstr);
     $str=$jsonstr;
 }
 $swaggerName = isset($_POST['schemae']) && $_POST['schemae'] ? $_POST['schemae'] : 'schemae_' . uniqid();

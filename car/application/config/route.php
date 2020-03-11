@@ -43,17 +43,18 @@ return [
     'get::text$'        => 'Text/get',
 
     //查询接口
-    'post::query/getpay' => 'Query/getPay',
-    'post::query/maintenance' => 'Query/maintenance',//维保查询
-    'post::query/collision' => 'Query/collision',//碰撞查询
-    'post::query/vehicleCondition' => 'Query/vehicleCondition',//汽车状态查询
-    'post::common/getHpzl' => 'Common/getHpzl',//号牌种类
-    'post::query/regulations' => 'Query/regulations',//违章查询
-    'post::query/smallUnion' => 'Query/smallUnion',//小综合查询
-    'post::query/bigUnion' => 'Query/bigUnion',//大综合查询
-    'post::query/getVin' => 'Query/vinOcr', //扫码识别车辆vin
-    'post::query/getCarInfo' => 'Query/vinGetinfo', //vin获取车辆信息
-    'get::query/getQueryRecord' => 'Query/getQueryRecord', //vin获取车辆信息
+    'post::query/getpay$' => 'Query/getPay',
+    'post::query/maintenance$' => 'Query/maintenance',//维保查询
+    'post::query/collision$' => 'Query/collision',//碰撞查询
+    'post::query/vehicleCondition$' => 'Query/vehicleCondition',//汽车状态查询
+    'post::common/getHpzl$' => 'Common/getHpzl',//号牌种类
+    'post::query/regulations$' => 'Query/regulations',//违章查询
+    'post::query/smallUnion$' => 'Query/smallUnion',//小综合查询
+    'post::query/bigUnion$' => 'Query/bigUnion',//大综合查询
+    'post::query/getVin$' => 'Query/vinOcr', //扫码识别车辆vin
+    'post::query/getCarInfo$' => 'Query/vinGetinfo', //vin获取车辆信息
+    'get::query/getQueryRecord$' => 'Query/getQueryRecord', //获取查询记录
+    'get::query/getQueryReport/(\d+)$' => 'Query/getQueryReport', //获取成功的查询报告
 
     //添加出价
     'post::car/price' => 'User/addPrice',

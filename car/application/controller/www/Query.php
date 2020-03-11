@@ -342,7 +342,11 @@ class Query extends UserController
      *     @OA\Parameter(name="token",in="header",example="token_string",description="登录用户权限",required=true),
      *     @OA\Parameter(name="p",in="query",example="1",description="第几页",required=true),
      *     @OA\Parameter(name="c",in="query",example="10",description="每页几条",required=true),
-     *     @OA\Response(response=200,description="OK"),
+     *     @OA\Response(response=200,description="OK",
+     *           @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(ref="#/components/schemas/query_record"),
+     *          ),),
      *     @OA\Response(response=400,description="请求失败")
      * )
      */
@@ -351,6 +355,32 @@ class Query extends UserController
         CommonValidate::checkPage($req);
         $req['user_id'] = parent::$user_id;
         $res = QueryService::getQueryRecord($req);
+        Response::SendResponseJson($res['code'], $res['data']);
+
+    }
+    /**
+     * @OA\Get(
+     *     path="/query/getQueryReport/{order_id}",
+     *     tags={"车辆查询"},
+     *     summary="获取成功的查询报告",
+     *     @OA\Parameter(name="token",in="header",example="token_string",description="登录用户权限",required=true),
+     *     @OA\Parameter(name="order_id",in="path",description="订单号（即查询记录的id号）"),
+     *     @OA\Response(response=200,description="OK",
+     *           @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(ref="#/components/schemas/query_report"),
+     *          ),
+     *     ),
+     *     @OA\Response(response=400,description="请求失败")
+     * )
+     */
+    public function getQueryReport($order_id){
+        if($order_id<=0){
+            return ['code' => 400, 'data' => "订单号错误"];
+        }
+        $req['user_id'] = parent::$user_id;
+        $req['order_id'] = $order_id;
+        $res = QueryService::getReport($req);
         Response::SendResponseJson($res['code'], $res['data']);
 
     }

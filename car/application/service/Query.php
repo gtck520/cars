@@ -2,6 +2,7 @@
 
 namespace app\service;
 
+use app\model\QueryDetail;
 use king\lib\Request;
 use king\lib\Log;
 use app\cache\Token;
@@ -325,6 +326,7 @@ class Query
                 $query_detail = QueryDetailModel::where(["order_id" => $order_id])->find();
                 if (empty($query_detail)) {
                     $insert_data['vehicleCondition'] = $detail_data['vehicleCondition'];
+                    $insert_data['user_id'] = $req['user_id'];
                     $insert_data['order_id'] = $order_id;
                     $insert_data['vin'] = $req['vin'];
                     $insert_data['add_time'] = time();
@@ -434,6 +436,14 @@ class Query
             $res['rs'][$key]['create_time']=date('Y-m-d H:i:s',$value['create_time']);
             $res['rs'][$key]['status_msg']=$dict[$value['status']];
             $res['rs'][$key]['type_msg']=$type[$value['type']];
+        }
+        return ['code' => 200, 'data' => $res];
+    }
+    //获取报告结果
+    public static function getReport($req){
+        $res=QueryDetail::where(['user_id'=>$req['user_id'],'order_id'=>$req['order_id']])->find();
+        if(empty($res)){
+            return ['code' => 400, 'data' => "该订单报告未生成！"];
         }
         return ['code' => 200, 'data' => $res];
     }
