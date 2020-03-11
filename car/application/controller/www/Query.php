@@ -4,7 +4,7 @@ namespace app\controller\www;
 
 use king\lib\Response;
 use app\service\Query as QueryService;
-use app\validate\Common;
+use app\validate\Common as CommonValidate;
 
 class Query extends UserController
 {
@@ -78,7 +78,7 @@ class Query extends UserController
     public function maintenance(){
 
         $req = P();
-        Common::checkVin($req);
+        CommonValidate::checkVin($req);
         $req['user_id'] = parent::$user_id;
         $res = QueryService::query($req,"maintenance");
         Response::SendResponseJson($res['code'], $res['data']);
@@ -113,7 +113,7 @@ class Query extends UserController
      */
     public function collision(){
         $req = P();
-        Common::checkVin($req);
+        CommonValidate::checkVin($req);
         $req['user_id'] = parent::$user_id;
         $res = QueryService::query($req,"collision");
         Response::SendResponseJson($res['code'], $res['data']);
@@ -149,7 +149,7 @@ class Query extends UserController
      */
     public function vehicleCondition(){
         $req = P();
-        Common::checkVin($req);
+        CommonValidate::checkVin($req);
         $req['engine']= $req['engine'] ?? '';
         $req['user_id'] = parent::$user_id;
         $res = QueryService::query($req,"vehicleCondition");
@@ -190,7 +190,7 @@ class Query extends UserController
      */
     public function regulations(){
         $req = P();
-        Common::checkVin($req);
+        CommonValidate::checkVin($req);
         $req['user_id'] = parent::$user_id;
         $res = QueryService::regulations($req);
         Response::SendResponseJson(200, $res);
@@ -227,7 +227,7 @@ class Query extends UserController
      */
     public function smallUnion(){
         $req = P();
-        Common::checkVin($req);
+        CommonValidate::checkVin($req);
         $req['engine']= $req['engine'] ?? '';
         $req['user_id'] = parent::$user_id;
         $res = QueryService::query($req,"smallUnion");
@@ -264,7 +264,7 @@ class Query extends UserController
      */
     public function bigUnion(){
         $req = P();
-        Common::checkVin($req);
+        CommonValidate::checkVin($req);
         $req['user_id'] = parent::$user_id;
         $res = QueryService::query($req,"bigUnion");
         Response::SendResponseJson($res['code'], $res['data']);
@@ -329,9 +329,29 @@ class Query extends UserController
      */
     public function vinGetinfo(){
         $req = P();
-        Common::checkVin($req);
+        CommonValidate::checkVin($req);
         $req['user_id'] = parent::$user_id;
         $res = QueryService::vinGetinfo($req);
         Response::SendResponseJson($res['code'], $res['data']);
+    }
+    /**
+     * @OA\Get(
+     *     path="/query/getQueryRecord",
+     *     tags={"车辆查询"},
+     *     summary="获取查询记录",
+     *     @OA\Parameter(name="token",in="header",example="token_string",description="登录用户权限",required=true),
+     *     @OA\Parameter(name="p",in="query",example="1",description="第几页",required=true),
+     *     @OA\Parameter(name="c",in="query",example="10",description="每页几条",required=true),
+     *     @OA\Response(response=200,description="OK"),
+     *     @OA\Response(response=400,description="请求失败")
+     * )
+     */
+    public function getQueryRecord(){
+        $req=G();
+        CommonValidate::checkPage($req);
+        $req['user_id'] = parent::$user_id;
+        $res = QueryService::getQueryRecord($req);
+        Response::SendResponseJson($res['code'], $res['data']);
+
     }
 }

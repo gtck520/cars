@@ -53,6 +53,7 @@ return [
     'post::query/bigUnion' => 'Query/bigUnion',//大综合查询
     'post::query/getVin' => 'Query/vinOcr', //扫码识别车辆vin
     'post::query/getCarInfo' => 'Query/vinGetinfo', //vin获取车辆信息
+    'get::query/getQueryRecord' => 'Query/getQueryRecord', //vin获取车辆信息
 
     //添加出价
     'post::car/price' => 'User/addPrice',

@@ -84,7 +84,7 @@ class Response extends Instance
         header($header);
         //header('Content-type: applicaton/json');
         if (is_array($body)) {
-            echo json_encode($body);
+            echo json_encode($body,JSON_UNESCAPED_UNICODE);
         } else {
             echo $body;
         }

@@ -409,4 +409,32 @@ class Query
         }
 
     }
+
+    //获取查询记录
+    public static function getQueryRecord($req){
+        $res = QueryOrderModel::where(['user_id'=>$req['user_id']])->page($req['c'], $req['p']);
+        $dict=[
+            0=>'未付款',
+            1=>'查询中',
+            2=>'已付款，查询中',
+            3=>'查询成功',
+            4=>'部分成功',
+            5=>'查询失败',
+            6=>'放弃查询'
+        ];
+        $type=[
+            0=>'维保查询',
+            1=>'碰撞查询',
+            2=>'汽车状态查询',
+            3=>'违章查询',
+            4=>'小综合查询',
+            5=>'大综合查询'
+        ];
+        foreach ($res['rs'] as $key=>$value){
+            $res['rs'][$key]['create_time']=date('Y-m-d H:i:s',$value['create_time']);
+            $res['rs'][$key]['status_msg']=$dict[$value['status']];
+            $res['rs'][$key]['type_msg']=$type[$value['type']];
+        }
+        return ['code' => 200, 'data' => $res];
+    }
 }
