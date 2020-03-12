@@ -24,17 +24,35 @@ class Car extends UserController
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
-    // 获取所有车辆类型
+    // 获取所有类型
     public function getCarType()
     {
-        $res = CarService::getCarType();
+        $req = G();
+        $res = CarService::getCarType($req);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
+    // 获取所有车辆排量
+    public function getCarPL()
+    {
+        $req = G();
+        $res = CarService::getCarPL($req);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
+    // 获取所有车辆类型
+    public function getCarCLLX()
+    {
+        $req = G();
+        $res = CarService::getCarCLLX($req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
     // 获取所有车辆变速箱
     public function getCarBS()
     {
-        $res = CarService::getCarBS();
+        $req = G();
+        $res = CarService::getCarBS($req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
@@ -128,6 +146,15 @@ class Car extends UserController
         $req = G();
         CarValidate::checkPage($req);
         $res = CarService::getCarBMList(parent::$user_id, $req);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
+    // 车辆编辑
+    public function  edit(){
+        $req = P();
+        CarValidate::checkInput($req);
+        $user_id = parent::$user_id;
+        $res = CarService::edit($user_id, $req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
 

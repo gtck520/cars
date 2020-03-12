@@ -10,7 +10,9 @@ class Car
     private static $key = 'car:name:list';
     private static $car_type_key = 'car:type:list';
     private static $car_bs_key = 'car:bs:list';
-    //
+    private static $car_pl_key = 'car:pl:list';
+    private static $car_cllx_key = 'car:cllx:list';
+    //品牌缓存
     public static function getCarName(){
         if (!Cache::exists(self::$key)) {
             self::setCarName();
@@ -19,18 +21,21 @@ class Car
         return Cache::get(self::$key);
     }
 
+    //品牌缓存
     public static function setCarName()
     {
         $cars = CarTypeModel::field(['distinct MAKE_NAME', 'FIRST_LETTER'])->get();
         Cache::set(self::$key, json_encode($cars));
     }
 
+    //车型缓存
     public static function setCarType()
     {
         $car_type_list = CarTypeModel::field(['distinct VEHICLE_CLASS'])->get();
         Cache::set(self::$car_type_key, json_encode($car_type_list));
     }
     
+    //车型缓存
     public static function getCarType(){
         if (!Cache::exists(self::$car_type_key)) {
             self::setCarType();
@@ -38,16 +43,56 @@ class Car
         return Cache::get(self::$car_type_key);
     }
 
+    //变速缓存
     public static function setCarBS()
     {
         $car_bs_list = CarTypeModel::field(['distinct TRANSMISSION'])->get();
         Cache::set(self::$car_bs_key, json_encode($car_bs_list));
     }
-    
-    public static function getCarBS(){
+
+    //变速缓存
+    public static function getCarBS()
+    {
         if (!Cache::exists(self::$car_bs_key)) {
             self::setCarBS();
         }
+        
         return Cache::get(self::$car_bs_key);
+    }
+
+    //排量缓存
+    public static function setCarPL()
+    {
+        $car_pl_list = CarTypeModel::field(['distinct ENGINE_CAPACITY'])->get();
+        Cache::set(self::$car_pl_key, json_encode($car_pl_list));
+    }
+    
+
+    //排量缓存
+    public static function getCarPL()
+    {
+        if (!Cache::exists(self::$car_pl_key)) {
+            self::setCarPL();
+        }
+        
+        return Cache::get(self::$car_pl_key);
+    }
+
+    //车辆类型
+    public static function setCarCLLX()
+    {
+        $car_cllx_list = CarTypeModel::field(['distinct MODEL_NAME'])->get();
+        Cache::set(self::$car_cllx_key, json_encode($car_cllx_list));
+    }
+    
+
+    //车辆类型
+    public static function getCarCLLX()
+    {
+        if (!Cache::exists(self::$car_cllx_key)) {
+            self::setCarCLLX();
+        }
+        
+        return Cache::get(self::$car_cllx_key);
     }
 }
