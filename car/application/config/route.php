@@ -34,11 +34,14 @@ return [
     'get::colour$'  => 'Car/getColourList',
     //车源标签
     'get::cheyuan$'  => 'Car/getCheyuanList',
-    //车辆类型列表
+    //类型列表
     'get::cartype$'  => 'Car/getCarType',
     //车辆变速箱列表
     'get::carbs$'  => 'Car/getCarBS',
-
+    //排量列表
+    'get::pailiang$'  => 'Car/getCarPL',
+    //车辆类型列表
+    'get::cheliangleixing$'  => 'Car/getCarCLLX',
     //帮助文本
     'get::text$'        => 'Text/get',
 

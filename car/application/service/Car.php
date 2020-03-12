@@ -204,19 +204,58 @@ class Car
         return ['code' => 200, 'data' => $car_name];
     }
 
-    //所有车辆类型
-    public static function getCarType()
+    //所有类型
+    public static function getCarType($req)
     {
-        $car_name = CarCache::getCarType();
+        $pinpai = $req['pinpai'] ?? '';
+        if (empty($pinpai)) {
+            $car_name = CarCache::getCarType();
+        }else{
+            $car_name = CarTypeModel::field(['distinct VEHICLE_CLASS'])->where(['MAKE_NAME' => $pinpai])->get();
+        }
+
+        
+        return ['code' => 200, 'data' => $car_name];
+    }
+
+    //所有变速箱
+    public static function getCarBS($req)
+    {
+        $pinpai = $req['pinpai'] ?? '';
+        if (empty($pinpai)) {
+            $car_name = CarCache::getCarBS();
+        }else{
+            $car_name = CarTypeModel::field(['distinct TRANSMISSION'])->where(['MAKE_NAME' => $pinpai])->get();
+        }
+        
+        return ['code' => 200, 'data' => $car_name];
+    }
+
+    //所有车辆排量
+    public static function getCarPL($req)
+    {
+        $pinpai = $req['pinpai'] ?? '';
+        if (empty($pinpai)) {
+            $car_name = CarCache::getCarPL();
+        }else{
+            $car_name = CarTypeModel::field(['distinct ENGINE_CAPACITY'])->where(['MAKE_NAME' => $pinpai])->get();
+        }
+        
         return ['code' => 200, 'data' => $car_name];
     }
 
     //所有车辆类型
-    public static function getCarBS()
-    {
-        $car_name = CarCache::getCarBS();
-        return ['code' => 200, 'data' => $car_name];
-    }
+    public static function getCarCLLX($req)
+     {
+        $pinpai = $req['pinpai'] ?? '';
+        if (empty($pinpai)) {
+            $car_name = CarCache::getCarCLLX();
+        }else{
+            $car_name = CarTypeModel::field(['distinct MODEL_NAME'])->where(['MAKE_NAME' => $pinpai])->get();
+        }
+         
+         return ['code' => 200, 'data' => $car_name];
+     }
 
     //更新缓存
     public static function setCache()
@@ -477,5 +516,11 @@ class Car
         }
     }
     return ['code' => 200, 'data' => $car_list];
+    }
+
+    //编辑车辆
+    public static function edit($user_id, $req)
+    {
+        
     }
 }
