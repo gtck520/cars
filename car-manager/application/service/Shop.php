@@ -42,17 +42,27 @@ class Shop
     //添加
     public static function add($admin_id, $req)
     {
+        $province_id = $req['province_id'] ?? 0;
+        $city_id= $req['city_id'] ?? 0;
+        $area_id = $req['area_id'] ?? 0;
         $name = $req['name'];
         $address = $req['address'];
 
-        $res = ShopModel::where(['name' => $name])->find();
+        $res = ShopModel::where(['name' => $name,
+            'province_id' => $province_id,
+            'city_id' => $city_id,
+            'area_id' => $area_id])->find();
         if ($res) {
             return ['code' => 400, 'data' => "$name 已存在"];
         }
 
         $id = ShopModel::insert([
+            'province_id' => $province_id,
+            'city_id' => $city_id,
+            'area_id' => $area_id,
             'name' => $name,
             'address' => $address,
+            'create_time'=>time()
         ]);
 
         Helper::saveToLog($admin_id, '', '', $name, "管理员ID:$id 添加门店 [$name][$address]");
@@ -62,18 +72,28 @@ class Shop
     //修改
     public static function modify($admin_id, $id, $req)
     {
+        $province_id = $req['province_id'] ?? 0;
+        $city_id= $req['city_id'] ?? 0;
+        $area_id = $req['area_id'] ?? 0;
         $name = $req['name'];
         $address = $req['address'];
 
-        $res = ShopModel::where(['name' => $name])->find();
+        $res = ShopModel::where(['name' => $name,
+            'province_id' => $province_id,
+            'city_id' => $city_id,
+            'area_id' => $area_id])->find();
         if ($res) {
             return ['code' => 400, 'data' => "$name 已存在"];
         }
         //
         $old_value = ShopModel::field(['name'])->where(['id' => $id])->find();
         ShopModel::where(['id' => $id])->update([
+            'province_id' => $province_id,
+            'city_id' => $city_id,
+            'area_id' => $area_id,
             'name' => $name,
             'address' => $address,
+            'create_time'=>time()
         ]);
         //
 

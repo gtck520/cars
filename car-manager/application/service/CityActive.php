@@ -38,7 +38,7 @@ class CityActive
         }
         $array = [
             'current_id'=>$current_id,
-            'pronvice_id'=>$req["pronvice_id"],
+            'province_id'=>$req["pronvice_id"],
             'city_id'=>$req["city_id"],
             'area_id'=>$req["area_id"],
             'start_time'=>$req["start_time"],
@@ -69,7 +69,7 @@ class CityActive
         }
         $array = [
             'current_id'=>$current_id,
-            'pronvice_id'=>$req["pronvice_id"],
+            'province_id'=>$req["pronvice_id"],
             'city_id'=>$req["city_id"],
             'area_id'=>$req["area_id"],
             'start_time'=>$req["start_time"],
@@ -103,8 +103,9 @@ class CityActive
     }
     //获取当前选中的城市
     public static function getCurrentCity($req){
-        if(!empty($req["pronvice_id"])){
-            $current_id=$req["pronvice_id"];
+        $current_id=0;
+        if(!empty($req["province_id"])){
+            $current_id=$req["province_id"];
         }
         if(!empty($req["city_id"])){
             $current_id=$req["city_id"];
