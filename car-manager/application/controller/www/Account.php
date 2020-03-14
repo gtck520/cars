@@ -23,4 +23,11 @@ class Account extends AdminController
         $res = AccountService::getCostList($req,1);
         Response::SendResponseJson($res['code'], $res['data']);
     }
+    // 获得会员推荐奖励
+    public function getMoneyList(){
+        $req = G();
+        Common::checkPage($req);
+        $res = AccountService::getMoneyRecords($req);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
 }

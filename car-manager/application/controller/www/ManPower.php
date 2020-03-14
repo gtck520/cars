@@ -44,4 +44,11 @@ class ManPower extends AdminController
         $res = ManPowerService::delete($admin_id, $id);
         Response::SendResponseJson($res['code'], $res['data']);
     }
+
+    //全部列表
+    public function getPowerNameList()
+    {
+        $res = ManPowerService::getPowerNameList();
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
 }

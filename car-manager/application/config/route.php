@@ -11,6 +11,7 @@ return [
     'delete::admins/(\d+)$' => 'Admin/delete',
 
     //权限管理
+    'get::manPower/name$'     => 'ManPower/getPowerNameList',
     'get::manPower$'          => 'ManPower/getList',
     'post::manPower$'         => 'ManPower/add',
     'put::manPower/(\d+)$'    => 'ManPower/modify',
@@ -20,7 +21,7 @@ return [
     'get::group$'          => 'Group/getList',
     'post::group$'         => 'Group/add',
     'put::group/(\d+)$'    => 'Group/modify',
-    'delete::group/(\d+)$' => 'Group/delete',  
+    'delete::group/(\d+)$' => 'Group/delete',
 
     //帮助文本管理
     'get::text$'          => 'Text/get',
@@ -72,6 +73,7 @@ return [
     //账户记录
     'get::paycost$'          => 'Account/getPayList',//会员缴费记录
     'get::invitecost$'          => 'Account/getInviteList',//会员推荐奖励记录
+    'get::moneyrecords$'          => 'Account/getMoneyList',//会员推荐奖励记录
 
 
 ];
