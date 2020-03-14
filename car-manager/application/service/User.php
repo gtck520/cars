@@ -4,7 +4,8 @@ namespace app\service;
 
 use app\helper\Helper;
 use app\model\User as UserModel;
-use app\model\Car as CarModel;
+use app\service\CityActive as CityActiveService;
+use app\model\CityArea as CityAreaModel;
 
 class User
 {
@@ -19,38 +20,44 @@ class User
     //用户详情
     public static function getUserInfo($user_id)
     {
-        $res = UserModel::where(['user_id' => $user_id])->find();
+        $res = UserModel::where(['id' => $user_id])->find();
         return ['code' => 200, 'data' => Helper::formatTimt($res, ['create_time', 'last_login_time'])];
     }
 
     //修改
-    public static function modify($user_id, $id, $req)
+    public static function modify($admin_id, $user_id, $req)
     {
-        $controller = $req['controller'];
-        $action = $req['action'];
-        $powername = $req['powername'];
-        $sort = $req['sort'];
+        $current_id=CityActiveService::getCurrentCity($req);//获取当前城市id
+        $city_fullname = CityAreaModel::where(['id' => $current_id])->value(['fullname']);
+     $updata=[
+         'area_id'=>$req['area_id'],
+        'city_id'=>$req['city_id'],
+        'level_id'=>$req['level_id'],
+        'mobile'=>$req['mobile'],
+        'nickname'=>$req['nickname'],
+        'province_id'=>$req['province_id'],
+        'quan_guo'=>$req['quan_guo'],
+        'realname'=>$req['realname'],
+        'sheng_ji'=>$req['sheng_ji'],
+        'shop_id'=>$req['shop_id'],
+         'city_fullname'=>$city_fullname
+     ];
 
-        $res = UserModel::where(['controller' => $controller, 'action' => $action, 'id <>' => $id])->find();
+        $res = UserModel::where(['mobile' => $req['mobile'],  'id <>' => $user_id])->find();
         if ($res) {
-            return ['code' => 400, 'data' => "控制器:$controller 已存在方法:$action "];
+            return ['code' => 400, 'data' => "该电话号码已存在！"];
         }
         //
-        $old_value = UserModel::field(['controller', 'action', 'powername', 'sort'])->where(['id' => $id])->find();
+        $old_value = UserModel::where(['id' => $user_id])->find();
 
-        UserModel::where(['id' => $id])->update([
-            'controller' => $controller,
-            'action' => $action,
-            'powername' => $powername,
-            'sort' => $sort,
-        ]);
+        UserModel::where(['id' => $user_id])->update($updata);
         //
         Helper::saveToLog(
-            $user_id,
+            $admin_id,
             '',
-            "{$old_value['controller']}:{$old_value['action']}:{$old_value['powername']}:{$old_value['sort']}",
-            "$controller:$action:$powername:$sort",
-            "修改权限ID:$id [{$old_value['controller']}:{$old_value['action']}:{$old_value['powername']}:{$old_value['sort']} 为 $controller:$action:$powername:$sort]"
+            json_encode($old_value),
+            json_encode($updata),
+            "修改用户:$user_id"
         );
         return ['code' => 200, 'data' => ''];
     }

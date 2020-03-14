@@ -33,10 +33,21 @@ class Shop
         return ['code' => 200, 'data' => $res];
     }
     //列表
-    public static function getListCity()
+    public static function getListName($req)
     {
         $field = ['id', 'name'];
-        $res = ShopModel::field($field)->get();
+        $query=ShopModel::setTable('shop');
+        // 城市筛选
+        if (!empty($req['province_id'])) {
+            $query->where('province_id', '=', $req['province_id']);
+        }
+        if (!empty($req['city_id']) ) {
+            $query->where('city_id', '=', $req['city_id']);
+        }
+        if (!empty($req['area_id'])) {
+            $query->where('area_id', '=', $req['area_id']);
+        }
+        $res = $query->field($field)->get();
         return ['code' => 200, 'data' => $res];
     }
     //添加

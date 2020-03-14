@@ -23,14 +23,11 @@ class User extends AdminController
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
-     //修改文本
-     public function update(){
+     //修改用户
+     public function update($user_id){
         $req = json_decode(Put(), true);
-        if (!isset($req['User'])) {
-            Response::SendResponseJson(400, '文本字段未定义');
-        }
         $admin_id = parent::$admin_id;
-        $res = UserService::update($admin_id, $req['User']);
+        $res = UserService::modify($admin_id,$user_id, $req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
 

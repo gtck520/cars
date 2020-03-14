@@ -42,7 +42,7 @@ return [
     //用户管理
     'get::users$'          => 'User/getList',
     'get::user/(\d+)$'    => 'User/getUserInfo',
-    'put::user/(\d+)$'    => 'User/modify',
+    'put::user/(\d+)$'    => 'User/update',
     'delete::user/(\d+)$' => 'User/delete',
     //会员等级相关规则
     'get::levels'          => 'User/getLevelList',
@@ -57,6 +57,7 @@ return [
 
     //门店管理
     'get::shops$'          => 'Shop/getList',
+    'get::shopnames$'          => 'Shop/getListName',
     'post::shops$'         => 'Shop/add',
     'put::shops/(\d+)$'    => 'Shop/modify',
     'delete::shops/(\d+)$' => 'Shop/delete',
@@ -74,6 +75,7 @@ return [
     'get::paycost$'          => 'Account/getPayList',//会员缴费记录
     'get::invitecost$'          => 'Account/getInviteList',//会员推荐奖励记录
     'get::moneyrecords$'          => 'Account/getMoneyList',//会员推荐奖励记录
+    'get::querylist$'          => 'Account/getQueryList',//会员推荐奖励记录
 
 
 ];

@@ -14,7 +14,12 @@ class Shop extends AdminController
         $res = ShopService::getList($req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
-
+    //列表
+    public function getListName(){
+        $req = G();
+        $res = ShopService::getListName($req);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
     //添加
     public function add(){
         $req = P();
