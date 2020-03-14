@@ -325,9 +325,9 @@ class Car
             return ['code' => 400, 'data' => '城市参数错误!'];
         }
         
-        $yanse_res = CarColourModel::where(['id' => $req['yanse_id']])->find();
-        if (!$yanse_res) {
-            return ['code' => 400, 'data' => '没有查询到这个颜色!'];
+        $yanse_id = CarColourModel::where(['name' => $req['yanse']])->find();
+        if (!$yanse_id) {
+            $yanse_id = CarColourModel::insert(['name' => $req['yanse']]);
         }
 
         if (!is_numeric($req['price'])) {
@@ -337,8 +337,7 @@ class Car
         $age = Helper::birthday2($req['shangpai_time']);
         //省级县id
         $city_ids = explode(',', $city_res['path']) ;
-
-        CityModel::insert([
+        CarModel::insert([
             'user_id' => $user_id,
             'province_id' =>  $city_ids[0],
             'city_id' => $city_ids[1],
@@ -346,12 +345,12 @@ class Car
             'chejiahao' => $req['chejiahao'],
             'pinpai'=>$req['pinpai'],
             'chexing_id'=> 1,
-            'shangpai_time'=>$req['shangpai_time'],
+            'shangpai_time'=> strtotime($req['shangpai_time']),
             'price'=>$req['price'],
             'biaoxianlicheng'=>$req['biaoxianlicheng'],
-            'yanse_id'=>$req['yanse'],
-            'nianjiandaoqi'=>$req['nianjian_time'],
-            'qiangxiandaoqi'=>$req['qiangxian_time'],
+            'yanse_id'=>$yanse_id,
+            'nianjiandaoqi'=>strtotime($req['nianjian_time']),
+            'qiangxiandaoqi'=> strtotime($req['qiangxian_time']),
             'weixiujilu'=>$req['weixiujilu'],
             'pengzhuangjilu'=>$req['pengzhuang'],
             'notes'=>$req['notes'],
@@ -361,8 +360,8 @@ class Car
             'create_time' => time(),
             'age' =>$age,
             'biansu' => $req['biansuxiang'],
-            'cheyuan_id' =>$req['cheyuan_id'],
             'zhengming' => $req['zhemgming'],
+            'type_name' => $req['cheliang_type'],
         ]);
 
         //更新各种列表缓存

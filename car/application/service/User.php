@@ -46,12 +46,15 @@ class User
         UserModel::startTrans();
         try {
             //门店id
-            $shop_id = ShopModel::insert([
-                'name'        => $req['shop_name'],
-                'address'     => $req['shop_address'],
-                'create_time' => time(),
-            ]);
-            
+            $shop_info = ShopModel::where(['name' => $req['shop_name'], 'address' => $req['shop_address']])->find();
+            if ($shop_info) {
+                $shop_id = $shop_info['id'];
+            }else{
+                $shop_id = 0;
+            }
+
+
+
             $city_id = explode(',',$city['path']);
 
             $data = [
