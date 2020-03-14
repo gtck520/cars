@@ -212,12 +212,13 @@ class Query
                     if($maintenance['code']==888&&$collision['code']==888&&$vehicleCondition['code']==10000){
                         $detail_data['maintenance']= $maintenance['msg'];
                         $detail_data['collision']= $collision['msg'];
+                        $detail_data['vehicleCondition']= $vehicleCondition['message'];
                         $up_order['status']=3;//查询成功
                         $up_order['msg']="成功";
                     }
                     else if($maintenance['code']!=888&&$collision['code']!=888&&$vehicleCondition['code']!=10000){
                         $up_order['status']=5;//查询失败
-                        $up_order['msg']='维保失败:'.$maintenance['code'].'-'.$maintenance['msg'].'，碰撞失败:'.$collision['code'].'-'.$collision['msg'].'，状态失败:'.$vehicleCondition['code'].'-'.$vehicleCondition['msg'];
+                        $up_order['msg']='维保失败:'.$maintenance['code'].'-'.$maintenance['msg'].'，碰撞失败:'.$collision['code'].'-'.$collision['msg'].'，状态失败:'.$vehicleCondition['code'].'-'.$vehicleCondition['message'];
                     }
                     else{
                         $up_order['msg']='';
@@ -232,9 +233,9 @@ class Query
                             $up_order['msg'] .= '碰撞失败:'.$collision['code'] . '-' . $collision['msg'];
                         }
                         if($vehicleCondition['code']==10000){
-                            $detail_data['vehicleCondition']= $vehicleCondition['msg'];
+                            $detail_data['vehicleCondition']= $vehicleCondition['message'];
                         }else{
-                            $up_order['msg'] .= '状态失败:'.$vehicleCondition['code'] . '-' . $vehicleCondition['msg'];
+                            $up_order['msg'] .= '状态失败:'.$vehicleCondition['code'] . '-' . $vehicleCondition['message'];
                         }
                         $up_order['status'] = 4;//部分失败
                     }
