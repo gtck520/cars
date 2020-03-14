@@ -15,6 +15,8 @@ return [
     //添加电话量
     'post::car/(\d+)/phone$'   => 'User/addPhoneNum',
 
+    //门店联想列表
+    'get::shops$'        => 'Car/shops',
     //车 
     'get::cars$'        => 'Car/getList',    //有bug 待修复..
     'get::cars/name$'   => 'Car/getCarName',

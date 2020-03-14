@@ -8,6 +8,7 @@ use app\cache\Car as CarCache;
 use app\model\Car as CarModel;
 use app\model\City as CityModel;
 use app\model\User as UserModel;
+use app\model\Shop as ShopModel;
 use app\model\CarSc as CarScModel;
 use app\model\CarBm  as CarBMModel;
 use app\model\CarType as CarTypeModel;
@@ -482,5 +483,11 @@ class Car
     public static function edit($user_id, $req)
     {
         
+    }
+
+    //门店联想列表
+    public static function shops()
+    {
+        return ['code' => 200, 'data' => ShopModel::field(['name', 'address'])->get()];
     }
 }
