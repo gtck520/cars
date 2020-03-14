@@ -8,14 +8,17 @@ use king\lib\Valid;
 class User extends Common
 {
 
+    //注册
     public static function checkInput($post)
     {
         $valid = Valid::getClass($post);
-        $valid->addRule('mobile', 'required', '手机号码');
-        $valid->addRule('shop_name', 'required', '门店名称');
-        $valid->addRule('realname', 'required', '真实姓名');
-        $valid->addRule('city_id', 'required', '城市id');
-        $valid->addRule('taocan_id', 'required', '套餐id');
+        $valid->addRule('mobile', 'required|mobile', '手机号码');
+        $valid->addRule('shop_name', 'required|maxLength,30|minLength,1', '门店名称');
+        $valid->addRule('shop_address', 'required|maxLength,100|minLength,1', '门店地址');
+        $valid->addRule('realname', 'required|maxLength,20|minLength,1', '真实姓名');
+        $valid->addRule('area_id', 'required', '城市id');
+        $valid->addRule('invite_mobile', 'required|mobile', '推荐人手机号码');
+        $valid->addRule('images', 'required', '营业执照或身份证图片');
         if (!$valid->run()) {
             Response::SendResponseJson(400, $valid->getError());
         }

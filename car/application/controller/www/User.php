@@ -8,6 +8,14 @@ use app\validate\User as UserValidate;
 
 class User extends UserController
 {
+    //注册
+    public function register(){
+        $req = P();
+        UserValidate::checkInput($req);
+        $res = UserService::register(parent::$user_id, $req);
+        Response::SendResponseJson($res['code'], $res['data']);
+    } 
+
     public function userInfo(){
         $user_id = self::$user_id;
         $res = UserService::userInfo($user_id);

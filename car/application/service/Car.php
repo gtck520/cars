@@ -334,47 +334,9 @@ class Car
             return ['code' => 400, 'data' => '价格非法!'];
         }
         //车龄
-        // $age = Helper::birthday2($req['shangpai_time']);
+        $age = Helper::birthday2($req['shangpai_time']);
         //省级县id
         $city_ids = explode(',', $city_res['path']) ;
-        //添加车库
-        // CityModel::insert([
-        //     'user_id'  => $user_id,
-        //     'area_id'=>$req['area_id'],
-        //     'chejiahao'=>$req['chejiahao'],
-        //     'pinpai'=>$req['pinpai'],
-        //     'chexing_id'=> '',
-        //     'shangpai_time'=>$req['shangpai_time'],
-        //     'price'=>$req['price'],
-        //     'biaoxianlicheng'=>$req['biaoxianlicheng'],
-        //     'yanse_id'=>$req['yanse'],
-        //     'nianjiandaoqi'=>$req['nianjian_time'],
-        //     'qiangxiandaoqi'=>$req['qiangxian_time'],
-        //     'weixiujilu'=>$req['weixiujilu'],
-        //     'pengzhuangjilu'=>$req['pengzhuang'],
-        //     'notes'=>$req['notes'],
-        //     'images_url'=>$req['images'],
-        //     'status'=> 0,
-        //     'create_time' => time(),
-        //     'age' =>$age,
-        //     'biansu' => $req['biansuxiang'],
-        //     'cheyuan_id' => '',
-        //     'zhengming' => $req['zhemgming'],
-        // ]);
-
-        //如果出现新车 添加车型
-        $chexing_id = CarTypeModel::where([
-            'MAKE_NAME' => $req['pinpai'],
-            'MODEL_NAME' => $req['chexing'],
-            'VEHICLE_CLASS' => $req['type_name'],
-            'TRANSMISSION' => $req['biansuxiang'],
-        ])->find();
-        if (!$chexing_id) {
-            //没这个车型添加.
-            CarTypeModel::insert([
-                
-            ]);
-        }
 
         CityModel::insert([
             'user_id' => $user_id,
@@ -383,7 +345,7 @@ class Car
             'area_id' => $city_ids[2],
             'chejiahao' => $req['chejiahao'],
             'pinpai'=>$req['pinpai'],
-            'chexing_id'=> '',
+            'chexing_id'=> 1,
             'shangpai_time'=>$req['shangpai_time'],
             'price'=>$req['price'],
             'biaoxianlicheng'=>$req['biaoxianlicheng'],
@@ -401,7 +363,6 @@ class Car
             'biansu' => $req['biansuxiang'],
             'cheyuan_id' =>$req['cheyuan_id'],
             'zhengming' => $req['zhemgming'],
-            'type_name' => $req['type_name'],
         ]);
 
         //更新各种列表缓存
