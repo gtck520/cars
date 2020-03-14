@@ -42,6 +42,7 @@ return [
     //用户管理
     'get::users$'          => 'User/getList',
     'get::user/(\d+)$'    => 'User/getUserInfo',
+    'put::user/updateStatus/(\d+)$'    => 'User/updateStatus',
     'put::user/(\d+)$'    => 'User/update',
     'delete::user/(\d+)$' => 'User/delete',
     //会员等级相关规则

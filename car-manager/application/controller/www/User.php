@@ -30,7 +30,13 @@ class User extends AdminController
         $res = UserService::modify($admin_id,$user_id, $req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
-
+    //修改状态
+    public function updateStatus($id){
+        $req = json_decode(Put(), true);
+        $admin_id = parent::$admin_id;
+        $res = UserService::modifyStatus($admin_id,$id,$req);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
     //获取等级列表
     public function getLevelList(){
         $res = UserLevelService::get();

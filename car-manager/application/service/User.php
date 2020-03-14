@@ -61,5 +61,26 @@ class User
         );
         return ['code' => 200, 'data' => ''];
     }
-
+    //修改状态
+    public static function modifyStatus($admin_id,$id, $req)
+    {
+        $where=[];
+        if (isset($req['enabled'])) {
+            $where['enabled']=$req['enabled'];
+        }
+        if (isset($req['status'])) {
+            $where['status']=$req['status'];
+        }
+        if(empty($where)){
+            return ['code' => 400, 'data' => "未做任何修改"];
+        }
+        //
+        $old_value = UserModel::field(["enabled","status"])->where(['id' => $id])->find();
+        UserModel::where(['id' => $id])->update($where);
+        //
+        $where['status']=$where['status'] ?? '未修改';
+        $where['enabled']=$where['enabled'] ?? '未修改';
+        Helper::saveToLog($admin_id, '',"下架状态：".$old_value['enabled']."审核状态：".$old_value['status'], "启用状态：".$where['enabled']."审核状态：".$where['status'], "管理员ID:$admin_id 修改用户状态ID:$id [启用状态：".$where['enabled']."审核状态".$where['status']."]");
+        return ['code' => 200, 'data' => ''];
+    }
 }
