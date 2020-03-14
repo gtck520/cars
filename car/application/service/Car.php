@@ -8,6 +8,7 @@ use app\cache\Car as CarCache;
 use app\model\Car as CarModel;
 use app\model\City as CityModel;
 use app\model\User as UserModel;
+use app\model\Shop as ShopModel;
 use app\model\CarSc as CarScModel;
 use app\model\CarBm  as CarBMModel;
 use app\model\CarType as CarTypeModel;
@@ -325,71 +326,32 @@ class Car
             return ['code' => 400, 'data' => '城市参数错误!'];
         }
         
-        $yanse_res = CarColourModel::where(['id' => $req['yanse_id']])->find();
-        if (!$yanse_res) {
-            return ['code' => 400, 'data' => '没有查询到这个颜色!'];
+        $yanse_id = CarColourModel::where(['name' => $req['yanse']])->find();
+        if (!$yanse_id) {
+            $yanse_id = CarColourModel::insert(['name' => $req['yanse']]);
         }
 
         if (!is_numeric($req['price'])) {
             return ['code' => 400, 'data' => '价格非法!'];
         }
         //车龄
-        // $age = Helper::birthday2($req['shangpai_time']);
+        $age = Helper::birthday2($req['shangpai_time']);
         //省级县id
         $city_ids = explode(',', $city_res['path']) ;
-        //添加车库
-        // CityModel::insert([
-        //     'user_id'  => $user_id,
-        //     'area_id'=>$req['area_id'],
-        //     'chejiahao'=>$req['chejiahao'],
-        //     'pinpai'=>$req['pinpai'],
-        //     'chexing_id'=> '',
-        //     'shangpai_time'=>$req['shangpai_time'],
-        //     'price'=>$req['price'],
-        //     'biaoxianlicheng'=>$req['biaoxianlicheng'],
-        //     'yanse_id'=>$req['yanse'],
-        //     'nianjiandaoqi'=>$req['nianjian_time'],
-        //     'qiangxiandaoqi'=>$req['qiangxian_time'],
-        //     'weixiujilu'=>$req['weixiujilu'],
-        //     'pengzhuangjilu'=>$req['pengzhuang'],
-        //     'notes'=>$req['notes'],
-        //     'images_url'=>$req['images'],
-        //     'status'=> 0,
-        //     'create_time' => time(),
-        //     'age' =>$age,
-        //     'biansu' => $req['biansuxiang'],
-        //     'cheyuan_id' => '',
-        //     'zhengming' => $req['zhemgming'],
-        // ]);
-
-        //如果出现新车 添加车型
-        $chexing_id = CarTypeModel::where([
-            'MAKE_NAME' => $req['pinpai'],
-            'MODEL_NAME' => $req['chexing'],
-            'VEHICLE_CLASS' => $req['type_name'],
-            'TRANSMISSION' => $req['biansuxiang'],
-        ])->find();
-        if (!$chexing_id) {
-            //没这个车型添加.
-            CarTypeModel::insert([
-                
-            ]);
-        }
-
-        CityModel::insert([
+        CarModel::insert([
             'user_id' => $user_id,
             'province_id' =>  $city_ids[0],
             'city_id' => $city_ids[1],
             'area_id' => $city_ids[2],
             'chejiahao' => $req['chejiahao'],
             'pinpai'=>$req['pinpai'],
-            'chexing_id'=> '',
-            'shangpai_time'=>$req['shangpai_time'],
+            'chexing_id'=> 1,
+            'shangpai_time'=> strtotime($req['shangpai_time']),
             'price'=>$req['price'],
             'biaoxianlicheng'=>$req['biaoxianlicheng'],
-            'yanse_id'=>$req['yanse'],
-            'nianjiandaoqi'=>$req['nianjian_time'],
-            'qiangxiandaoqi'=>$req['qiangxian_time'],
+            'yanse_id'=>$yanse_id,
+            'nianjiandaoqi'=>strtotime($req['nianjian_time']),
+            'qiangxiandaoqi'=> strtotime($req['qiangxian_time']),
             'weixiujilu'=>$req['weixiujilu'],
             'pengzhuangjilu'=>$req['pengzhuang'],
             'notes'=>$req['notes'],
@@ -399,9 +361,8 @@ class Car
             'create_time' => time(),
             'age' =>$age,
             'biansu' => $req['biansuxiang'],
-            'cheyuan_id' =>$req['cheyuan_id'],
             'zhengming' => $req['zhemgming'],
-            'type_name' => $req['type_name'],
+            'type_name' => $req['cheliang_type'],
         ]);
 
         //更新各种列表缓存
@@ -522,5 +483,11 @@ class Car
     public static function edit($user_id, $req)
     {
         
+    }
+
+    //门店联想列表
+    public static function shops()
+    {
+        return ['code' => 200, 'data' => ShopModel::field(['name', 'address'])->get()];
     }
 }

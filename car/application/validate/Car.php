@@ -19,7 +19,7 @@ class Car extends Common
         $valid->addRule('biaoxianlicheng', 'required|minLength,1', '表显里程');
         $valid->addRule('biansuxiang', 'required|minLength,1', '变速箱');
         $valid->addRule('pailiang', 'required|minLength,1', '排量');
-        $valid->addRule('yanse_id', 'required|minLength,1', '颜色');
+        $valid->addRule('yanse', 'required|minLength,1', '颜色');
         $valid->addRule('cheliang_type', 'required|minLength,1', '车辆类型');
         $valid->addRule('nianjian_time', 'required|minLength,1', '年检到期');
         $valid->addRule('qiangxian_time', 'required|minLength,1', '强险到期');
@@ -28,7 +28,6 @@ class Car extends Common
         $valid->addRule('pengzhuang', 'required|minLength,1', '碰撞记录');
         $valid->addRule('notes', 'required|minLength,1|maxLength,160', '车辆描述');
         $valid->addRule('zhemgming', 'required|minLength,1', '证明材料');
-        $valid->addRule('type_name', 'required|minLength,1', '车辆类型');
         if (!$valid->run()) {
             Response::SendResponseJson(400, $valid->getError());
         }

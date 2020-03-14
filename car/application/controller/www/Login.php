@@ -83,10 +83,4 @@ class Login
         $res = LoginService::easylogin($req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
-    public function register(){
-        $req = P();
-        UserValidate::checkInput($req);
-        $res = UserService::register($req);
-        Response::SendResponseJson($res['code'], $res['data']);
-    } 
 }

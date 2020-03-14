@@ -16,55 +16,65 @@ use app\model\CarBrowse as CarBrowseModel;
 
 class User
 {
-    public static function register($req)
+    public static function register($user_id, $req)
     {
-        $user_mobile = UserModel::where(['mobile' => $req['invite']])->find();
+        if ($req['invite_mobile'] ==  $req['mobile']) {
+            return ['code' => 400, 'data' => "推荐人不能是自己 !"];
+        }
+        $user_mobile = UserModel::where(['mobile' => $req['invite_mobile']])->find();
         if (!$user_mobile) {
-            return ['code' => 400, 'data' => "{$req['invite']}  邀请人手机号码不存在!"];
+            return ['code' => 400, 'data' => "{$req['invite_mobile']}  邀请人手机号码不存在!"];
         }
         $user_info = UserModel::where(['mobile' => $req['mobile']])->find();
         if ($user_info) {
             return ['code' => 400, 'data' => "{$user_info['mobile']} 已存在!"];
         }
+
+        $city = CityModel::where(['id' => $req['area_id']])->find();
+        if (!$city) {
+            return ['code' => 400, 'data' => '无此城市!'];
+        }
+
+        if ($city['level'] != 3) {
+            return ['code' => 400, 'data' => '城市级别错误!'];
+        }
+
+        $images_arr = explode('|', $req['images']);
+        if (count( $images_arr) >2) {
+            return ['code' => 400, 'data' => '最多只能上传两种图片!'];
+        }
         UserModel::startTrans();
         try {
-            $shop_id = ShopModel::insert([
-                'name'        => $req['shop_name'],
-                'address'     => $req['shop_address'],
-                'create_time' => time(),
-            ]);
-            $city = CityModel::where(['id' => $req['area_id']])->find();
-            if (!$city) {
-                return ['code' => 400, 'data' => '无此城市!'];
+            //门店id
+            $shop_info = ShopModel::where(['name' => $req['shop_name'], 'address' => $req['shop_address']])->find();
+            if ($shop_info) {
+                $shop_id = $shop_info['id'];
+            }else{
+                $shop_id = 0;
             }
 
-            if ($city['level'] != 3) {
-                return ['code' => 400, 'data' => '城市级别错误!'];
-            }
 
-            $city_id = explode($city, ',');
+
+            $city_id = explode(',',$city['path']);
 
             $data = [
                 'mobile'          => $req['mobile'],
-                'nickname'        => $req['nickname'],
-                'avatar'          => $req['avatar'],
                 'realname'        => $req['realname'],
                 'city_fullname'   => $city['fullname'],
                 'shop_id'         => $shop_id,
                 'province_id'  => $city_id[0],
                 'area_id'  => $city_id[2],
                 'city_id'         => $city_id[1],
-                'level_id'        => $req['level_id'],
-                'openid'          => $req['openid'],
+                'level_id'        => 1,
                 'quan_guo'        => 0,
                 'sheng_ji'        => 0,
-                'images_url'      => $req['images_url'],
-                'status'          => 0,
+                'images_url'      => $req['images'],
+                'status'          => 1,
                 'create_time'     => time(),
                 'last_login_time' => time(),
             ];
 
-            UserModel::insert($data);
+            UserModel::where(['id' => $user_id])->update($data);
             UserModel::endTrans();
 
             return ['code' => 200, 'data' => ''];
