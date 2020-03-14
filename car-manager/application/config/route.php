@@ -78,5 +78,9 @@ return [
     'get::moneyrecords$'          => 'Account/getMoneyList',//会员推荐奖励记录
     'get::querylist$'          => 'Account/getQueryList',//会员推荐奖励记录
 
-
+    //城市代理
+    'get::agentcitys$'          => 'AgentCity/getList',
+    'post::agentcitys$'    => 'AgentCity/add',
+    'put::agentcitys/(\d+)$'    => 'AgentCity/modify',
+    'delete::agentcitys/(\d+)$' => 'AgentCity/delete',
 ];
