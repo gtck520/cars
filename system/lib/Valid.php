@@ -3,6 +3,7 @@
 namespace king\lib;
 
 use king\lib\Lang;
+use king\lib\exception\BadRequestHttpException;
 
 class Valid
 {
@@ -10,21 +11,42 @@ class Valid
     private $error = false;
     private $rules = [];
     private $class;
-    private $data;
+    private $scene;
+    private $current;
+    public $data;
 
-    public static function getClass($data = '')
+    public static function getClass($data = '', $current = '')
     {
-        return new Valid($data);
+        return new Valid($data, $current);
     }
 
-    public function __construct($data = '')
+    public function __construct($data = '', $current)
     {
         $this->data = $data ?: P();
+        $this->current = $current;
+    }
+
+    public function setScene($scene)
+    {
+        $this->scene = $scene;
     }
 
     public function addRule($field, $rules, $label = '')
     {
-        $this->rules[] = [$field, $rules, $label];
+        if ($this->current) {
+            if (!is_array($this->scene)) {
+                throw new BadRequestHttpException('调用场景时, 必须设置验证场景规则');
+            }
+            if (!isset($this->scene[$this->current])) {
+                throw new BadRequestHttpException($this->current . '验证场景不存在');
+            }
+            $keys = $this->scene[$this->current] ?? '';
+            if (in_array($field, $keys)) {
+                $this->rules[] = [$field, $rules, $label];
+            }
+        } else {
+            $this->rules[] = [$field, $rules, $label];
+        }
     }
 
     public function run($class = '')//运行规则
@@ -45,7 +67,7 @@ class Valid
                             array_shift($tmpRule);
                             $param = $tmpRule;
                             if (strpos($param[0], '[') !== false) {
-                                $param_str = str_replace(['[', ']'],'', implode(',', $param));
+                                $param_str = str_replace(['[', ']'], '', implode(',', $param));
                                 $param = explode(',', $param_str);
                             }
                         } else {
@@ -95,6 +117,13 @@ class Valid
     {
         $this->error = $newError;
         return false;
+    }
+
+    public function response($class = '')
+    {
+        if (!$this->run($class)) {
+            throw new BadRequestHttpException($this->getError());
+        }
     }
 
     public function required($value, $label = '')
@@ -230,6 +259,19 @@ class Valid
         }
     }
 
+    public function size($value, $size, $label)
+    {
+        $value = trim($value);
+        if (is_array($value)) {
+            $length = count($value);
+        } else {
+            $length = strlen((string)$value);
+        }
+        if ($length != $size) {
+            $this->setError(Lang::get(['valid size', [$label, $size]]));
+        }
+    }
+
     public function confirm($value, $val, $label)
     {
         if (!isset($this->data[$val])) {
@@ -300,5 +342,4 @@ class Valid
     {
         return $this->isFloat($val, $label);
     }
-
 }

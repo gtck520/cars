@@ -41,7 +41,7 @@ class SwooleHandle extends Instance
         file_put_contents($this->pid_file, $pid);
     }
 
-    public function onWorkStart($server, $work_id)
+    public function onWorkStart($work_id)
     {
         if ($work_id >= $this->config['worker_num']) {
             swoole_set_process_name($this->config['process_name_pre'] . '-task');

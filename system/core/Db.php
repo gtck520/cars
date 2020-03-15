@@ -237,11 +237,9 @@ class Db
             if (is_array($wh) && count($wh) > 0) {
                 $whs = [];
                 foreach ($wh as $key => $value) {
-                    $opera = '';
-                    $keys = explode(',', $key);
-                    $field_key = $keys[0];
-                    $match = $this->hasOpera($keys[0]);
-                    if (isset($keys[1])) {
+                    $field_key = $this->checkRaw($key);
+                    $match = $this->hasOpera($key);
+                    if ($field_key != '?') {
                         if (!empty($match[0])) {
                             $whs[] = $this->escapeColumn($field_key, 'raw') . $this->checkRaw($value);
                         } else {
@@ -250,6 +248,7 @@ class Db
 
                         $this->setBind($value);
                     } else {
+                        $field_key = $key;
                         if (!empty($match[0])) {
                             $source_key = trim(str_replace($match[0], '', $field_key));
                             $pdo_key = $this->escapeColumn($source_key) . ' ' . strtoupper($match[0]) . ' ';
@@ -357,9 +356,22 @@ class Db
 
     public function orWhere($key = '', $opera = '=', $value = '')
     {
-        return $this->whereNew($key, $opera, $value, 'OR');
+        if ($key instanceof \Closure) {
+            return $this->whereNew($key, $opera, $value, 'OR');
+        } else {
+            if ($value === '') {
+                $value = $opera;
+                $opera = '=';
+            }
+
+            return $this->whereNew($key, $opera, $value, 'inner');
+        }
     }
 
+    /*
+     *
+     * whereOr和orWhere合法已合并,该方法已废弃
+     */
     public function whereOr($key = '', $opera = '=', $value = '')
     {
         if ($value === '') {
@@ -821,6 +833,12 @@ class Db
         $rs = $this->limit([$size])->get(['chunk']);
 
         $options = $this->select;
+        $column = $this->getSelectColumn($this->select['select']);
+        $fields = explode(',', $column);
+        if (!in_array($this->key, $fields)) {
+            Error::showError('chunk方法查询字段必须带主键');
+        }
+
         $where = str_replace('WHERE', '', ($this->wheres ?: $this->getBindWhere()) ?: 'WHERE 1');
         $binds = $this->bind;
         while ($rs) {

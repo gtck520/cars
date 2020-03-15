@@ -36,38 +36,38 @@ class Car
         $user_info = UserModel::field(['province_id','area_id', 'shop_id', 'quan_guo', 'sheng_ji'])->where(['id' => $user_id])->find();
         $orderby = ['a.create_time' => 'desc', 'a.id' => 'asc'];
 
-        $field = ['a.id', 'a.area_id', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.create_time', 'a.shop_id', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TYPE_NAME'];
-
-        // 关键字搜索
-        $query = CarModel::setTable('car a')->join('car_type b', 'a.chexing_id = b.ID')->field($field);
-
+        $field = ['a.id', 'a.area_id', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.shop_id',  'a.create_time', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TYPE_NAME'];
+    
         // 城市搜索
+        $city = '';
         if (!empty($req['city_id']) && isset($req['city_id'])) {
-            $city_level = CityModel::setTable('city_area')->where('id', '=', $req['city_id'])->value('level');
+            $city_level = CityModel::where(['id'=>$req['city_id']])->value('level');
+            $query = CarModel::setTable('car a')->join('car_type b', 'a.chexing_id = b.ID');
 
             switch ($city_level) {
                 case '2':
                     if ($user_info['sheng_ji'] == '0') {
                         return ['code' => 400, 'data' => '您没有查询省内城市的权限!'];
                     }else{
-                        $query->where('a.city_id', '=', $req['city_id']);
+                        $city = 'a.city_id';
                     }
                     break;
                 case '1':
                     if ($user_info['quan_guo'] == '0') {
                         return ['code' => 400, 'data' => '您没有查询各省的权限!'];
                     }else{
-                        $query->where('a.province_id', '=', $req['city_id']);
+                        $city = 'a.province_id';
                     }
                     break;
                 case '3':
-                    $query->where('a.area_id', '=', $req['city_id']);
+                    $city = 'a.area_id';
                     break;
             }
+            $query->where($city, '=', $req['city_id']);
         }else{
-            $query->where('a.area_id', '=', $user_info['area_id']);
+            $query = CarModel::setTable('car a')->join('car_type b', 'a.chexing_id = b.ID')->where('a.area_id', '=', $user_info['area_id']);
         }
-        
+        // 关键字搜索
         if (isset($req['search']) && !empty($req['search'])) {
             $is_bu = false;
             $search = $req['search'];
@@ -97,7 +97,6 @@ class Car
             $is_bu = false;
             $query->where('a.price', '>=', $req['high_price']);
         }
-
 
         // 颜色搜索
         if (!empty($req['colour_id']) && isset($req['colour_id'])) {
@@ -159,7 +158,7 @@ class Car
             }
         }
         //
-        $car_list = $query->where('a.status','=',1)->orderby($orderby)->page($req['c'], $req['p']);
+        $car_list = $query->field($field)->where('a.status','=',1)->orderby($orderby)->page($req['c'], $req['p']);
         if ($car_list['total'] > 0) {
             if ($is_bu) {
                 if ($car_list['total'] < $car_num) {
@@ -334,6 +333,8 @@ class Car
         if (!is_numeric($req['price'])) {
             return ['code' => 400, 'data' => '价格非法!'];
         }
+
+        $user_info = UserModel::where(['id' => $user_id])->find();
         //车龄
         $age = Helper::birthday2($req['shangpai_time']);
         //省级县id
@@ -363,6 +364,7 @@ class Car
             'biansu' => $req['biansuxiang'],
             'zhengming' => $req['zhemgming'],
             'type_name' => $req['cheliang_type'],
+            'shop_id'  => $user_info['shop_id'],
         ]);
 
         //更新各种列表缓存

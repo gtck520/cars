@@ -92,6 +92,13 @@ class Loader
                     $func = '__call';
                 }
                 Loader::$method = $func;
+
+                if (PHP_SAPI !== 'cli') {
+                    if (ob_get_level() > 0) {
+                        ob_end_clean();
+                    }
+                    ob_start();
+                }
                 return \king\core\Instance::make($class_name, $func, $segs['call_args']);
             } else {
                 Error::showError('方法错误：' . $class_name . '.' . $func);
