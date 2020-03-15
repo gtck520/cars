@@ -41,6 +41,7 @@ class Admin extends AdminController
         $req = json_decode(put(), true);
         AdminValidate::checkInput($req);
         $__admin_id = parent::$admin_id;
+        $req['password']=$req['password'] ?? "";
         $res = AdminService::modify($__admin_id ,$admin_id, $req['name'], $req['mobile'], $req['password'], $req['rid']);
         Response::SendResponseJson($res['code'], $res['data']);
     }

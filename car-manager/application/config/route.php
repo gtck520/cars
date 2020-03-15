@@ -20,6 +20,7 @@ return [
 
     //管理组管理
     'get::group$'          => 'Group/getList',
+    'get::getgroups$'          => 'Group/getGroups',
     'post::group$'         => 'Group/add',
     'put::group/(\d+)$'    => 'Group/modify',
     'delete::group/(\d+)$' => 'Group/delete',

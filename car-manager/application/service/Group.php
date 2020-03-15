@@ -25,7 +25,12 @@ class Group
         }
         return ['code' => 200, 'data' => Helper::formatTimt($man_role_list)];
     }
-
+    //获取下拉
+    public static function getGroups()
+    {
+        $res = ManRoleModel::field('id,rolename')->get();
+        return ['code' => 200, 'data' => $res];
+    }
     //添加
     public static function add($admin_id, $req)
     {

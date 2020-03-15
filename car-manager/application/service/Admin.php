@@ -12,7 +12,7 @@ class Admin
     public static function getList($req)
     {
         $orderby = ['id' => 'desc'];
-        $res = AdminModel::field('id,name,mobile')->orderby($orderby)->page($req['c'], $req['p']);
+        $res = AdminModel::field('id,name,mobile,rid')->orderby($orderby)->page($req['c'], $req['p']);
         return ['code' => 200, 'data' => $res];
     }
     //获取下拉
@@ -69,12 +69,15 @@ class Admin
         //
         $old_value = AdminModel::field(['name', 'mobile'])->where(['id' => $admin_id])->find();
 
-        AdminModel::where(['id' => $admin_id])->update([
+        $update=[
             'name' => $name,
             'mobile' => $mobile,
             'rid'   => $rid,
-            'password' => Helper::getPassword($password),
-        ]);
+        ];
+        if(!empty($password)){
+            $update['password'] =Helper::getPassword($password);
+        }
+        AdminModel::where(['id' => $admin_id])->update($update);
         //
         
         Helper::saveToLog($__admin_id, '', "{$old_value['name']}:{$old_value['mobile']}", "$name:$mobile", "修改管理员ID:$admin_id [{$old_value['name']}:{$old_value['mobile']} 为 $admin_id:$name:$mobile]");

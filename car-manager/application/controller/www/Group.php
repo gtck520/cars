@@ -14,7 +14,11 @@ class Group extends AdminController
         $res = GroupService::getList();
         Response::SendResponseJson($res['code'], $res['data']);
     }
-
+    //下拉
+    public function getGroups(){
+        $res = GroupService::getGroups();
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
     //添加
     public function add(){
         $req = P();
