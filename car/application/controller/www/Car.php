@@ -150,11 +150,11 @@ class Car extends UserController
     }
 
     // 车辆编辑
-    public function  edit(){
-        $req = P();
+    public function  edit($car_id){
+        $req = json_decode(Put(), true);
         CarValidate::checkInput($req);
         $user_id = parent::$user_id;
-        $res = CarService::edit($user_id, $req);
+        $res = CarService::edit($user_id, $car_id, $req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
 

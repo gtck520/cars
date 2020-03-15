@@ -55,6 +55,8 @@ return [
     'get::cheliangleixing$'  => 'Car/getCarCLLX',
     //查看他的车源
     'get::(\d+)/cars$'  => 'Car/getUserCars',
+    //编辑车辆
+    'put::(\d+)/car$'  => 'Car/edit',
 
     //帮助文本
     'get::text$'        => 'Text/get',

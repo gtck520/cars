@@ -505,6 +505,10 @@ class Car
     //编辑车辆
     public static function edit($user_id, $car_id, $req)
     {
+        if (!CarModel::where(['user_id' => $user_id, 'id' => $car_id])->find()) {
+            return ['code' => 400, 'data' => '无此车辆!'];
+        }
+
         $city_res = CityModel::where(['id' => $req['city_id']])->find();
         if (!$city_res) {
             return ['code' => 400, 'data' => '没有查询到这个城市!'];
@@ -514,7 +518,7 @@ class Car
             return ['code' => 400, 'data' => '城市参数错误!'];
         }
         
-        $yanse_id = CarColourModel::where(['name' => $req['yanse']])->find();
+        $yanse_id = CarColourModel::where(['name' => $req['yanse']])->find()['id'];
         if (!$yanse_id) {
             $yanse_id = CarColourModel::insert(['name' => $req['yanse']]);
         }
@@ -523,13 +527,11 @@ class Car
             return ['code' => 400, 'data' => '价格非法!'];
         }
 
-        $user_info = UserModel::where(['id' => $user_id])->find();
         //车龄
         $age = Helper::birthday2($req['shangpai_time']);
         //省级县id
         $city_ids = explode(',', $city_res['path']) ;
-        CarModel::insert([
-            'user_id' => $user_id,
+        CarModel::where(['user_id' => $user_id, 'id' => $car_id])->update([
             'province_id' =>  $city_ids[0],
             'city_id' => $city_ids[1],
             'area_id' => $city_ids[2],
@@ -547,13 +549,10 @@ class Car
             'notes'=>$req['notes'],
             'images_url'=>$req['images'],
             'status'=> 0,
-            'is_hidden' => 0,
-            'create_time' => time(),
             'age' =>$age,
             'biansu' => $req['biansuxiang'],
             'zhengming' => $req['zhemgming'],
             'type_name' => $req['cheliang_type'],
-            'shop_id'  => $user_info['shop_id'],
         ]);
 
         //更新各种列表缓存
