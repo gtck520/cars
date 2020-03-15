@@ -4,27 +4,36 @@ return [
     'post::logins$'         => 'Login/login',
     'post::easylogin$'         => 'Login/easylogin',
     'post::checkToken$'     => 'login/checkToken',
+    //注册
     'post::register$'       => 'User/register',
+    //用户信息
     'get::userinfo$'       => 'User/userInfo',
     'get::user/cars$'       => 'User/Cars',  //我的车源
     'get::user/price$'       => 'User/getPrice',  //我的出价记录  未完成...
+    //删除收藏
     'delete::enshrine/(\d+)$'  => 'User/enshrineDel',
+    //删除浏览记录
     'delete::browse/(\d+)$'  => 'User/browseDel',
     //充值
     'post::recharge$'   => 'User/recharge',
     //添加电话量
     'post::car/(\d+)/phone$'   => 'User/addPhoneNum',
+    //查看其他用户信息
+    'get::/(\d+)/info$'       => 'User/getUserInfo',
 
     //门店联想列表
     'get::shops$'        => 'Car/shops',
     //车 
-    'get::cars$'        => 'Car/getList',    //有bug 待修复..
+    'get::cars$'        => 'Car/getList',
     'get::cars/name$'   => 'Car/getCarName',
     'post::cars/cache$' => 'Car/setCache',
     'post::cars$'       => 'Car/add',
     'get::cars/(\d+)/info$'        => 'Car/getCarInfo',
+    //添加举报
     'post::cars/(\d+)/impeach$'   => 'Car/impeach',
+    //添加浏览
     'get::browse$'  => 'Car/getCarBrowseList',
+    //添加收藏
     'get::enshrines$'  => 'Car/getCarEnshrinesList',
     //添加帮卖
     'post::car/(\d+)/bm$'  => 'Car/addBM',
@@ -44,6 +53,9 @@ return [
     'get::pailiang$'  => 'Car/getCarPL',
     //车辆类型列表
     'get::cheliangleixing$'  => 'Car/getCarCLLX',
+    //查看他的车源
+    'get::(\d+)/cars$'  => 'Car/getUserCars',
+
     //帮助文本
     'get::text$'        => 'Text/get',
 
