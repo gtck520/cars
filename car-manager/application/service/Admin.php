@@ -9,12 +9,18 @@ use app\model\ManRole as ManRoleModel;
 class Admin
 {
     //列表
-    public static function getList()
+    public static function getList($req)
+    {
+        $orderby = ['id' => 'desc'];
+        $res = AdminModel::field('id,name,mobile')->orderby($orderby)->page($req['c'], $req['p']);
+        return ['code' => 200, 'data' => $res];
+    }
+    //获取下拉
+    public static function getAdmins()
     {
         $res = AdminModel::field('id,name,mobile')->get();
         return ['code' => 200, 'data' => $res];
     }
-
     //添加
     public static function add($admin_id, $name, $mobile, $password, $rid)
     {

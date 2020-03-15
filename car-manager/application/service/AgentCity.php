@@ -12,7 +12,7 @@ class AgentCity
     public static function getList($req)
     {
         $orderby = ['create_time' => 'desc'];
-        $query = AgentCityModel::setTable('agent_city ac')->join('admins a', 'ac.admin_id = b.id');
+        $query = AgentCityModel::setTable('agent_city ac')->join('admins a', 'ac.admin_id = a.id');
         if (!empty($req['search'])) {
             $search = $req['search'];
             $query->andWhere(function ($query) use ($search) {
@@ -20,11 +20,15 @@ class AgentCity
                 $query->whereOr('a.mobile', 'like', '%' . $search . '%');
             });
         }
-        $res = $query::orderby($orderby)->page($req['c'], $req['p']);
+        $res = $query->field(['a.name','ac.id','ac.agent_city_id','ac.create_time','ac.admin_id'])->orderby($orderby)->page($req['c'], $req['p']);
         foreach ($res['rs'] as $key=>$value){
             $res['rs'][$key]['create_time']=date('Y-m-d H:i:s',$value['create_time']);
             $city_area=CityAreaModel::where(['id'=>$value['agent_city_id']])->find();
+            $city_array=explode(",",$city_area['path']);
             $res['rs'][$key]['city_fullname']=$city_area['fullname'];
+            $res['rs'][$key]['province_id']=$city_array[0] ?? 0;
+            $res['rs'][$key]['city_id']=$city_array[1] ?? 0;
+            $res['rs'][$key]['area_id']=$city_array[2] ?? 0;
         }
         return ['code' => 200, 'data' => $res];
     }

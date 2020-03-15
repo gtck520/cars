@@ -6,6 +6,7 @@ return [
 
     //管理员
     'get::admins$'          => 'Admin/getList',
+    'get::getadmins$'          => 'Admin/getAdmins',
     'post::admins$'         => 'Admin/add',
     'put::admins/(\d+)$'    => 'Admin/modify',
     'delete::admins/(\d+)$' => 'Admin/delete',

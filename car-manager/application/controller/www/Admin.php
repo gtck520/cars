@@ -15,7 +15,15 @@ class Admin extends AdminController
      */
     //列表
     public function getList(){
-        $res = AdminService::getList();
+        $req=G();
+        $req['c']= $req['c'] ?? 10;
+        $req['p']= $req['p'] ?? 1;
+        $res = AdminService::getList($req);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+    //获取所有管理员下拉
+    public function getAdmins(){
+        $res = AdminService::getAdmins();
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
