@@ -65,14 +65,15 @@ class Signature extends Instance
         if (empty($query)) {
             return false;
         }
+
         ksort($query);
         $sign = array();
-
         foreach ($query as $key => $val) {
             if (!is_array($val) && $val !== null && $this->sign_parameter != $key) {
                 $sign[] = $key . '=' . $val;
             }
         }
+
         return md5(implode(':', $sign) . $this->sign_key);
     }
 
@@ -81,13 +82,15 @@ class Signature extends Instance
         if (empty($query)) {
             return false;
         }
+
         ksort($query);
-        $sign = array();
+        $sign = [];
         foreach ($query as $key => $val) {
             if (!is_array($val) && $val !== null && $this->sign_parameter !== $key) {
                 $sign[] = $key . '=' . $val;
             }
         }
+
         return implode(':', $sign) . $this->sign_key;
     }
 

@@ -17,6 +17,7 @@ return [
     'valid lt' => '%s的值必须小于%s',
     'valid gte' => '%s的值必须大于等于%s',
     'valid lte' => '%s的值必须小于等于%s',
+    'valid size' => '%s的长度必须为%s位',
     'valid numeric' => '%s参数必须为数值',
     'valid date not found' => '%s不存在',
     'valid confirm' => '%s值不一致',

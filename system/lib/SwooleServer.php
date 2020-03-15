@@ -49,7 +49,9 @@ class SwooleServer extends Instance
                 $app = SwooleHandle::getClass();
                 var_dump($app);
                 $this->server = new Swoole\Http\Server($this->config['host'], $this->config['port']);
-                $this->server->on('workerstart', array($app, 'onWorkerStart'));
+                $this->server->on('workerstart', function(SwooleHandle $handle) {
+                    $handle->onWorkStart($this->server->work_id);
+                });
                 $this->server->on('request', array($app, 'onRequest'));
                 $this->server->start();
                 break;

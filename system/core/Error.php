@@ -47,10 +47,7 @@ class Error
         if (PHP_SAPI === 'cli') {
             echo $msg;
         } else {
-            if (!isset($_SERVER['ENV_FILE']) || $_SERVER['ENV_FILE'] == '.env') {
-                header('HTTP/1.1 500 Internal Server Error');
-            }
-
+            header('HTTP/1.1 500 Internal Server Error');
             $error_file = C('error_file') ?: 'error';
             require APP_PATH . 'view/common/' . $error_file . EXT;
             if (C('log_error') == true) {
@@ -69,7 +66,7 @@ class Error
             if (is_file($file)) {
                 chmod($file, 0664);
             }
-            $log_full_str = '网址:' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . ' 访问者IP:' . Input::ipAddr() . ' ' . $log_str;
+            $log_full_str = '网址:' . ($_SERVER['SERVER_NAME'] ?? '') . ($_SERVER['REQUEST_URI'] ?? '') . ' 访问者IP:' . Input::ipAddr() . ' ' . $log_str;
             error_log($log_full_str, 3, $file);
             if (C('log_api')) {
                 $req = new Request(C('log_api'), 'post');

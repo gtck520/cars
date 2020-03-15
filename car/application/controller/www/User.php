@@ -56,6 +56,9 @@ class User extends UserController
     public function Cars()
     {
         $req = G();
+        if (!isset($req['status'])) {
+            Response::SendResponseJson(400, 'status 未定义');
+        }
         if (!in_array($req['status'],['-1','1', '0'])) {
             Response::SendResponseJson(400, 'status 不正确');
         }
@@ -79,4 +82,11 @@ class User extends UserController
         $res = UserService::getPrice($user_id);
         Response::SendResponseJson($res['code'], $res['data']);
     }
+
+    //获取其他用户信息
+    public function getUserInfo($user_id)
+    {
+        $res = UserService::getUserInfo($user_id);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }   
 }

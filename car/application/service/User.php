@@ -84,13 +84,19 @@ class User
         }
     }
 
+    //当前用户信息
     public static function userInfo($user_id)
     {
-        $user_info = UserModel::where(['id' => $user_id])->find();
-        $user_info['shop'] = ShopModel::where(['id' => $user_info['shop_id']])->find();
-        $user_info = Helper::formatTimt($user_info, ['create_time', 'last_login_time']);
-        $user_info['mobile'] =  substr_replace($user_info['mobile'], '****', 3, 4);
-        unset($user_info['shop_id']);
+        $field = ['id', 'mobile', 'nickname', 'avatar', 'realname', 'city_fullname', 'openid', 'quan_guo', 'sheng_ji', 'images_url', 'create_time', 'last_login_time', 'shop_id'];
+        $user_info = UserModel::field($field)->where(['id' => $user_id])->find();
+        if ($user_info) {
+            $user_info['shop'] = ShopModel::field(['id', 'name', 'address'])->where(['id' => $user_info['shop_id']])->find();
+            $user_info = Helper::formatTimt($user_info, ['create_time', 'last_login_time']);
+            $user_info['mobile'] =  substr_replace($user_info['mobile'], '****', 3, 4);
+            $user_info['images_url'] = explode('|', $user_info['images_url']) ;
+            unset($user_info['shop_id']);
+        }
+       
         return ['code' => 200, 'data' => $user_info];
     }
 
@@ -160,15 +166,17 @@ class User
         $field = ['a.id', 'a.area_id', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.create_time', 'a.liulan_num', 'a.phone_num', 'a.bangmai_num', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TYPE_NAME'];
         $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.user_id', '=', $user_id)->get();
 
-        foreach ($car_list as &$value) {
-            //格式化返回
-            $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
-            $value['city_name'] = CityModel::where(['id' => $value['area_id']])->value(['name']);
-            $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['TYPE_NAME']}";
-            $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
-            $value['price_num'] = CarPriceModel::where(['user_id' => $user_id])->count();
-            unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TYPE_NAME']);
-            
+        if ($car_list) {
+            foreach ($car_list as &$value) {
+                //格式化返回
+                $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
+                $value['city_name'] = CityModel::where(['id' => $value['area_id']])->value(['name']);
+                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['TYPE_NAME']}";
+                $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
+                $value['price_num'] = CarPriceModel::where(['user_id' => $user_id])->count();
+                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TYPE_NAME']);
+                
+            }
         }
 
         return ['code' => 200, 'data' => $car_list];
@@ -187,4 +195,22 @@ class User
         CarPriceModel::where(['user_id' => $user_id])->get();
         return ['code' => 200, 'data' => ''];
     }
+
+
+    //其他用户信息
+    public static function getUserInfo($user_id)
+    {
+        $field = ['id', 'mobile', 'nickname', 'avatar', 'realname', 'city_fullname', 'create_time', 'last_login_time', 'shop_id'];
+        //已审核用户
+        $user_info = UserModel::field($field)->where(['id' => $user_id, 'status' => 1])->find();
+        if ($user_info) {
+            $user_info['shop'] = ShopModel::field(['id', 'name', 'address'])->where(['id' => $user_info['shop_id']])->find();
+            $user_info = Helper::formatTimt($user_info, ['create_time', 'last_login_time']);
+            // $user_info['mobile'] =  substr_replace($user_info['mobile'], '****', 3, 4);
+            unset($user_info['shop_id'], $user_info['openid']);
+        }
+       
+        return ['code' => 200, 'data' => $user_info];
+    }
+    
 }

@@ -123,7 +123,7 @@ class Captcha extends Instance
         }
 
         if (sha1(strtolower($captcha)) == $code) {
-            Cache::delete('code:' . $session_id);
+            Cache::del('code:' . $session_id);
             return true;
         } else {
             return false;
