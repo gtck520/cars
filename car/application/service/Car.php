@@ -346,7 +346,7 @@ class Car
             return ['code' => 400, 'data' => '城市参数错误!'];
         }
         
-        $yanse_id = CarColourModel::where(['name' => $req['yanse']])->find();
+        $yanse_id = CarColourModel::where(['name' => $req['yanse']])->find()['id'];
         if (!$yanse_id) {
             $yanse_id = CarColourModel::insert(['name' => $req['yanse']]);
         }
