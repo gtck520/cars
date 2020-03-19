@@ -142,6 +142,7 @@ class Car
 
         // 排序
         if (!empty($req['sort']) && isset($req['sort'])) {
+            $is_bu = false;
             switch ($req['sort']) {
                 case '1':
                     // 价格最低
