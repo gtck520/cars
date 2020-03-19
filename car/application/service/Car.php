@@ -142,13 +142,14 @@ class Car
 
         // 排序
         if (!empty($req['sort']) && isset($req['sort'])) {
-            $is_bu = false;
             switch ($req['sort']) {
                 case '1':
+                    $is_bu = false;
                     // 价格最低
                     $orderby = ['a.price' => 'asc', 'a.id' => 'asc'];
                     break;
                 case '2':
+                    $is_bu = false;
                     // 价格最高
                     $orderby = ['a.price' => 'desc', 'a.id' => 'asc'];
                     break;
