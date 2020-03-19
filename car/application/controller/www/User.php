@@ -52,7 +52,7 @@ class User extends UserController
         UserService::recharge(parent::$user_id, $req);
     }
 
-    //发布的车
+    //发布的车  我的车源  
     public function Cars()
     {
         $req = G();
@@ -63,7 +63,7 @@ class User extends UserController
             Response::SendResponseJson(400, 'status 不正确');
         }
         $user_id = self::$user_id;
-        $res = UserService::Cars($user_id);
+        $res = UserService::Cars($user_id, $req['status']);
         Response::SendResponseJson($res['code'], $res['data']);
     }
 

@@ -161,10 +161,10 @@ class User
         }
     }
 
-    //发布的车  
-    public static function Cars($user_id){
+    //发布的车 我的车源  
+    public static function Cars($user_id, $status){
         $field = ['a.id', 'a.area_id', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.create_time', 'a.liulan_num', 'a.phone_num', 'a.bangmai_num', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TYPE_NAME'];
-        $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.user_id', '=', $user_id)->get();
+        $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.user_id', '=', $user_id)->where('a.status', '=', $status)->get();
 
         if ($car_list) {
             foreach ($car_list as &$value) {
