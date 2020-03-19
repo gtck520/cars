@@ -89,13 +89,13 @@ class Car
         // 最小价格区间查询
         if (!empty($req['low_price']) && isset($req['low_price'])) {
             $is_bu = false;
-            $query->where('a.price', '<=', $req['low_price']);
+            $query->where('a.price', '>=', $req['low_price']);
         }
 
         // 最大价格区间查询
         if (!empty($req['high_price']) && isset($req['high_price'])) {
             $is_bu = false;
-            $query->where('a.price', '>=', $req['high_price']);
+            $query->where('a.price', '<=', $req['high_price']);
         }
 
         // 颜色搜索
