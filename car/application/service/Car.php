@@ -295,7 +295,7 @@ class Car
         CarModel::where(['id' => $car_id])->update(['liulan_num +' => 1]);
         //审核通过的车
         $field = ['user_id', 'chejiahao', 'pinpai', 'chexing_id', 'shangpai_time', 'price', 'biaoxianlicheng', 'nianjiandaoqi', 'qiangxiandaoqi', 'notes', 'images_url', 'yanse_id', 'area_id'];
-        $car_info = CarModel::field($field)->where(['id' => $car_id, 'status' => 1])->find();
+        $car_info = CarModel::field($field)->where(['id' => $car_id])->find();
         $car_info = Helper::formatTimt($car_info, ['shangpai_time', 'nianjiandaoqi', 'qiangxiandaoqi'], 'Y-m-d');
         $car_info['yanse'] = CarColourModel::where(['id' => $car_info['yanse_id']])->value('name');
         $car_info['biaoxianlicheng'] = $car_info['biaoxianlicheng'] . '万公里';
