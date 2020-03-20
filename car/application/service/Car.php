@@ -321,6 +321,9 @@ class Car
     //举报
     public static function impeach($user_id, $car_id, $type_id)
     {
+        if (!is_numeric($car_id)) {
+            return ['code' => 400, 'data' => '车辆id必须是数字 !'];
+        }
         $res = ImpeachModel::where(['user_id' => $user_id, 'car_id' => $car_id])->find();
         if ($res) {
             return ['code' => 400, 'data' => '您已经投诉过该车辆, 正在处理中!'];
@@ -442,6 +445,9 @@ class Car
      // 添加收藏
     public static function addEnshrines($user_id, $car_id)
     {
+        if (!is_numeric($car_id)) {
+            return ['code' => 400, 'data' => '车辆id必须是数字 !'];
+        }
         $res = CarScModel::where(['user_id' => $user_id, 'car_id' => $car_id])->find();
         if ($res) {
             return ['code' => 400, 'data' => '您已经收藏过了!'];
@@ -471,6 +477,9 @@ class Car
     // 添加帮卖
     public static function addBM($user_id, $car_id)
     {
+        if (!is_numeric($car_id)) {
+            return ['code' => 400, 'data' => '车辆id必须是数字 !'];
+        }
         $res = CarBMModel::where(['user_id' => $user_id, 'car_id' => $car_id])->find();
         if ($res) {
             return ['code' => 400, 'data' => '您已经帮卖过了!'];
@@ -509,6 +518,9 @@ class Car
     //编辑车辆
     public static function edit($user_id, $car_id, $req)
     {
+        if (!is_numeric($car_id)) {
+            return ['code' => 400, 'data' => '车辆id必须是数字 !'];
+        }
         if (!CarModel::where(['user_id' => $user_id, 'id' => $car_id])->find()) {
             return ['code' => 400, 'data' => '无此车辆!'];
         }
