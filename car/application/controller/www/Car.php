@@ -149,6 +149,13 @@ class Car extends UserController
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
+    //门店车源列表
+    public function getShopCars($shop_id)
+    {
+        $res = CarService::getShopCars($shop_id);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
     // 车辆编辑
     public function  edit($car_id){
         $req = json_decode(Put(), true);

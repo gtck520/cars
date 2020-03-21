@@ -271,6 +271,28 @@ class Car
          return ['code' => 200, 'data' => $car_name];
      }
 
+     //门店车源列表
+    public static function getShopCars($shop_id)
+    {
+        $orderby = ['b.create_time' => 'desc'];
+        
+        $field = ['a.create_time','b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url', 'b.status', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TYPE_NAME'];
+
+        $car_list = CarModel::setTable('shop a')->join('car b', 'a.id = b.shop_id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->where('b.shop_id', '=', $shop_id)->where('b.status', '=', 1)->orderby($orderby)->get();
+
+        if ($car_list) {
+            foreach ($car_list as &$value) {
+                $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
+                $value['city_name'] = CityModel::where(['id' => $value['area_id']])->value(['name']);
+                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['TYPE_NAME']}";
+                $value['image'] = explode('|', $value['images_url']) ? explode('|', $value['images_url'])[0] : [];
+                $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
+                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TYPE_NAME'], $value['images_url']);
+            }
+        }
+        return ['code' => 200, 'data' => $car_list];
+    }
+
     //更新缓存
     public static function setCache()
     {
