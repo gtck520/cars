@@ -69,7 +69,7 @@ class User
                 'quan_guo'        => 0,
                 'sheng_ji'        => 0,
                 'images_url'      => $req['images'],
-                'status'          => 1,
+                'status'          => 0,
                 'create_time'     => time(),
                 'last_login_time' => time(),
             ];

@@ -48,7 +48,7 @@ class Login
                 'nickname'=>$req['nickname'] ?? '',
                 'avatar'=>$req['avatar'] ?? '',
                 'realname'=>$req['realname'] ?? '',
-                'level_id'=>1,
+                'level_id'=>0,
                 'openid'=>$res['openid'],
                 'images_url'=>'',
                 'status'=>0,
