@@ -85,4 +85,8 @@ return [
     'post::agentcitys$'    => 'AgentCity/add',
     'put::agentcitys/(\d+)$'    => 'AgentCity/modify',
     'delete::agentcitys/(\d+)$' => 'AgentCity/delete',
+
+    //首页统计
+    'get::indexs$'          => 'Index/index',
+    'get::indexs/list$'     => 'Index/getList',
 ];
