@@ -189,7 +189,7 @@ class Car
                 }
             }
         }
-        dd($car_list);
+        
         $same_shop_car = [];
         if ($car_list) {
             foreach ($car_list['rs'] as $key => &$value) {
