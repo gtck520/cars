@@ -20,7 +20,7 @@ return [
     'post::car/(\d+)/phone$'   => 'User/addPhoneNum',
     //查看其他用户信息
     'get::/(\d+)/info$'       => 'User/getUserInfo',
-
+ 
     //门店联想列表
     'get::shops$'        => 'Car/shops',
     //车 
@@ -57,6 +57,8 @@ return [
     'get::(\d+)/cars$'  => 'Car/getUserCars',
     //编辑车辆
     'put::(\d+)/car$'  => 'Car/edit',
+    //门店车源列表
+    'get::cars/(\d+)/shop$'       => 'Car/getShopCars',
 
     //帮助文本
     'get::text$'        => 'Text/get',
@@ -80,4 +82,6 @@ return [
 
     //上传图片
     'post::upload/images' => 'U/images',
+    //全国城市
+    'get::city' => 'Car/getCity',
 ];
