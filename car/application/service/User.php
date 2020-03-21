@@ -87,12 +87,12 @@ class User
     //当前用户信息
     public static function userInfo($user_id)
     {
-        $field = ['id', 'mobile', 'nickname', 'avatar', 'realname', 'city_fullname', 'openid', 'quan_guo', 'sheng_ji', 'images_url', 'create_time', 'last_login_time', 'shop_id'];
+        $field = ['id', 'mobile', 'nickname', 'avatar', 'realname', 'city_fullname', 'openid', 'quan_guo', 'sheng_ji', 'images_url', 'money', 'create_time', 'last_login_time', 'shop_id'];
         $user_info = UserModel::field($field)->where(['id' => $user_id])->find();
         if ($user_info) {
-            $user_info['shop'] = ShopModel::field(['id', 'name', 'address'])->where(['id' => $user_info['shop_id']])->find();
+            $user_info['shop'] = ShopModel::field(['id', 'name', 'address'])->where(['id' => $user_info['shop_id']])->find() ?: '';
             $user_info = Helper::formatTimt($user_info, ['create_time', 'last_login_time']);
-            $user_info['mobile'] =  substr_replace($user_info['mobile'], '****', 3, 4);
+            // $user_info['mobile'] =  substr_replace($user_info['mobile'], '****', 3, 4);
             $user_info['images_url'] = explode('|', $user_info['images_url']) ;
             unset($user_info['shop_id']);
         }
