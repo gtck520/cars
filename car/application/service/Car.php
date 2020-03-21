@@ -320,7 +320,7 @@ class Car
         $car_info = CarModel::field($field)->where(['id' => $car_id])->find();
         $car_info = Helper::formatTimt($car_info, ['shangpai_time', 'nianjiandaoqi', 'qiangxiandaoqi'], 'Y-m-d');
         $car_info['yanse'] = CarColourModel::where(['id' => $car_info['yanse_id']])->value('name');
-        $car_info['biaoxianlicheng'] = $car_info['biaoxianlicheng'] . '万公里';
+        $car_info['biaoxianlicheng'] = $car_info['biaoxianlicheng'];
         $car_info['city_name'] = CityModel::where(['id' => $car_info['area_id']])->value(['fullname']);
         $car_info['realname'] = UserModel::where(['id' => $car_info['user_id']])->value(['realname']);
         $car_info['realname'] = Helper::encryptName($car_info['realname']);
