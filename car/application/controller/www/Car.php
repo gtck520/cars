@@ -182,4 +182,11 @@ class Car extends UserController
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
+    //城市数据
+    public function getCity()
+    {
+        $res = CarService::getCity();
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
 }

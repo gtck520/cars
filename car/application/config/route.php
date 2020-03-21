@@ -82,4 +82,6 @@ return [
 
     //上传图片
     'post::upload/images' => 'U/images',
+    //全国城市
+    'get::city' => 'Car/getCity',
 ];
