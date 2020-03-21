@@ -5,7 +5,7 @@ namespace app\cache;
 use king\lib\Cache;
 use app\model\City as CityModel;
 use app\model\CarType as CarTypeModel;
-class Car
+class Car  extends Cache
 {
     private static $key = 'car:name:list';
     private static $car_type_key = 'car:type:list';
