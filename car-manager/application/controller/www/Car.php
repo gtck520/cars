@@ -12,6 +12,7 @@ class Car extends AdminController
     public function getList(){
         $req = G();
         CarValidate::checkPage($req);
+        $req=parent::checkAgent($req);
         $res = CarService::getList($req);
         Response::SendResponseJson($res['code'], $res['data']);
     }

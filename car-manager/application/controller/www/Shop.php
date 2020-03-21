@@ -11,6 +11,7 @@ class Shop extends AdminController
     //列表
     public function getList(){
         $req = G();
+        $req=parent::checkAgent($req);
         $res = ShopService::getList($req);
         Response::SendResponseJson($res['code'], $res['data']);
     }

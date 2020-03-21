@@ -88,15 +88,12 @@ class AdminController
         $current_city=0;
         if(!empty($req["province_id"])){
             $current_city=$req["province_id"];
-            $back_city['province_id']=$req["province_id"];
         }
         if(!empty($req["city_id"])){
             $current_city=$req["city_id"];
-            $back_city['city_id']=$req["city_id"];
         }
         if(!empty($req["area_id"])){
             $current_city=$req["area_id"];
-            $back_city['area_id']=$req["area_id"];
         }
         //判断是否代理人，是的话取默认代理人城市权限， 并且切换城市需校验权限
         $admin_id = self::loginId();
@@ -106,7 +103,7 @@ class AdminController
             $agents=AgentCityModel::where(['admin_id'=>$admin_id])->get();
             foreach ($agents as $key=>$value){
                 $result=CityAreaModel::where('path', 'like', '%' . $value['agent_city_id'] . '%')->get();
-                $agents_citys=carray_column($result,'id');
+                $agents_citys=array_column($result,'id');
 
                 if(in_array($current_city,$agents_citys)){//当前城市存在于已拥有的权限中，验证通过返回所筛选的城市
                    break;
@@ -114,17 +111,17 @@ class AdminController
                     if($current_city==0){
                         $default_city=CityAreaModel::field(['path'])->where(['id'=>$value['agent_city_id']])->find();
                         $city_array=explode(',',$default_city['path']);
-                        $back_city['province_id'] = $city_array[0] ?? '';
-                        $back_city['city_id'] = $city_array[1] ?? '';
-                        $back_city['area_id'] = $city_array[2] ?? '';
+                        $req['province_id'] = $city_array[0] ?? '';
+                        $req['city_id'] = $city_array[1] ?? '';
+                        $req['area_id'] = $city_array[2] ?? '';
                     }else{
-                        $back_city=false;
+                        Response::SendResponseJson(400, '您没有该城市代理权限');
                     }
                 }
             }
          }
 
-        return $back_city;
+        return $req;
 
 
 

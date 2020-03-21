@@ -13,7 +13,25 @@ class User
     public static function getList($req)
     {
         $orderby = ['last_login_time' => 'desc'];
-        $res = UserModel::orderby($orderby)->page($req['c'], $req['p']);
+        $query = UserModel::setTable('user');
+        // 城市筛选
+        if (!empty($req['province_id'])) {
+            $query->where('province_id', '=', $req['province_id']);
+        }
+        if (!empty($req['city_id']) ) {
+            $query->where('city_id', '=', $req['city_id']);
+        }
+        if (!empty($req['area_id'])) {
+            $query->where('area_id', '=', $req['area_id']);
+        }
+        //发布人人号码
+        if (!empty($req['mobile'])) {
+            $query->andWhere(function ($query) use ($req) {
+                $query->where('mobile', 'like', '%' . $req['mobile'] . '%');
+                $query->whereOr('realname', 'like', '%' . $req['mobile'] . '%');
+            });
+        }
+        $res = $query->orderby($orderby)->page($req['c'], $req['p']);
         return ['code' => 200, 'data' => Helper::formatTimt($res, ['create_time', 'last_login_time'])];
     }
 

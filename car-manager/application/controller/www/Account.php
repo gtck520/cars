@@ -13,6 +13,7 @@ class Account extends AdminController
     public function getPayList(){
         $req = G();
         Common::checkPage($req);
+        $req=parent::checkAgent($req);
         $res = AccountService::getCostList($req,0);
         Response::SendResponseJson($res['code'], $res['data']);
     }
@@ -20,6 +21,7 @@ class Account extends AdminController
     public function getInviteList(){
         $req = G();
         Common::checkPage($req);
+        $req=parent::checkAgent($req);
         $res = AccountService::getCostList($req,1);
         Response::SendResponseJson($res['code'], $res['data']);
     }
@@ -27,6 +29,7 @@ class Account extends AdminController
     public function getMoneyList(){
         $req = G();
         Common::checkPage($req);
+        $req=parent::checkAgent($req);
         $res = AccountService::getMoneyRecords($req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
@@ -34,6 +37,7 @@ class Account extends AdminController
     public function getQueryList(){
         $req = G();
         Common::checkPage($req);
+        $req=parent::checkAgent($req);
         $res = AccountService::getQueryList($req);
         Response::SendResponseJson($res['code'], $res['data']);
     }

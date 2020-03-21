@@ -13,6 +13,7 @@ class User extends AdminController
     public function getList(){
         $req = G();
         UserValidate::checkPage($req);
+        $req=parent::checkAgent($req);
         $res = UserService::getList($req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
@@ -26,6 +27,7 @@ class User extends AdminController
      //修改用户
      public function update($user_id){
         $req = json_decode(Put(), true);
+        $req=parent::checkAgent($req);
         $admin_id = parent::$admin_id;
         $res = UserService::modify($admin_id,$user_id, $req);
         Response::SendResponseJson($res['code'], $res['data']);
