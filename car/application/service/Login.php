@@ -19,6 +19,7 @@ class Login
     //登录
     public static function login($req)
     {
+        CarCache::set('testlogins');
         $params = [
             'appid'  => C('app_id'),
             'secret' => C('secret'),
