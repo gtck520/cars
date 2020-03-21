@@ -32,7 +32,7 @@ class Admin extends AdminController
         $req = P();
         AdminValidate::checkInput($req);
         $admin_id = parent::$admin_id;
-        $res = AdminService::add($admin_id ,$req['name'], $req['mobile'], $req['password'], $req['rid']);
+        $res = AdminService::add($admin_id ,$req['name'], $req['mobile'], $req['password'], $req['rid'],$req['is_agent']);
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
@@ -42,7 +42,7 @@ class Admin extends AdminController
         AdminValidate::checkInput($req);
         $__admin_id = parent::$admin_id;
         $req['password']=$req['password'] ?? "";
-        $res = AdminService::modify($__admin_id ,$admin_id, $req['name'], $req['mobile'], $req['password'], $req['rid']);
+        $res = AdminService::modify($__admin_id ,$admin_id, $req['name'], $req['mobile'], $req['password'], $req['rid'],$req['is_agent']);
         Response::SendResponseJson($res['code'], $res['data']);
     }
 

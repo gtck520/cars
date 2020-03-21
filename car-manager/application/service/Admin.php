@@ -22,7 +22,7 @@ class Admin
         return ['code' => 200, 'data' => $res];
     }
     //添加
-    public static function add($admin_id, $name, $mobile, $password, $rid)
+    public static function add($admin_id, $name, $mobile, $password, $rid,$is_agent)
     {
         $res = AdminModel::where(['name' => $name])->find();
         if ($res) {
@@ -44,6 +44,7 @@ class Admin
             'mobile' => $mobile,
             'password' => $password,
             'rid'   => $rid,
+            'is_agent'   => $is_agent,
             'created_time' => time(),
         ]);
 
@@ -52,7 +53,7 @@ class Admin
     }
 
     //修改
-    public static function modify($__admin_id, $admin_id, $name, $mobile, $password, $rid)
+    public static function modify($__admin_id, $admin_id, $name, $mobile, $password, $rid,$is_agent)
     {
         $res = AdminModel::where(['name' => $name, 'id <>' => $admin_id])->find();
         if ($res) {
@@ -72,6 +73,7 @@ class Admin
         $update=[
             'name' => $name,
             'mobile' => $mobile,
+            'is_agent'   => $is_agent,
             'rid'   => $rid,
         ];
         if(!empty($password)){
