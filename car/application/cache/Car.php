@@ -123,7 +123,7 @@ class Car  extends Cache
     public static function getIsOpen()
     {
         if (!Cache::exists(self::$is_open_key)) {
-            Cache::set(self::$is_open_key, '0')
+            Cache::set(self::$is_open_key, '0');
         }
         
         return Cache::get(self::$is_open_key);
