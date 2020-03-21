@@ -4,6 +4,7 @@ namespace app\service;
 
 use king\lib\Log;
 use app\model\User as UserModel;
+use app\model\UserLevel as UserLevelModel;
 use app\model\MoneyRecord as MoneyRecordModel;
 use app\model\Cost as CostModel;
 use app\model\CityActive as CityActiveModel;
@@ -80,12 +81,20 @@ class Money
     /**
      * 获取用户升级需要的费用和用户推荐获得奖励费用
      * @param $user_id  用户id
+     * @param $level_id  需要升到第几级
      * @return array
      */
-    public static function getLevelMoney($user_id){
+    public static function getLevelMoney($user_id,$level_id){
         //获取用户所在地区是否有活动
-        $field=['u.province_id','u.city_id','u.area_id','ul.level_money','ul.levelyh_money','ul.invite_money','ul.inviteyh_money'];
-        $user_info=UserModel::setTable('user u')->field($field)->join('user_level ul', 'u.level_id = ul.id')->where(['u.id'=>$user_id])->find();
+        $field=['province_id','city_id','area_id','level_id'];
+        $user_info=UserModel::field($field)->where(['id'=>$user_id])->find();
+        $user_level=UserLevelModel::field(['level_money','levelyh_money','invite_money','inviteyh_money'])->where(['id'=>$level_id])->find();
+        if($user_info['level_id']>=$level_id){
+            //当前等级大于等于 需要升级的等级 不需变动 错误参数返回0;
+            return ['amount'=>0,'award'=>0];
+        }else{
+            $user_level_now=UserLevelModel::field(['level_money','levelyh_money','invite_money','inviteyh_money'])->where(['id'=>$user_info['level_id']])->find();
+        }
 
         $is_active=0;//用户所在城市是否有活动
         $start_time=0;
@@ -110,14 +119,14 @@ class Money
             $start_time=$city_active['start_time'];
             $end_time=$city_active['end_time'];
         }
-        $amount=$user_info['level_money'];//会员费
-        $award=$user_info['invite_money'];//推荐费
+        $amount=$user_level['level_money']-$user_level_now['level_money'];//会员费
+        $award=$user_level['invite_money']-$user_level_now['invite_money'];//推荐费
 
         if($is_active){//如果有活动判断是否在活动期间内
             $time=time();
             if($start_time<= $time && $time <=$end_time){
-                $amount=$user_info['levelyh_money'];//会员费
-                $award=$user_info['inviteyh_money'];//推荐费
+                $amount=$user_level['levelyh_money']-$user_level_now['level_money'];//会员费
+                $award=$user_level['inviteyh_money']-$user_level_now['invite_money'];//推荐费
             }
         }
        return ['amount'=>$amount,'award'=>$award];
