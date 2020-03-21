@@ -13,6 +13,8 @@ class Car  extends Cache
     private static $car_pl_key = 'car:pl:list';
     private static $car_cllx_key = 'car:cllx:list';
     private static $city_list_ley = 'city:list';
+    private static $is_open_key = 'is:open';
+    
     //品牌缓存
     public static function getCarName(){
         if (!Cache::exists(self::$key)) {
@@ -115,5 +117,15 @@ class Car  extends Cache
         $data['city_list'] = array_column(CityModel::field($filed)->where(['level' => 2])->get(), 'name', 'id');
         $data['county_list'] = array_column(CityModel::field($filed)->where(['level' => 3])->get(), 'name', 'id');
         return Cache::set(self::$city_list_ley, json_encode($data));
+    }
+
+    //是否开启城市查询权限
+    public static function getIsOpen()
+    {
+        if (!Cache::exists(self::$is_open_key)) {
+            Cache::set(self::$is_open_key, '0')
+        }
+        
+        return Cache::get(self::$is_open_key);
     }
 }

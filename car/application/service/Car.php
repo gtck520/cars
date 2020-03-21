@@ -46,18 +46,22 @@ class Car
 
             switch ($city_level) {
                 case '2':
-                    if ($user_info['sheng_ji'] == '0') {
-                        return ['code' => 400, 'data' => '您没有查询省内城市的权限!'];
-                    } else {
-                        $city = 'a.city_id';
+                    if (CarCache::getIsOpen()) {
+                        if ($user_info['sheng_ji'] == '0') {
+                            return ['code' => 400, 'data' => '您没有查询省内城市的权限!'];
+                        }
                     }
+
+                    $city = 'a.city_id';
                     break;
                 case '1':
-                    if ($user_info['quan_guo'] == '0') {
-                        return ['code' => 400, 'data' => '您没有查询各省的权限!'];
-                    } else {
-                        $city = 'a.province_id';
+                    if (CarCache::getIsOpen()) {
+                        if ($user_info['quan_guo'] == '0') {
+                            return ['code' => 400, 'data' => '您没有查询各省的权限!'];
+                        }
                     }
+                    
+                    $city = 'a.province_id';
                     break;
                 case '3':
                     $city = 'a.area_id';
