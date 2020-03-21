@@ -27,7 +27,7 @@ class Car
     ];
 
     /**
-     * 首页搜索   有bug 待修复...
+     * 首页搜索  需要优化
      */
     public static function getList($user_id, $req)
     {
@@ -65,7 +65,8 @@ class Car
             }
             $query->where($city, '=', $req['city_id']);
         } else {
-            $query = CarModel::setTable('car a')->join('car_type b', 'a.chexing_id = b.ID')->where('a.area_id', '=', $user_info['area_id']);
+            $area_id = $user_info['area_id'] ?: 350102;
+            $query = CarModel::setTable('car a')->join('car_type b', 'a.chexing_id = b.ID')->where('a.area_id', '=', $area_id);
         }
         // 关键字搜索
         if (isset($req['search']) && !empty($req['search'])) {
@@ -122,22 +123,29 @@ class Car
             $query->where('a.cheyuan_id', '=', $req['cheyuan_id']);
         }
 
-        // 车辆里程搜索
-        if (!empty($req['licheng']) && isset($req['licheng'])) {
+         // 最小里程
+         if (!empty($req['low_licheng']) && isset($req['low_licheng'])) {
             $is_bu = false;
-            $query->where('a.biaoxianlicheng', '=', $req['licheng']);
+            $query->where('a.biaoxianlicheng', '>=', $req['low_licheng']);
         }
+
+        // 最大里程
+        if (!empty($req['high_licheng']) && isset($req['high_licheng'])) {
+            $is_bu = false;
+            $query->where('a.biaoxianlicheng', '<=', $req['high_licheng']);
+        }
+
 
         // 最小车龄区间查询
         if (!empty($req['low_age']) && isset($req['low_age'])) {
             $is_bu = false;
-            $query->where('a.age', '<=', $req['low_age']);
+            $query->where('a.age', '>=', $req['low_age']);
         }
 
         // 最大车龄区间查询
         if (!empty($req['high_age']) && isset($req['high_age'])) {
             $is_bu = false;
-            $query->where('a.age', '>=', $req['high_age']);
+            $query->where('a.age', '<=', $req['high_age']);
         }
 
         // 排序
@@ -201,7 +209,7 @@ class Car
                 $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
                 $value['images_url'] = explode('|', $value['images_url']) ? explode('|', $value['images_url'])[0] : [];
                 unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TYPE_NAME'], $value['area_id']);
-                if ($value['shop_id'] == $shop_id) {
+                if ($value['shop_id'] == $shop_id &&  $value['shop_id'] != 0) {
                     $same_shop_car[] = $value;
                     unset($car_list['rs'][$key]);
                 }

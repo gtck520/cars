@@ -37,7 +37,6 @@ class Car extends Common
     {
         $valid = Valid::getClass($post);
         $valid->addRule('city_id', 'int', '地区');
-        $valid->addRule('biaoxianlicheng', 'gt,0', '表显里程');
         $valid->addRule('colour_id', 'minLength,1', '颜色');
         $valid->addRule('low_price', 'gt,0', '最小价格区间查询');
         $valid->addRule('high_price', 'lt,9999999999999', '最大价格区间查询');
@@ -45,6 +44,8 @@ class Car extends Common
         $valid->addRule('low_age', 'gt,0', ' 最小车龄区间查询');
         $valid->addRule('high_age', 'lt,1000', '最大车龄区间查询');
         $valid->addRule('sort', 'in,1,2,3', '排序');
+        $valid->addRule('low_licheng', 'gt,0', ' 最小里程');
+        $valid->addRule('high_licheng', 'lt,1000', '最大里程');
         if (!$valid->run()) {
             Response::SendResponseJson(400, $valid->getError());
         }
