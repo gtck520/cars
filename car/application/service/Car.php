@@ -10,7 +10,7 @@ use app\model\City as CityModel;
 use app\model\User as UserModel;
 use app\model\Shop as ShopModel;
 use app\model\CarSc as CarScModel;
-use app\model\CarBm  as CarBMModel;
+use app\model\CarBM  as CarBMModel;
 use app\model\CarType as CarTypeModel;
 use app\model\Impeach as ImpeachModel;
 use app\model\CarColour as CarColourModel;
