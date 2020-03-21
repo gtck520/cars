@@ -628,10 +628,6 @@ class Car
     //城市数据
     public static function getCity()
     {
-        $filed = ['id', 'name'];
-        $data['province_list'] = array_column(CityModel::field($filed)->where(['level' => 1])->get(), 'name', 'id');
-        $data['city_list'] = array_column(CityModel::field($filed)->where(['level' => 2])->get(), 'name', 'id');
-        $data['county_list'] = array_column(CityModel::field($filed)->where(['level' => 3])->get(), 'name', 'id');
-        return ['code' => 200, 'data' => $data];
+        return ['code' => 200, 'data' => CarCache::getCityListCache()];
     }
 }

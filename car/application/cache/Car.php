@@ -3,8 +3,8 @@
 namespace app\cache;
 
 use king\lib\Cache;
+use app\model\City as CityModel;
 use app\model\CarType as CarTypeModel;
-
 class Car
 {
     private static $key = 'car:name:list';
@@ -12,6 +12,7 @@ class Car
     private static $car_bs_key = 'car:bs:list';
     private static $car_pl_key = 'car:pl:list';
     private static $car_cllx_key = 'car:cllx:list';
+    private static $city_list_ley = 'city:list';
     //品牌缓存
     public static function getCarName(){
         if (!Cache::exists(self::$key)) {
@@ -94,5 +95,25 @@ class Car
         }
         
         return Cache::get(self::$car_cllx_key);
+    }
+
+    //城市列表缓存
+    public static function getCityListCache()
+    {
+        if (!Cache::exists(self::$city_list_ley)) {
+            self::setCityListCache();
+        }
+        
+        return Cache::get(self::$city_list_ley);
+    }
+
+    //设置城市列表缓存
+    public static function setCityListCache()
+    { 
+        $filed = ['id', 'name'];
+        $data['province_list'] = array_column(CityModel::field($filed)->where(['level' => 1])->get(), 'name', 'id');
+        $data['city_list'] = array_column(CityModel::field($filed)->where(['level' => 2])->get(), 'name', 'id');
+        $data['county_list'] = array_column(CityModel::field($filed)->where(['level' => 3])->get(), 'name', 'id');
+        return Cache::set(self::$city_list_ley, json_encode($data));
     }
 }
