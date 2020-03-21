@@ -163,31 +163,33 @@ class Car
         $car_list = $query->field($field)->where('a.status', '=', 1)->orderby($orderby)->page($req['c'], $req['p']);
         if ($is_bu) {
             //该地区没有车
-            if ($car_list['total'] === 0) {
-                $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.province_id', '=', $user_info['province_id'])->limit(0, 8)->get());
-                $car_list_count = count($car_list['rs']);
-                //还不够
-                if ($car_list_count < $car_num) {
-                    $car_id_arr_h = array_column($car_list['rs'], 'id');
-                    $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr_h)->limit(0, $car_num - $car_list_count)->get());
-                }
-            } else {
-                if ($car_list['total'] < $car_num) {
-                    //现有车辆
-                    $car_id_arr = array_column($car_list['rs'], 'id');
-                    // $city_arr =  array_column(CityModel::where(['pid' => CityModel::where(['id' => $user_info['area_id']])->value('pid')])->get(), 'id') ;
-
-                    $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr)->where('a.province_id', '=', $user_info['province_id'])->limit(0, $car_num - $car_list['total'])->get());
+            if ($req['p'] == 1) {
+                if ($car_list['total'] === 0) {
+                    $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.province_id', '=', $user_info['province_id'])->limit(0, 8)->get());
                     $car_list_count = count($car_list['rs']);
                     //还不够
                     if ($car_list_count < $car_num) {
                         $car_id_arr_h = array_column($car_list['rs'], 'id');
                         $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr_h)->limit(0, $car_num - $car_list_count)->get());
                     }
+                } else {
+                    if ($car_list['total'] < $car_num) {
+                        //现有车辆
+                        $car_id_arr = array_column($car_list['rs'], 'id');
+                        // $city_arr =  array_column(CityModel::where(['pid' => CityModel::where(['id' => $user_info['area_id']])->value('pid')])->get(), 'id') ;
+    
+                        $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr)->where('a.province_id', '=', $user_info['province_id'])->limit(0, $car_num - $car_list['total'])->get());
+                        $car_list_count = count($car_list['rs']);
+                        //还不够
+                        if ($car_list_count < $car_num) {
+                            $car_id_arr_h = array_column($car_list['rs'], 'id');
+                            $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr_h)->limit(0, $car_num - $car_list_count)->get());
+                        }
+                    }
                 }
             }
         }
-
+        dd($car_list);
         $same_shop_car = [];
         if ($car_list) {
             foreach ($car_list['rs'] as $key => &$value) {
