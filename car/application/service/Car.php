@@ -250,13 +250,13 @@ class Car
     //所有车辆排量
     public static function getCarPL($req)
     {
-        $pinpai = $req['pinpai'] ?? '';
-        if (empty($pinpai)) {
-            $car_name = CarCache::getCarPL();
-        } else {
-            $car_name = CarTypeModel::field(['distinct ENGINE_CAPACITY'])->where(['MAKE_NAME' => $pinpai])->get();
-        }
-
+        // $pinpai = $req['pinpai'] ?? '';
+        // if (empty($pinpai)) {
+        //     $car_name = CarCache::getCarPL();
+        // } else {
+        //     $car_name = CarTypeModel::field(['distinct ENGINE_CAPACITY'])->where(['MAKE_NAME' => $pinpai])->get();
+        // }
+        $car_name = CarPLModel::get();
         return ['code' => 200, 'data' => $car_name];
     }
 
