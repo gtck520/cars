@@ -26,7 +26,7 @@ class Login
             'grant_type' => 'authorization_code',
         ];
         $res = Helper::request(self::$login_url, $params);
-        CarCache::set('test', json_encode($res));
+        CarCache::set('test', $req['code']);
         if (!isset($res['openid'])) {
             return ['code' => 400, 'data' => $res['errmsg']];
         }
