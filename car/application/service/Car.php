@@ -3,13 +3,13 @@
 namespace app\service;
 
 use app\helper\Helper;
-use king\lib\Jwt;
 use app\cache\Car as CarCache;
 use app\model\Car as CarModel;
 use app\model\City as CityModel;
 use app\model\User as UserModel;
 use app\model\Shop as ShopModel;
 use app\model\CarSc as CarScModel;
+use app\model\CarPL as CarPLModel;
 use app\model\CarBM  as CarBMModel;
 use app\model\CarType as CarTypeModel;
 use app\model\Impeach as ImpeachModel;
@@ -163,26 +163,28 @@ class Car
         $car_list = $query->field($field)->where('a.status', '=', 1)->orderby($orderby)->page($req['c'], $req['p']);
         if ($is_bu) {
             //该地区没有车
-            if ($car_list['total'] === 0) {
-                $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.province_id', '=', $user_info['province_id'])->limit(0, 8)->get());
-                $car_list_count = count($car_list['rs']);
-                //还不够
-                if ($car_list_count < $car_num) {
-                    $car_id_arr_h = array_column($car_list['rs'], 'id');
-                    $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr_h)->limit(0, $car_num - $car_list_count)->get());
-                }
-            } else {
-                if ($car_list['total'] < $car_num) {
-                    //现有车辆
-                    $car_id_arr = array_column($car_list['rs'], 'id');
-                    // $city_arr =  array_column(CityModel::where(['pid' => CityModel::where(['id' => $user_info['area_id']])->value('pid')])->get(), 'id') ;
-
-                    $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr)->where('a.province_id', '=', $user_info['province_id'])->limit(0, $car_num - $car_list['total'])->get());
+            if ($req['p'] == 1) {
+                if ($car_list['total'] === 0) {
+                    $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.province_id', '=', $user_info['province_id'])->limit(0, 8)->get());
                     $car_list_count = count($car_list['rs']);
                     //还不够
                     if ($car_list_count < $car_num) {
                         $car_id_arr_h = array_column($car_list['rs'], 'id');
                         $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr_h)->limit(0, $car_num - $car_list_count)->get());
+                    }
+                } else {
+                    if ($car_list['total'] < $car_num) {
+                        //现有车辆
+                        $car_id_arr = array_column($car_list['rs'], 'id');
+                        // $city_arr =  array_column(CityModel::where(['pid' => CityModel::where(['id' => $user_info['area_id']])->value('pid')])->get(), 'id') ;
+    
+                        $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr)->where('a.province_id', '=', $user_info['province_id'])->limit(0, $car_num - $car_list['total'])->get());
+                        $car_list_count = count($car_list['rs']);
+                        //还不够
+                        if ($car_list_count < $car_num) {
+                            $car_id_arr_h = array_column($car_list['rs'], 'id');
+                            $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr_h)->limit(0, $car_num - $car_list_count)->get());
+                        }
                     }
                 }
             }
@@ -248,13 +250,13 @@ class Car
     //所有车辆排量
     public static function getCarPL($req)
     {
-        $pinpai = $req['pinpai'] ?? '';
-        if (empty($pinpai)) {
-            $car_name = CarCache::getCarPL();
-        } else {
-            $car_name = CarTypeModel::field(['distinct ENGINE_CAPACITY'])->where(['MAKE_NAME' => $pinpai])->get();
-        }
-
+        // $pinpai = $req['pinpai'] ?? '';
+        // if (empty($pinpai)) {
+        //     $car_name = CarCache::getCarPL();
+        // } else {
+        //     $car_name = CarTypeModel::field(['distinct ENGINE_CAPACITY'])->where(['MAKE_NAME' => $pinpai])->get();
+        // }
+        $car_name = CarPLModel::get();
         return ['code' => 200, 'data' => $car_name];
     }
 
@@ -316,7 +318,7 @@ class Car
         }
         CarModel::where(['id' => $car_id])->update(['liulan_num +' => 1]);
         //审核通过的车
-        $field = ['user_id', 'chejiahao', 'pinpai', 'chexing_id', 'shangpai_time', 'price', 'biaoxianlicheng', 'nianjiandaoqi', 'qiangxiandaoqi', 'notes', 'images_url', 'yanse_id', 'area_id'];
+        $field = ['user_id', 'chejiahao', 'pinpai', 'chexing_id', 'shangpai_time', 'price', 'biaoxianlicheng', 'nianjiandaoqi', 'qiangxiandaoqi', 'notes', 'images_url', 'biansu', 'yanse_id', 'area_id', 'pl'];
         $car_info = CarModel::field($field)->where(['id' => $car_id])->find();
         $car_info = Helper::formatTimt($car_info, ['shangpai_time', 'nianjiandaoqi', 'qiangxiandaoqi'], 'Y-m-d');
         $car_info['yanse'] = CarColourModel::where(['id' => $car_info['yanse_id']])->value('name');
@@ -324,9 +326,9 @@ class Car
         $car_info['city_name'] = CityModel::where(['id' => $car_info['area_id']])->value(['fullname']);
         $car_info['realname'] = UserModel::where(['id' => $car_info['user_id']])->value(['realname']);
         $car_info['realname'] = Helper::encryptName($car_info['realname']);
-        $chexing = CarTypeModel::field(['MODEL_NAME', 'TYPE_SERIES', 'TYPE_NAME', 'VEHICLE_CLASS', 'ENGINE_CAPACITY', 'TRANSMISSION'])->where(['ID' => $car_info['chexing_id']])->find();
+        $chexing = CarTypeModel::field(['MODEL_NAME', 'TYPE_SERIES', 'TYPE_NAME', 'VEHICLE_CLASS', 'TRANSMISSION'])->where(['ID' => $car_info['chexing_id']])->find();
         $car_info['title'] = "{$chexing['MODEL_NAME']} {$chexing['TYPE_SERIES']} {$chexing['TYPE_NAME']}";
-        $car_info['pailiang'] = $chexing['ENGINE_CAPACITY'];
+        $car_info['pailiang'] = $car_info['pl'];
         $car_info['cheliangleixing'] = $chexing['VEHICLE_CLASS'];
         $car_info['images_url'] = explode('|', $car_info['images_url']);
         unset($car_info['yanse_id'], $car_info['status'], $car_info['cheixng_id'], $car_info['id'], $car_info['area_id'], $car_info['chexing_id']);
@@ -387,6 +389,42 @@ class Car
         $age = Helper::birthday2($req['shangpai_time']);
         //省级县id
         $city_ids = explode(',', $city_res['path']);
+        //车型判断
+        $chexing = CarTypeModel::where([
+            'FIRST_LETTER' => Helper::getFirstChar($req['pinpai']),
+                'MAKE_NAME' => $req['pinpai'],
+                'MODEL_SERIES' => $req['Manufacturers'],
+                'MODEL_NAME' =>  $req['chexing'],
+                'TYPE_SERIES' =>  "{$req['Year']} 款",
+                'TECHNOLOGY' => $req['VehicleAttributes'],
+                'VEHICLE_CLASS' => $req['cheliang_type'],
+                'TRANSMISSION' => $req['biansuxiang'],
+        ])->find();
+        if ($chexing) {
+            $chexing_id = $chexing['ID'];
+        }else{
+            $chexing_id = CarTypeModel::insert([
+                'FIRST_LETTER' => Helper::getFirstChar($req['pinpai']),
+                'MAKE_NAME' => $req['pinpai'],
+                'MODEL_SERIES' => $req['Manufacturers'],
+                'MODEL_NAME' =>  $req['chexing'],
+                'TYPE_SERIES' =>  "{$req['Year']} 款",
+                'TYPE_NAME' =>  '',
+                'COUNTRY' => '',
+                'TECHNOLOGY' => $req['VehicleAttributes'],
+                'VEHICLE_CLASS' => $req['cheliang_type'],
+                'ENGINE_CAPACITY'=> '',
+                'TRANSMISSION' => $req['biansuxiang'],
+            ]);
+        }
+        //排量表
+        $pl = CarPLModel::where(['pailiang' => $req['DisplacementWithT']])->find();
+        if (!$pl) {
+            CarPLModel::insert([
+                'pailiang' => $req['DisplacementWithT']
+            ]);
+        }
+
         CarModel::insert([
             'user_id' => $user_id,
             'province_id' =>  $city_ids[0],
@@ -394,7 +432,7 @@ class Car
             'area_id' => $city_ids[2],
             'chejiahao' => $req['chejiahao'],
             'pinpai' => $req['pinpai'],
-            'chexing_id' => 1,
+            'chexing_id' => $chexing_id,
             'shangpai_time' => strtotime($req['shangpai_time']),
             'price' => $req['price'],
             'biaoxianlicheng' => $req['biaoxianlicheng'],
@@ -413,6 +451,7 @@ class Car
             'zhengming' => $req['zhemgming'],
             'type_name' => $req['cheliang_type'],
             'shop_id'  => $user_info['shop_id'],
+            'pl'  => $req['DisplacementWithT'],
         ]);
 
         //更新各种列表缓存
@@ -521,7 +560,7 @@ class Car
     {
         $orderby = ['a.create_time' => 'desc'];
 
-        $field = ['a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.status', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TYPE_NAME'];
+        $field = ['a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url','b.status', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TYPE_NAME'];
 
         $car_list = CarModel::setTable('car_bm a')->join('car b', 'a.car_id = b.id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->where('a.user_id', '=', $user_id)->orderby($orderby)->get();
 
@@ -531,6 +570,7 @@ class Car
                 $value['city_name'] = CityModel::where(['id' => $value['area_id']])->value(['name']);
                 $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['TYPE_NAME']}";
                 $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
+                $value['image'] = explode('|', $value['images_url']) ? explode('|', $value['images_url'])[0] : [];
                 unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TYPE_NAME']);
             }
         }

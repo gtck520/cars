@@ -9,7 +9,7 @@ return [
     //用户信息
     'get::userinfo$'       => 'User/userInfo',
     'get::user/cars$'       => 'User/Cars',  //我的车源
-    'get::user/price$'       => 'User/getPrice',  //我的出价记录  未完成...
+    'get::user/price$'       => 'User/getPrice',  //我的出价记录
     //删除收藏
     'delete::enshrine/(\d+)$'  => 'User/enshrineDel',
     //删除浏览记录
