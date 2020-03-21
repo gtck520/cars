@@ -326,7 +326,7 @@ class Car
         }
         CarModel::where(['id' => $car_id])->update(['liulan_num +' => 1]);
         //审核通过的车
-        $field = ['user_id', 'chejiahao', 'pinpai', 'chexing_id', 'shangpai_time', 'price', 'biaoxianlicheng', 'nianjiandaoqi', 'qiangxiandaoqi', 'notes', 'images_url', 'biansu', 'yanse_id', 'area_id', 'pl'];
+        $field = ['user_id', 'chejiahao', 'pinpai', 'chexing_id', 'shangpai_time', 'price', 'biaoxianlicheng', 'nianjiandaoqi', 'qiangxiandaoqi', 'notes', 'images_url', 'status', 'biansu', 'yanse_id', 'area_id', 'pl'];
         $car_info = CarModel::field($field)->where(['id' => $car_id])->find();
         $car_info = Helper::formatTimt($car_info, ['shangpai_time', 'nianjiandaoqi', 'qiangxiandaoqi'], 'Y-m-d');
         $car_info['yanse'] = CarColourModel::where(['id' => $car_info['yanse_id']])->value('name');
@@ -339,7 +339,8 @@ class Car
         $car_info['pailiang'] = $car_info['pl'];
         $car_info['cheliangleixing'] = $chexing['VEHICLE_CLASS'];
         $car_info['images_url'] = explode('|', $car_info['images_url']);
-        unset($car_info['yanse_id'], $car_info['status'], $car_info['cheixng_id'], $car_info['id'], $car_info['area_id'], $car_info['chexing_id']);
+        $car_info['user_mobile'] = UserModel::where(['id' => $car_info['user_id']])->value('mobile');
+        unset($car_info['yanse_id'], $car_info['cheixng_id'], $car_info['id'], $car_info['area_id'], $car_info['chexing_id']);
         //收藏
         $car_info['sc_type'] = CarScModel::where(['user_id' => $user_id, 'car_id' => $car_id])->find() ? 1 : 0;
         //帮卖
