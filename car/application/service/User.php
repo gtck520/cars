@@ -87,7 +87,7 @@ class User
     //当前用户信息
     public static function userInfo($user_id)
     {
-        $field = ['id', 'mobile', 'nickname', 'avatar', 'realname', 'city_fullname', 'openid', 'quan_guo', 'sheng_ji', 'images_url', 'money', 'create_time', 'last_login_time', 'shop_id'];
+        $field = ['id', 'mobile', 'nickname', 'avatar', 'realname', 'city_fullname', 'openid', 'quan_guo', 'sheng_ji', 'status', 'images_url', 'money', 'create_time', 'last_login_time', 'shop_id'];
         $user_info = UserModel::field($field)->where(['id' => $user_id])->find();
         if ($user_info) {
             $user_info['shop'] = ShopModel::field(['id', 'name', 'address'])->where(['id' => $user_info['shop_id']])->find() ?: '';
