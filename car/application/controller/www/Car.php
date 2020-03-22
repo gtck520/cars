@@ -9,7 +9,8 @@ use app\validate\Car as CarValidate;
 class Car extends UserController
 {
     //获取车的列表
-    public function getList(){
+    public function getList()
+    {
         $req = G();
         CarValidate::checkPage($req);
         CarValidate::searchInput($req);
@@ -77,7 +78,7 @@ class Car extends UserController
         $res = UserController::loginId();
         if ($res) {
             $user_id = parent::$user_id;
-        }else{
+        } else {
             $user_id = '';
         }
 
@@ -90,7 +91,8 @@ class Car extends UserController
     }
 
     // 车辆添加
-    public function add(){
+    public function add()
+    {
         $req = P();
         CarValidate::checkInput($req);
         $user_id = parent::$user_id;
@@ -99,18 +101,16 @@ class Car extends UserController
     }
 
     //浏览记录列表
-    public function getCarBrowseList(){
-        $req = G();
-        CarValidate::checkPage($req);
-        $res = CarService::getCarBrowseList(parent::$user_id, $req);
+    public function getCarBrowseList()
+    {
+        $res = CarService::getCarBrowseList(parent::$user_id);
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
-     //收藏记录列表
-     public function getCarEnshrinesList(){
-        $req = G();
-        CarValidate::checkPage($req);
-        $res = CarService::getCarEnshrinesList(parent::$user_id, $req);
+    //收藏记录列表
+    public function getCarEnshrinesList()
+    {
+        $res = CarService::getCarEnshrinesList(parent::$user_id);
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
@@ -127,11 +127,11 @@ class Car extends UserController
         Response::SendResponseJson(200, CarService::getColourList());
     }
 
-     //车源标签
-     public function getCheyuanList()
-     {
-         Response::SendResponseJson(200, CarService::getCheyuanList());
-     }
+    //车源标签
+    public function getCheyuanList()
+    {
+        Response::SendResponseJson(200, CarService::getCheyuanList());
+    }
 
     //添加帮卖
     public function addBM($car_id)
@@ -143,9 +143,7 @@ class Car extends UserController
     //收藏记录列表
     public function getCarBMList()
     {
-        $req = G();
-        CarValidate::checkPage($req);
-        $res = CarService::getCarBMList(parent::$user_id, $req);
+        $res = CarService::getCarBMList(parent::$user_id);
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
@@ -157,16 +155,17 @@ class Car extends UserController
     }
 
     // 车辆编辑
-    public function  edit($car_id){
+    public function  edit($car_id)
+    {
         $req = json_decode(Put(), true);
-        CarValidate::checkInput($req);
+        CarValidate::checkEditInput($req);
         $user_id = parent::$user_id;
         $res = CarService::edit($user_id, $car_id, $req);
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
     //门店联想列表
-    
+
     public function shops()
     {
         $res = CarService::shops();
@@ -174,7 +173,8 @@ class Car extends UserController
     }
 
     //查看他的车源  
-    public function getUserCars($to_user_id){
+    public function getUserCars($to_user_id)
+    {
         $res = CarService::getUserCars($to_user_id);
         Response::SendResponseJson($res['code'], $res['data']);
     }
@@ -186,4 +186,19 @@ class Car extends UserController
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
+    //下架车辆  
+    public function setHidden($car_id)
+    {
+        $req = json_decode(Put(), true);
+        CarValidate::hiddenInput($req);
+        $res = CarService::setHidden($car_id, parent::$user_id, $req['hidden']);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
+    //擦亮车辆  
+    public function cl($car_id)
+    {
+        $res = CarService::cl($car_id, parent::$user_id);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
 }

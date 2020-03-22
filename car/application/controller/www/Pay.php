@@ -23,12 +23,6 @@ class Pay
         Response::sendResponseJson($res['code'], $res['data']);
     }
 
-    //支付宝回调地址
-    public function wechatReturn()
-    {
-        PayService::wechatReturn();
-    }
-
     //订单退款
     public function refund()
     {

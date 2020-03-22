@@ -105,7 +105,6 @@ class Pay
      */
     public static function refund($req)
     {
-        
         $pay_trade_no = $req['pay_trade_no'];
         $trade_no     = $req['trade_no'];
         $amount       = sprintf("%.2f", $req['amount']);
@@ -131,15 +130,10 @@ class Pay
 
         if ($result->code == 10000) {
             if ($status) {
-                PayRecordsModel::startTrans();
-                try {
-                    self::balanceChange($pay_records_info, $amount, "$type 退款", '-1');
-
-                    PayRecordsModel::endTrans();
-                } catch (\Exception $e) {
-                    PayRecordsModel::rollback();
-                    Log::write(date("Y-m-d H:i:s") . 'alipay 余额变动异常:' . $e->getMessage());
-                }
+                //扣减余额
+                MoneyService::moneyChange($amount * -1, 4, "$type 退款", $pay_records_info['user_id']);
+                //改变订单
+                self::orderChange($pay_records_info, '-1');
             }
         } else {
             return ['code' => 400, 'data' => $result->msg];
@@ -152,10 +146,11 @@ class Pay
     {
         // 测试数据
         // $data = [
-        //     'out_trade_no' => '20190821100020664',
-        //     'trade_no' => '123456456455',
-        //     'total_amount' => 1.00,
-        //     'trade_status' => 'TRADE_SUCCESS',
+        //     'out_trade_no' => '20200307181842496',
+        //     'transaction_id' => '123456456455',
+        //     'total_fee' => 100,
+        //     'return_code' => 'SUCCESS',
+        //     'result_code'  => 'SUCCESS',
         // ];
         $pay = self::getPay($pay_type, $method);
         $data = $pay->verify();
@@ -171,7 +166,7 @@ class Pay
             return $pay->success()->send();
         }
 
-        $trade_no = $data['transaction_id'];
+        $trade_no = $data['transaction_id'];  //第三方订单
         $total_amount = $data['total_fee'] / 100;
 
         if ($data["return_code"] == "SUCCESS" && $data["result_code"] == "SUCCESS") {
@@ -185,37 +180,22 @@ class Pay
         $fee = sprintf($order['pay_amount'], 2);
         
         if ($data && $check && $fee == $total_amount) {
-            PayRecordsModel::startTrans();
-            try {
-                $res = MoneyService::moneyChange($total_amount, 1, "$pay_type 充值", $order['user_id']);
-
-                PayRecordsModel::endTrans();
-            } catch (\Exception $e) {
-                PayRecordsModel::rollback();
-                Log::write(date("Y-m-d H:i:s") . $pay_type . '错误信息:' . $e->getMessage());
-            }
-
-            if ($res) {
+            //扣减余额
+            $money_change_result = MoneyService::moneyChange($total_amount, 1, "$pay_type 充值", $order['user_id']);
+            //改变订单
+            $order_change_result = self::orderChange($order, 1, $trade_no);
+            if ($money_change_result && $order_change_result) {
                 return $pay->success()->send();
             }
         }
-        
     }
 
-      /**
-     * 改变订单状态
-     *
-     * @param Array  $order 数据库订单数据
-     * @param Int $total_amount  变动金额
-     * @param String $notes  备注
-     * @param Int $status  订单状态
-     * @param String $trade_no  第三方交易号码
-     * @return Boolean
-     */
-    public static function orderChange($status, $trade_no = '')
+    public static function orderChange($order, $status, $trade_no = '')
     {
+        Log::write(date("Y-m-d H:i:s") . '进入订单更新操作' . print_r($order, true), 'pay.log', 'pay');
         $order_data = self::getOrderData($status, $trade_no);
-        $res = self::update($order_data, $user_info);
+        $res = PayRecordsModel::where(['trade_no' => $order['trade_no']])->update($order_data);
+        Log::write(date("Y-m-d H:i:s") . '  ' . $order['trade_no'] . '更新操作返回结果：' . "[$res]" , 'pay.log', 'pay');
         if (!$res) {
             return false;
         }
@@ -244,22 +224,6 @@ class Pay
                 break;
         }
         return $order_data;
-    }
-
-    //变动操作
-    public static function update($order, $title, $order_data, $user_info)
-    {
-        Log::write(date("Y-m-d H:i:s") . '进入余额更新操作' . print_r($order, true), 'pay.log', 'pay');
-
-        $pay_records_result = PayRecordsModel::where(['trade_no' => $order['trade_no']])->update($order_data);
-
-        Log::write(date("Y-m-d H:i:s") . '  ' . $order['trade_no'] . '更新操作返回结果：' . "[$pay_records_result]" , 'pay.log', 'pay');
-
-        if ($pay_records_result) {
-            return true;
-        }
-
-        return false;
     }
 
     //支付宝回调

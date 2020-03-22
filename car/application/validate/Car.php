@@ -7,6 +7,7 @@ use king\lib\Valid;
 
 class Car extends Common
 {
+    //车辆添加
     public static function checkInput($post)
     {
         $valid = Valid::getClass($post);
@@ -33,6 +34,29 @@ class Car extends Common
         }
     }
 
+    //车辆编辑
+    public static function checkEditInput($post)
+    {
+        $valid = Valid::getClass($post);
+        $valid->addRule('images', 'required|minLength,1', '图片');
+        $valid->addRule('pinpai', 'required|minLength,1', '品牌');
+        $valid->addRule('shangpai_time', 'required|minLength,1', '上牌时间');
+        $valid->addRule('price', 'required|minLength,1|int|gt,0', '报价');
+        $valid->addRule('biaoxianlicheng', 'required|minLength,1', '表显里程');
+        $valid->addRule('pailiang', 'required|minLength,1', '排量');
+        $valid->addRule('yanse', 'required|minLength,1', '颜色');
+        $valid->addRule('nianjian_time', 'required|minLength,1', '年检到期');
+        $valid->addRule('qiangxian_time', 'required|minLength,1', '强险到期');
+        $valid->addRule('city_id', 'required|minLength,1', '车辆位置');
+        $valid->addRule('weixiujilu', 'required|minLength,1', '维修记录');
+        $valid->addRule('pengzhuang', 'required|minLength,1', '碰撞记录');
+        $valid->addRule('notes', 'required|minLength,1|maxLength,160', '车辆描述');
+        $valid->addRule('zhemgming', 'required|minLength,1', '证明材料');
+        if (!$valid->run()) {
+            Response::SendResponseJson(400, $valid->getError());
+        }
+    }
+
     public static function searchInput($post)
     {
         $valid = Valid::getClass($post);
@@ -46,6 +70,16 @@ class Car extends Common
         $valid->addRule('sort', 'in,1,2,3', '排序');
         $valid->addRule('low_licheng', 'gt,0', ' 最小里程');
         $valid->addRule('high_licheng', 'lt,1000', '最大里程');
+        if (!$valid->run()) {
+            Response::SendResponseJson(400, $valid->getError());
+        }
+    }
+
+    //下架
+    public static function hiddenInput($post)
+    {
+        $valid = Valid::getClass($post);
+        $valid->addRule('hidden', 'required|int|in,0,1', '下架参数');
         if (!$valid->run()) {
             Response::SendResponseJson(400, $valid->getError());
         }

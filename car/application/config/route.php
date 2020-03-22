@@ -59,6 +59,10 @@ return [
     'put::(\d+)/car$'  => 'Car/edit',
     //门店车源列表
     'get::cars/(\d+)/shop$'       => 'Car/getShopCars',
+    //下架车辆
+    'put::(\d+)/hidden$'  => 'Car/setHidden',
+    //擦亮
+    'put::(\d+)/up$'  => 'Car/cl',
 
     //帮助文本
     'get::text$'        => 'Text/get',
@@ -84,4 +88,6 @@ return [
     'post::upload/images' => 'U/images',
     //全国城市
     'get::city' => 'Car/getCity',
+    //微信支付回调
+    'post::pay/wechatNotify$' => 'Pay/wechatNotify',
 ];
