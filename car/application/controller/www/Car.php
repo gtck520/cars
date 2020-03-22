@@ -175,9 +175,6 @@ class Car extends UserController
 
     //查看他的车源  
     public function getUserCars($to_user_id){
-        if (parent::$user_id == $to_user_id) {
-            Response::SendResponseJson(400, '该接口无法查询自己的车源');
-        }
         $res = CarService::getUserCars($to_user_id);
         Response::SendResponseJson($res['code'], $res['data']);
     }
