@@ -330,7 +330,7 @@ class Car
         }
         CarModel::where(['id' => $car_id])->update(['liulan_num +' => 1]);
         //审核通过的车
-        $field = ['user_id', 'chejiahao', 'pinpai', 'chexing_id', 'shangpai_time', 'area_id', 'price', 'biaoxianlicheng', 'nianjiandaoqi', 'qiangxiandaoqi', 'weixiujilu', 'pengzhuangjilu', 'notes', 'images_url', 'status', 'is_hidden', 'biansu', 'zhengming', 'yanse_id', 'area_id', 'pl'];
+        $field = ['user_id', 'chejiahao', 'pinpai', 'chexing_id', 'shangpai_time', 'area_id', 'price', 'biaoxianlicheng', 'nianjiandaoqi', 'qiangxiandaoqi', 'weixiujilu', 'pengzhuangjilu', 'notes', 'images_url', 'status', 'is_hidden', 'biansu', 'zhengming', 'yanse_id', 'pl'];
         $car_info = CarModel::field($field)->where(['id' => $car_id])->find();
         $car_info = Helper::formatTimt($car_info, ['shangpai_time', 'nianjiandaoqi', 'qiangxiandaoqi'], 'Y-m-d');
         $car_info['yanse'] = CarColourModel::where(['id' => $car_info['yanse_id']])->value('name');
@@ -340,13 +340,13 @@ class Car
         $car_info['realname'] = Helper::encryptName($car_info['realname']);
         $chexing = CarTypeModel::field(['MODEL_NAME', 'TYPE_SERIES', 'TYPE_NAME', 'VEHICLE_CLASS', 'TRANSMISSION'])->where(['ID' => $car_info['chexing_id']])->find();
         $car_info['title'] = "{$chexing['MODEL_NAME']} {$chexing['TYPE_SERIES']} {$chexing['TYPE_NAME']}";
-        $car_info['chexing'] = $chexing;
+        $car_info['car_type'] = $chexing['TYPE_SERIES'];
         $car_info['pailiang'] = $car_info['pl'];
         $car_info['cheliangleixing'] = $chexing['VEHICLE_CLASS'];
         $car_info['images_url'] = explode('|', $car_info['images_url']);
         $car_info['zhengming'] = explode('|', $car_info['zhengming']);
         $car_info['user_mobile'] = UserModel::where(['id' => $car_info['user_id']])->value('mobile');
-        unset($car_info['yanse_id'], $car_info['cheixng_id'], $car_info['id'], $car_info['area_id'], $car_info['chexing_id'], $car_info['zhengming']);
+        unset($car_info['yanse_id'], $car_info['cheixng_id'], $car_info['id'], $car_info['chexing_id']);
         //收藏
         $car_info['sc_type'] = CarScModel::where(['user_id' => $user_id, 'car_id' => $car_id])->find() ? 1 : 0;
         //帮卖
