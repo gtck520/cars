@@ -340,6 +340,7 @@ class Car
         $car_info['realname'] = Helper::encryptName($car_info['realname']);
         $chexing = CarTypeModel::field(['MODEL_NAME', 'TYPE_SERIES', 'TYPE_NAME', 'VEHICLE_CLASS', 'TRANSMISSION'])->where(['ID' => $car_info['chexing_id']])->find();
         $car_info['title'] = "{$chexing['MODEL_NAME']} {$chexing['TYPE_SERIES']} {$chexing['TYPE_NAME']}";
+        $car_info['chexing'] = $chexing;
         $car_info['pailiang'] = $car_info['pl'];
         $car_info['cheliangleixing'] = $chexing['VEHICLE_CLASS'];
         $car_info['images_url'] = explode('|', $car_info['images_url']);
