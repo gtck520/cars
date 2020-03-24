@@ -173,7 +173,7 @@ class User
     //发布的车 我的车源  
     public static function Cars($user_id, $status)
     {
-        $field = ['a.id', 'a.area_id', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.create_time', 'a.liulan_num', 'a.images_url', 'a.phone_num', 'a.bangmai_num', 'a.pl', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TECHNOLOGY', 'b.VEHICLE_CLASS', 'b.TRANSMISSION'];
+        $field = ['a.id', 'a.area_id', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.create_time', 'a.liulan_num', 'a.images_url', 'a.phone_num', 'a.pl', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TECHNOLOGY', 'b.VEHICLE_CLASS', 'b.TRANSMISSION'];
         $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.user_id', '=', $user_id)->where('a.status', '=', $status)->get();
         if ($car_list) {
             foreach ($car_list as &$value) {
@@ -184,6 +184,7 @@ class User
                 $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
                 $value['image'] = explode('|', $value['images_url']) ? explode('|', $value['images_url'])[0] : [];
                 $value['price_num'] = CarPriceModel::where(['user_id' => $user_id])->count();
+                $value['bangmai_num'] = \app\model\CarBm::where(['car_id' => $value['id']])->count();
                 unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['images_url'],$value['TECHNOLOGY'], $value['VEHICLE_CLASS'], $value['TRANSMISSION'], $value['pl']);
             }
         }
