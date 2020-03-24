@@ -717,7 +717,7 @@ class Car
         if (!CarModel::where(['id' => $car_id, 'user_id' => $user_id])->find()) {
             return ['code' => 400, 'data' => '用户无此车辆'];
         }
-        CarModel::where(['id' => $car_id])->update(['update' => time()]);
+        CarModel::where(['id' => $car_id])->update(['update_time' => time()]);
         return ['code' => 200, 'data' => ''];
     }
 }
