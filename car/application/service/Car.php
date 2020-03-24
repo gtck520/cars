@@ -328,6 +328,21 @@ class Car
                 'create_time' => time()
             ]);
         }
+
+        $car_info = CarCache::getCarInfo($car_id);
+        $car_info['images_url'] = explode('|', $car_info['images_url']);
+        $car_info['zhengming'] = explode('|', $car_info['zhengming']);
+        //收藏
+        $car_info['sc_type'] = CarScModel::where(['user_id' => $user_id, 'car_id' => $car_id])->find() ? 1 : 0;
+        //帮卖
+        $car_info['bm_type'] = CarBMModel::where(['user_id' => $user_id, 'car_id' => $car_id])->find() ? 1 : 0;
+
+        return ['code' => 200, 'data' => $car_info];
+    }
+
+    //车辆详情
+    public static function CarInfo($car_id)
+    {
         CarModel::where(['id' => $car_id])->update(['liulan_num +' => 1]);
         //审核通过的车
         $field = ['user_id', 'chejiahao', 'pinpai', 'chexing_id', 'shangpai_time', 'area_id', 'price', 'biaoxianlicheng', 'nianjiandaoqi', 'qiangxiandaoqi', 'weixiujilu', 'pengzhuangjilu', 'notes', 'images_url', 'status', 'is_hidden', 'biansu', 'zhengming', 'yanse_id', 'pl'];
@@ -343,16 +358,9 @@ class Car
         $car_info['car_type'] = $chexing['TYPE_SERIES'];
         $car_info['pailiang'] = $car_info['pl'];
         $car_info['cheliangleixing'] = $chexing['VEHICLE_CLASS'];
-        $car_info['images_url'] = explode('|', $car_info['images_url']);
-        $car_info['zhengming'] = explode('|', $car_info['zhengming']);
         $car_info['user_mobile'] = UserModel::where(['id' => $car_info['user_id']])->value('mobile');
         unset($car_info['yanse_id'], $car_info['cheixng_id'], $car_info['id'], $car_info['chexing_id']);
-        //收藏
-        $car_info['sc_type'] = CarScModel::where(['user_id' => $user_id, 'car_id' => $car_id])->find() ? 1 : 0;
-        //帮卖
-        $car_info['bm_type'] = CarBMModel::where(['user_id' => $user_id, 'car_id' => $car_id])->find() ? 1 : 0;
-
-        return ['code' => 200, 'data' => $car_info];
+        return $car_info;
     }
 
     //举报
@@ -447,7 +455,7 @@ class Car
             ]);
         }
 
-        CarModel::insert([
+        $car_id = CarModel::insert([
             'user_id' => $user_id,
             'province_id' =>  $city_ids[0],
             'city_id' => $city_ids[1],
@@ -479,6 +487,7 @@ class Car
 
         //更新各种列表缓存
         self::setCache();
+        CarCache::setCarInfo($car_id);
         return ['code' => 200, 'data' => ''];
     }
 
@@ -664,6 +673,7 @@ class Car
 
         //更新各种列表缓存
         self::setCache();
+        CarCache::setCarInfo($car_id);
         return ['code' => 200, 'data' => ''];
     }
 

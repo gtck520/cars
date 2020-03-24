@@ -5,6 +5,7 @@ namespace app\cache;
 use king\lib\Cache;
 use app\model\City as CityModel;
 use app\model\CarType as CarTypeModel;
+use app\service\Car as CarService;
 
 class Car  extends Cache
 {
@@ -21,18 +22,18 @@ class Car  extends Cache
     //获取车辆详情
     public static function getCarInfo($car_id)
     {
-        if (!Cache::exists(self::$key . $car_id)) {
+        if (!Cache::exists(self::$car_inro_key . $car_id)) {
             self::setCarInfo($car_id);
         }
 
-        return Cache::get(self::$key . $car_id);
+        return Cache::hGetAll(self::$car_inro_key . $car_id);
     }
 
     //设置车辆详情
     public static function setCarInfo($car_id)
     {
-        
-        // Cache::set(self::$key, json_encode($cars));
+        $car_info = CarService::CarInfo($car_id);
+        return Cache::hMset(self::$car_inro_key . $car_id, $car_info);
     }
 
     //品牌缓存
