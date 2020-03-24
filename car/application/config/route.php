@@ -62,7 +62,7 @@ return [
     //门店车源列表
     'get::cars/(\d+)/shop$'       => 'Car/getShopCars',
     //下架车辆
-    'put::(\d+)/hidden$'  => 'Car/setHidden',
+    'post::(\d+)/hidden$'  => 'Car/setHidden',
     //擦亮
     'put::(\d+)/up$'  => 'Car/cl',
 

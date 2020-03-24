@@ -189,7 +189,7 @@ class Car extends UserController
     //下架车辆  
     public function setHidden($car_id)
     {
-        $req = json_decode(Put(), true);
+        $req = P();
         CarValidate::hiddenInput($req);
         $res = CarService::setHidden($car_id, parent::$user_id, $req['hidden']);
         Response::SendResponseJson($res['code'], $res['data']);
