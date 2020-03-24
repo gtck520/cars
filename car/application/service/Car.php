@@ -329,6 +329,8 @@ class Car
             ]);
         }
 
+        CarModel::where(['id' => $car_id])->update(['liulan_num +' => 1]);
+
         $car_info = CarCache::getCarInfo($car_id);
         $car_info['images_url'] = explode('|', $car_info['images_url']);
         $car_info['zhengming'] = explode('|', $car_info['zhengming']);
@@ -343,8 +345,6 @@ class Car
     //车辆详情
     public static function CarInfo($car_id)
     {
-        CarModel::where(['id' => $car_id])->update(['liulan_num +' => 1]);
-        //审核通过的车
         $field = ['user_id', 'chejiahao', 'pinpai', 'chexing_id', 'shangpai_time', 'area_id', 'price', 'biaoxianlicheng', 'nianjiandaoqi', 'qiangxiandaoqi', 'weixiujilu', 'pengzhuangjilu', 'notes', 'images_url', 'status', 'is_hidden', 'biansu', 'zhengming', 'yanse_id', 'pl'];
         $car_info = CarModel::field($field)->where(['id' => $car_id])->find();
         $car_info = Helper::formatTimt($car_info, ['shangpai_time', 'nianjiandaoqi', 'qiangxiandaoqi'], 'Y-m-d');
