@@ -614,7 +614,7 @@ class Car
     {
         $is_car = CarModel::where(['id' => $car_id, 'user_id' => $user_id])->find();
         if (!$is_car) {
-            return ['code' => 400, 'data' => '无此车辆!'];
+            return ['code' => 400, 'data' => '用户无此车辆!'];
         }
 
         $city_res = CityModel::where(['id' => $req['city_id']])->find();
