@@ -36,7 +36,7 @@ class Car
         $user_info = UserModel::field(['province_id', 'area_id', 'shop_id', 'quan_guo', 'sheng_ji'])->where(['id' => $user_id])->find();
         $orderby = ['a.update_time' => 'desc', 'a.id' => 'asc'];
 
-        $field = ['a.id', 'a.area_id', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.images_url', 'a.shop_id',  'a.create_time', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TYPE_NAME'];
+        $field = ['a.id', 'a.area_id', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.images_url', 'a.shop_id',  'a.create_time', 'a.pl', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TECHNOLOGY', 'b.VEHICLE_CLASS', 'b.TRANSMISSION'];
 
         // 城市搜索
         $city = '';
@@ -210,10 +210,10 @@ class Car
                 $shop_id = $user_info['shop_id'];
                 $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
                 $value['city_name'] = CityModel::where(['id' => $value['area_id']])->value(['name']);
-                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['TYPE_NAME']}";
+                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['pl']} {$value['TECHNOLOGY']} {$value['VEHICLE_CLASS']} {$value['TRANSMISSION']}";
                 $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
                 $value['images_url'] = explode('|', $value['images_url']) ? explode('|', $value['images_url'])[0] : [];
-                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TYPE_NAME'], $value['area_id']);
+                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TECHNOLOGY'], $value['VEHICLE_CLASS'], $value['TRANSMISSION'], $value['area_id'], $value['pl']);
                 if ($value['shop_id'] == $shop_id &&  $value['shop_id'] != 0) {
                     $same_shop_car[] = $value;
                     unset($car_list['rs'][$key]);
@@ -290,7 +290,7 @@ class Car
     {
         $orderby = ['b.create_time' => 'desc'];
 
-        $field = ['a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url', 'b.status', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TYPE_NAME'];
+        $field = ['a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url', 'b.status', 'b.pl', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TECHNOLOGY', 'c.VEHICLE_CLASS', 'c.TRANSMISSION'];
 
         $car_list = CarModel::setTable('shop a')->join('car b', 'a.id = b.shop_id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->where('b.shop_id', '=', $shop_id)->where('b.status', '=', 1)->where('b.is_hidden', '=', 1)->orderby($orderby)->get();
 
@@ -298,10 +298,10 @@ class Car
             foreach ($car_list as &$value) {
                 $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
                 $value['city_name'] = CityModel::where(['id' => $value['area_id']])->value(['name']);
-                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['TYPE_NAME']}";
+                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['pl']}{$value['TECHNOLOGY']} {$value['VEHICLE_CLASS']} {$value['TRANSMISSION']}";
                 $value['image'] = explode('|', $value['images_url']) ? explode('|', $value['images_url'])[0] : [];
                 $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
-                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TYPE_NAME'], $value['images_url']);
+                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['images_url'], $value['TECHNOLOGY'], $value['VEHICLE_CLASS'], $value['TRANSMISSION'], $value['pl']);
             }
         }
         return ['code' => 200, 'data' => $car_list];
@@ -338,8 +338,8 @@ class Car
         $car_info['city_name'] = CityModel::where(['id' => $car_info['area_id']])->value(['fullname']);
         $car_info['realname'] = UserModel::where(['id' => $car_info['user_id']])->value(['realname']);
         $car_info['realname'] = Helper::encryptName($car_info['realname']);
-        $chexing = CarTypeModel::field(['MODEL_NAME', 'TYPE_SERIES', 'TYPE_NAME', 'VEHICLE_CLASS', 'TRANSMISSION'])->where(['ID' => $car_info['chexing_id']])->find();
-        $car_info['title'] = "{$chexing['MODEL_NAME']} {$chexing['TYPE_SERIES']} {$chexing['TYPE_NAME']}";
+        $chexing = CarTypeModel::field(['MODEL_NAME', 'TYPE_SERIES', 'TECHNOLOGY', 'VEHICLE_CLASS', 'TRANSMISSION'])->where(['ID' => $car_info['chexing_id']])->find();
+        $car_info['title'] = "{$chexing['MODEL_NAME']} {$chexing['TYPE_SERIES']} {$car_info['pl']} {$chexing['TECHNOLOGY']} {$chexing['VEHICLE_CLASS']} {$chexing['TRANSMISSION']}";
         $car_info['car_type'] = $chexing['TYPE_SERIES'];
         $car_info['pailiang'] = $car_info['pl'];
         $car_info['cheliangleixing'] = $chexing['VEHICLE_CLASS'];
@@ -487,7 +487,7 @@ class Car
     {
         $orderby = ['a.create_time' => 'desc'];
 
-        $field = ['a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url', 'b.status', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TYPE_NAME'];
+        $field = ['a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url', 'b.status', 'b.pl', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TECHNOLOGY', 'c.VEHICLE_CLASS', 'c.TRANSMISSION'];
 
         $car_list = CarModel::setTable('car_browse a')->join('car b', 'a.car_id = b.id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->where('a.user_id', '=', $user_id)->orderby($orderby)->get();
 
@@ -495,10 +495,10 @@ class Car
             foreach ($car_list as &$value) {
                 $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
                 $value['city_name'] = CityModel::where(['id' => $value['area_id']])->value(['name']);
-                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['TYPE_NAME']}";
+                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['pl']}{$value['TECHNOLOGY']} {$value['VEHICLE_CLASS']} {$value['TRANSMISSION']}";
                 $value['image'] = explode('|', $value['images_url']) ? explode('|', $value['images_url'])[0] : [];
                 $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
-                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TYPE_NAME'], $value['images_url']);
+                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['images_url'], $value['TECHNOLOGY'], $value['VEHICLE_CLASS'], $value['TRANSMISSION'], $value['pl']);
             }
         }
         return ['code' => 200, 'data' => $car_list];
@@ -509,7 +509,7 @@ class Car
     {
         $orderby = ['a.create_time' => 'desc'];
 
-        $field = ['a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url', 'b.status', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TYPE_NAME'];
+        $field = ['a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url', 'b.status', 'b.pl', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TECHNOLOGY', 'c.VEHICLE_CLASS', 'c.TRANSMISSION'];
 
         $car_list = CarModel::setTable('car_sc a')->join('car b', 'a.car_id = b.id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->where('a.user_id', '=', $user_id)->orderby($orderby)->get();
 
@@ -517,10 +517,10 @@ class Car
             foreach ($car_list as &$value) {
                 $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
                 $value['city_name'] = CityModel::where(['id' => $value['area_id']])->value(['name']);
-                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['TYPE_NAME']}";
+                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['pl']}{$value['TECHNOLOGY']} {$value['VEHICLE_CLASS']} {$value['TRANSMISSION']}";
                 $value['image'] = explode('|', $value['images_url']) ? explode('|', $value['images_url'])[0] : [];
                 $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
-                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TYPE_NAME'], $value['images_url']);
+                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['images_url'], $value['TECHNOLOGY'], $value['VEHICLE_CLASS'], $value['TRANSMISSION'], $value['pl']);
             }
         }
         return ['code' => 200, 'data' => $car_list];
@@ -583,7 +583,7 @@ class Car
     {
         $orderby = ['a.create_time' => 'desc'];
 
-        $field = ['a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url', 'b.status', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TYPE_NAME'];
+        $field = ['a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url', 'b.status', 'b.pl', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TECHNOLOGY', 'c.VEHICLE_CLASS', 'c.TRANSMISSION'];
 
         $car_list = CarModel::setTable('car_bm a')->join('car b', 'a.car_id = b.id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->where('a.user_id', '=', $user_id)->orderby($orderby)->get();
 
@@ -591,10 +591,10 @@ class Car
             foreach ($car_list as &$value) {
                 $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
                 $value['city_name'] = CityModel::where(['id' => $value['area_id']])->value(['name']);
-                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['TYPE_NAME']}";
+                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['pl']}{$value['TECHNOLOGY']} {$value['VEHICLE_CLASS']} {$value['TRANSMISSION']}";
                 $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
                 $value['image'] = explode('|', $value['images_url']) ? explode('|', $value['images_url'])[0] : [];
-                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TYPE_NAME'], $value['images_url']);
+                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['images_url'], $value['TECHNOLOGY'], $value['VEHICLE_CLASS'], $value['TRANSMISSION'], $value['pl']);
             }
         }
         return ['code' => 200, 'data' => $car_list];
@@ -678,7 +678,7 @@ class Car
     {
         $orderby = ['a.create_time' => 'desc'];
 
-        $field = ['a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url', 'b.status', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TYPE_NAME'];
+        $field = ['a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url', 'b.status', 'b.pl', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TECHNOLOGY', 'c.VEHICLE_CLASS', 'c.TRANSMISSION'];
 
         $car_list = CarModel::setTable('car_sc a')->join('car b', 'a.car_id = b.id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->where('a.user_id', '=', $user_id)->where('b.status', '=', '1')->orderby($orderby)->get();
 
@@ -686,10 +686,10 @@ class Car
             foreach ($car_list as &$value) {
                 $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
                 $value['city_name'] = CityModel::where(['id' => $value['area_id']])->value(['name']);
-                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['TYPE_NAME']}";
+                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['pl']}{$value['TECHNOLOGY']} {$value['VEHICLE_CLASS']} {$value['TRANSMISSION']}";
                 $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
                 $value['image'] = explode('|', $value['images_url']) ? explode('|', $value['images_url'])[0] : [];
-                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TYPE_NAME'], $value['images_url']);
+                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['images_url'], $value['TECHNOLOGY'], $value['VEHICLE_CLASS'], $value['TRANSMISSION'], $value['pl']);
             }
         }
         return ['code' => 200, 'data' => $car_list];

@@ -173,18 +173,18 @@ class User
     //发布的车 我的车源  
     public static function Cars($user_id, $status)
     {
-        $field = ['a.id', 'a.area_id', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.create_time', 'a.liulan_num', 'a.images_url', 'a.phone_num', 'a.bangmai_num', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TYPE_NAME'];
+        $field = ['a.id', 'a.area_id', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.create_time', 'a.liulan_num', 'a.images_url', 'a.phone_num', 'a.bangmai_num', 'a.pl', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TECHNOLOGY', 'b.VEHICLE_CLASS', 'b.TRANSMISSION'];
         $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.user_id', '=', $user_id)->where('a.status', '=', $status)->get();
         if ($car_list) {
             foreach ($car_list as &$value) {
                 //格式化返回
                 $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
                 $value['city_name'] = CityModel::where(['id' => $value['area_id']])->value(['name']);
-                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['TYPE_NAME']}";
+                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['pl']}{$value['TECHNOLOGY']} {$value['VEHICLE_CLASS']} {$value['TRANSMISSION']}";
                 $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
                 $value['image'] = explode('|', $value['images_url']) ? explode('|', $value['images_url'])[0] : [];
                 $value['price_num'] = CarPriceModel::where(['user_id' => $user_id])->count();
-                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TYPE_NAME'], $value['images_url']);
+                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['images_url'],$value['TECHNOLOGY'], $value['VEHICLE_CLASS'], $value['TRANSMISSION'], $value['pl']);
             }
         }
 
@@ -203,17 +203,17 @@ class User
     {
         $orderby = ['a.create_time' => 'desc'];
 
-        $field = ['a.price as chujia', 'a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url', 'b.status', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TYPE_NAME'];
+        $field = ['a.price as chujia', 'a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url', 'b.status', 'b.pl', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TECHNOLOGY', 'c.VEHICLE_CLASS', 'c.TRANSMISSION'];
 
         $car_list = CarModel::setTable('car_price a')->join('car b', 'a.car_id = b.id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->where('a.user_id', '=', $user_id)->orderby($orderby)->get();
         if ($car_list) {
             foreach ($car_list as &$value) {
                 $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
                 $value['city_name'] = CityModel::where(['id' => $value['area_id']])->value(['name']);
-                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['TYPE_NAME']}";
+                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['pl']}{$value['TECHNOLOGY']} {$value['VEHICLE_CLASS']} {$value['TRANSMISSION']}";
                 $value['image'] = explode('|', $value['images_url']) ? explode('|', $value['images_url'])[0] : [];
                 $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
-                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TYPE_NAME'], $value['images_url']);
+                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['images_url'], $value['TECHNOLOGY'], $value['VEHICLE_CLASS'], $value['TRANSMISSION'], $value['pl']);
             }
         }
 
