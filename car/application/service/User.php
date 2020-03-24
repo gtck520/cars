@@ -12,6 +12,7 @@ use app\model\CarSc as CarScModel;
 use app\model\City as CityModel;
 use app\model\User as UserModel;
 use app\model\Shop as ShopModel;
+use app\model\CarBM as CarBMModel;
 use app\model\CarBrowse as CarBrowseModel;
 
 class User
@@ -114,6 +115,13 @@ class User
         return ['code' => 200, 'data' => ''];
     }
 
+    //删除浏览
+    public static function bmDel($user_id, $car_id)
+    {
+        CarBMModel::delete(['user_id' => $user_id, 'car_id' => $car_id]);
+        return ['code' => 200, 'data' => ''];
+    }
+    
     //车辆出价  
     public static function addPrice($user_id, $req)
     {

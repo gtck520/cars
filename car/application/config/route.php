@@ -14,6 +14,8 @@ return [
     'delete::enshrine/(\d+)$'  => 'User/enshrineDel',
     //删除浏览记录
     'delete::browse/(\d+)$'  => 'User/browseDel',
+    //删除帮卖
+    'delete::bm/(\d+)$'  => 'User/bmDel',
     //充值
     'post::recharge$'   => 'User/recharge',
     //添加电话量

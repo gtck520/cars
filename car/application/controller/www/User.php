@@ -36,6 +36,13 @@ class User extends UserController
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
+    //删除帮卖
+    public function bmDel($car_id){
+        $user_id = self::$user_id;
+        $res = UserService::bmDel($user_id, $car_id);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
     //车辆出价  
     public function addPrice(){
         $req = P();
