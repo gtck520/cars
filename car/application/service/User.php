@@ -174,7 +174,21 @@ class User
     public static function Cars($user_id, $status)
     {
         $field = ['a.id', 'a.area_id', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.create_time', 'a.liulan_num', 'a.images_url', 'a.phone_num', 'a.pl', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TECHNOLOGY', 'b.VEHICLE_CLASS', 'b.TRANSMISSION'];
-        $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.user_id', '=', $user_id)->where('a.status', '=', $status)->get();
+        $car_list = [];
+        switch ($status) {
+            case '-1':
+                $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.user_id', '=', $user_id)->where('a.is_hidden', '=', '0')->get();
+                break;
+            case '0':
+                $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.user_id', '=', $user_id)->where('a.status', '=', $status)->get();
+                break;
+            case '1':
+                $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.user_id', '=', $user_id)->where('a.status', '=', $status)->where('a.is_hidden', '=', $status)->get();
+                break;
+            default:
+                # code...
+                break;
+        }
         if ($car_list) {
             foreach ($car_list as &$value) {
                 //格式化返回
