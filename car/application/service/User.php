@@ -136,6 +136,7 @@ class User
             'user_id' => $user_id,
             'price'  => $req['price'],
             'car_id' => $req['car_id'],
+            'to_user_id' => CarModel::where(['id' => $req['car_id']])->value('user_id') ,
             'create_time' => time(),
         ]);
 
@@ -221,6 +222,28 @@ class User
         $field = ['a.price as chujia', 'a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url', 'b.status', 'b.pl', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TECHNOLOGY', 'c.VEHICLE_CLASS', 'c.TRANSMISSION'];
 
         $car_list = CarModel::setTable('car_price a')->join('car b', 'a.car_id = b.id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->where('a.user_id', '=', $user_id)->orderby($orderby)->get();
+        if ($car_list) {
+            foreach ($car_list as &$value) {
+                $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);
+                $value['city_name'] = CityModel::where(['id' => $value['area_id']])->value(['name']);
+                $value['title'] = "{$value['MODEL_NAME']} {$value['TYPE_SERIES']} {$value['pl']}{$value['TECHNOLOGY']} {$value['VEHICLE_CLASS']} {$value['TRANSMISSION']}";
+                $value['image'] = explode('|', $value['images_url']) ? explode('|', $value['images_url'])[0] : [];
+                $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
+                unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['images_url'], $value['TECHNOLOGY'], $value['VEHICLE_CLASS'], $value['TRANSMISSION'], $value['pl']);
+            }
+        }
+
+        return ['code' => 200, 'data' => $car_list];
+    }
+
+    //获取别人对我的出价记录
+    public static function getToUserPrice($user_id)
+    {
+        $orderby = ['a.create_time' => 'desc'];
+        
+        $field = ['a.price as chujia', 'a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url', 'b.status', 'b.pl', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TECHNOLOGY', 'c.VEHICLE_CLASS', 'c.TRANSMISSION'];
+        
+        $car_list = CarModel::setTable('car_price a')->join('car b', 'a.car_id = b.id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->where('a.to_user_id', '=', $user_id)->orderby($orderby)->get();
         if ($car_list) {
             foreach ($car_list as &$value) {
                 $value['create_time'] = date('Y-m-d H:i:s', $value['create_time']);

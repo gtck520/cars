@@ -8,8 +8,12 @@ return [
     'post::register$'       => 'User/register',
     //用户信息
     'get::userinfo$'       => 'User/userInfo',
-    'get::user/cars$'       => 'User/Cars',  //我的车源
-    'get::user/price$'       => 'User/getPrice',  //我的出价记录
+     //我的车源
+    'get::user/cars$'       => 'User/Cars', 
+    //我的出价记录
+    'get::user/price$'       => 'User/getPrice',  
+    //别人对我的出价记录
+    'get::to_user/price$'       => 'User/getToUserPrice',  
     //删除收藏
     'delete::enshrine/(\d+)$'  => 'User/enshrineDel',
     //删除浏览记录

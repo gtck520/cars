@@ -90,6 +90,14 @@ class User extends UserController
         Response::SendResponseJson($res['code'], $res['data']);
     }
 
+    //获取别人对我的出价记录
+    public function getToUserPrice()
+    {
+        $user_id = self::$user_id;
+        $res = UserService::getToUserPrice($user_id);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
+
     //获取其他用户信息
     public function getUserInfo($user_id)
     {
