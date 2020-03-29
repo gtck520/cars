@@ -208,7 +208,6 @@ class Car
         $same_shop_car = [];
         if ($car_list) {
             // 排序
-            dd($orderby);
             $orderby ?? $car_list['rs'] = Helper::arraySort($car_list['rs'], $orderby[0], $orderby[1]);
             foreach ($car_list['rs'] as $key => &$value) {
                 //格式化返回
