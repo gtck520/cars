@@ -296,14 +296,17 @@ class Query
             case "vehicleCondition":
                 $back_type=2;
                 break;
-            case "smallUnion":
+            case "regulations":
                 $back_type=3;
                 break;
-            case "bigUnion":
+            case "smallUnion":
                 $back_type=4;
                 break;
-            default:
+            case "bigUnion":
                 $back_type=5;
+                break;
+            default:
+                $back_type=6;
                 break;
         }
         $user=UserModel::where(["id"=>$req['user_id']])->find();
