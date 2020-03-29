@@ -35,7 +35,6 @@ class Car
         $is_bu = true;
         $user_info = UserModel::field(['province_id', 'area_id', 'shop_id', 'quan_guo', 'sheng_ji'])->where(['id' => $user_id])->find();
         $orderby = ['a.update_time' => 'desc', 'a.id' => 'asc'];
-
         $field = ['a.id', 'a.area_id', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.images_url', 'a.shop_id',  'a.create_time', 'a.pl', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TECHNOLOGY', 'b.VEHICLE_CLASS', 'b.TRANSMISSION'];
 
         // 城市搜索
@@ -183,7 +182,12 @@ class Car
                     //还不够
                     if ($car_list_count < $car_num) {
                         $car_id_arr_h = array_column($car_list['rs'], 'id');
-                        $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr_h)->limit(0, $car_num - $car_list_count)->get());
+                        // 可能用户省内就没有车
+                        if (count($car_id_arr_h) > 0){
+                            $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr_h)->limit(0, $car_num - $car_list_count)->get());
+                        }else {
+                            $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->limit(0, $car_num - $car_list_count)->get());
+                        }
                     }
                 } else {
                     if ($car_list['total'] < $car_num) {

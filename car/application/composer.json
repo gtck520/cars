@@ -3,11 +3,5 @@
 		"yansongda/pay": "^2.9",
 		"firebase/php-jwt": "^5.0.0",
 		"zircote/swagger-php": "*" 
-	},
-    "repositories": {
-		"packagist": {
-            "type": "composer",
-            "url": "https://packagist.phpcomposer.com"
-        }
 	}
 }
