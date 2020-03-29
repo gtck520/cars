@@ -296,7 +296,7 @@ class Car
 
         $field = ['a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url', 'b.status', 'b.pl', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TECHNOLOGY', 'c.VEHICLE_CLASS', 'c.TRANSMISSION'];
 
-        $car_list = CarModel::setTable('shop a')->join('car b', 'a.id = b.shop_id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->where('b.shop_id', '=', $shop_id)->where('b.status', '=', 1)->where('b.is_hidden', '=', 1)->orderby($orderby)->get();
+        $car_list = CarModel::setTable('shop a')->join('car b', 'a.id = b.shop_id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->where('b.shop_id', '=', $shop_id)->where('b.status', '=', 1)->where('b.is_hidden', '=', 0)->orderby($orderby)->get();
 
         if ($car_list) {
             foreach ($car_list as &$value) {
@@ -391,6 +391,10 @@ class Car
     // 发布车
     public static function add($user_id, $req)
     {
+        $user_info = UserModel::where(['id' => $user_id])->find();
+        if ($user_info['status'] == 0) {
+            return ['code' => 400, 'data' => '用户还未审核通过无法发布车辆！'];
+        }
         $city_res = CityModel::where(['id' => $req['city_id']])->find();
         if (!$city_res) {
             return ['code' => 400, 'data' => '没有查询到这个城市!'];
@@ -409,7 +413,6 @@ class Car
             return ['code' => 400, 'data' => '价格非法!'];
         }
 
-        $user_info = UserModel::where(['id' => $user_id])->find();
         //车龄
         $age = Helper::birthday2($req['shangpai_time']);
         //省级县id
@@ -694,7 +697,7 @@ class Car
 
         $field = ['a.create_time', 'b.id', 'b.price', 'b.chexing_id', 'b.biaoxianlicheng', 'b.shangpai_time', 'b.area_id', 'b.images_url', 'b.status', 'b.pl', 'c.MODEL_NAME', 'c.TYPE_SERIES', 'c.TECHNOLOGY', 'c.VEHICLE_CLASS', 'c.TRANSMISSION'];
 
-        $car_list = CarModel::setTable('car_sc a')->join('car b', 'a.car_id = b.id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->where('a.user_id', '=', $user_id)->where('b.status', '=', '1')->orderby($orderby)->get();
+        $car_list = CarModel::setTable('car_sc a')->join('car b', 'a.car_id = b.id')->join('car_type c', 'b.chexing_id = c.ID')->field($field)->where('a.user_id', '=', $user_id)->where('b.status', '=', '1')->where('b.is_hidden ', '=', '0')->orderby($orderby)->get();
 
         if ($car_list) {
             foreach ($car_list as &$value) {
