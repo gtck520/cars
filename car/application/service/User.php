@@ -178,13 +178,13 @@ class User
         $car_list = [];
         switch ($status) {
             case '-1':
-                $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.user_id', '=', $user_id)->where('a.is_hidden', '=', '0')->get();
+                $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.user_id', '=', $user_id)->where('a.is_hidden', '=', '1')->get();
                 break;
             case '0':
                 $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.user_id', '=', $user_id)->where('a.status', '=', $status)->get();
                 break;
             case '1':
-                $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.user_id', '=', $user_id)->where('a.status', '=', $status)->where('a.is_hidden', '=', $status)->get();
+                $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.user_id', '=', $user_id)->where('a.status', '=', $status)->where('a.is_hidden', '=', 0)->get();
                 break;
             default:
                 # code...

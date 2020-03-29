@@ -34,7 +34,6 @@ class Car
         $car_num = 8;
         $is_bu = true;
         $user_info = UserModel::field(['province_id', 'area_id', 'shop_id', 'quan_guo', 'sheng_ji'])->where(['id' => $user_id])->find();
-        $orderby = ['a.update_time' => 'desc', 'a.id' => 'asc'];
         $field = ['a.id', 'a.area_id', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.images_url', 'a.shop_id',  'a.create_time', 'a.pl', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TECHNOLOGY', 'b.VEHICLE_CLASS', 'b.TRANSMISSION'];
 
         // 城市搜索
@@ -151,28 +150,27 @@ class Car
             $query->where('a.age', '<=', $req['high_age']);
         }
 
+        $orderby = [];
         // 排序
         if (!empty($req['sort']) && isset($req['sort'])) {
             switch ($req['sort']) {
                 case '1':
-                    $is_bu = false;
                     // 价格最低
-                    $orderby = ['a.price' => 'asc', 'a.id' => 'asc'];
+                    $orderby = ['price' => 'SORT_ASC'];
                     break;
                 case '2':
-                    $is_bu = false;
                     // 价格最高
-                    $orderby = ['a.price' => 'desc', 'a.id' => 'asc'];
+                    $orderby = ['price' => 'SORT_DESC'];
                     break;
                 case '3':
                     // 最新发布
-                    $orderby = ['a.create_time' => 'desc', 'a.id' => 'asc'];
+                    $orderby = ['create_time' => 'SORT_DESC'];
                     break;
             }
         }
 
         //查询已上架已审核车辆
-        $car_list = $query->field($field)->where('a.is_hidden', '=', 1)->where('a.status', '=', 1)->orderby($orderby)->page($req['c'], $req['p']);
+        $car_list = $query->field($field)->where('a.is_hidden', '=', 1)->where('a.status', '=', 1)->orderby(['a.update_time' => 'desc', 'a.id' => 'asc'])->page($req['c'], $req['p']);
         if ($is_bu) {
             //该地区没有车
             if ($req['p'] == 1) {
@@ -209,6 +207,9 @@ class Car
 
         $same_shop_car = [];
         if ($car_list) {
+            // 排序
+            dd($orderby);
+            $orderby ?? $car_list['rs'] = Helper::arraySort($car_list['rs'], $orderby[0], $orderby[1]);
             foreach ($car_list['rs'] as $key => &$value) {
                 //格式化返回
                 $shop_id = $user_info['shop_id'];
