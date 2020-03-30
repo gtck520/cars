@@ -439,15 +439,18 @@ class Car
         if ($chexing) {
             $chexing_id = $chexing['ID'];
         } else {
+            $Manufacturers = isset($req['Manufacturers']) && '';
+            $Year = isset($req['Year']) ? "{$req['Year']} 款" : '';
+            $VehicleAttributes = isset($req['VehicleAttributes']) && '';
             $chexing_id = CarTypeModel::insert([
                 'FIRST_LETTER' => Helper::getFirstChar($req['pinpai']),
                 'MAKE_NAME' => $req['pinpai'],
-                'MODEL_SERIES' => $req['Manufacturers'] ?? '',
+                'MODEL_SERIES' => $Manufacturers,
                 'MODEL_NAME' =>  $req['chexing'],
-                'TYPE_SERIES' =>  $req['Year'] ? "{$req['Year']} 款" : '',
+                'TYPE_SERIES' =>  $Year,
                 'TYPE_NAME' =>  '',
                 'COUNTRY' => '',
-                'TECHNOLOGY' => $req['VehicleAttributes'] ?? '',
+                'TECHNOLOGY' => $VehicleAttributes,
                 'VEHICLE_CLASS' => $req['cheliang_type'],
                 'ENGINE_CAPACITY' => '',
                 'TRANSMISSION' => $req['biansuxiang'],
