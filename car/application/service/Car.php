@@ -33,8 +33,8 @@ class Car
     {
         $car_num = 8;
         $is_bu = true;
-        $user_info = UserModel::field(['province_id', 'area_id', 'shop_id', 'quan_guo', 'sheng_ji'])->where(['id' => $user_id])->find();
-        $field = ['a.id', 'a.area_id', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.images_url', 'a.shop_id',  'a.create_time', 'a.pl', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TECHNOLOGY', 'b.VEHICLE_CLASS', 'b.TRANSMISSION'];
+        $user_info = UserModel::field(['id', 'province_id', 'area_id', 'shop_id', 'quan_guo', 'sheng_ji'])->where(['id' => $user_id])->find();
+        $field = ['a.id', 'a.user_id', 'a.area_id', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.images_url', 'a.shop_id',  'a.create_time', 'a.pl', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TECHNOLOGY', 'b.VEHICLE_CLASS', 'b.TRANSMISSION'];
 
         // 城市搜索
         $city = '';
@@ -170,21 +170,21 @@ class Car
         }
 
         //查询已上架已审核车辆
-        $car_list = $query->field($field)->where('a.is_hidden', '=', 1)->where('a.status', '=', 1)->orderby(['a.update_time' => 'desc', 'a.id' => 'asc'])->page($req['c'], $req['p']);
+        $car_list = $query->field($field)->where('a.is_hidden', '=', 0)->where('a.status', '=', 1)->orderby(['a.update_time' => 'desc', 'a.id' => 'asc'])->page($req['c'], $req['p']);
         if ($is_bu) {
             //该地区没有车
             if ($req['p'] == 1) {
                 if ($car_list['total'] === 0) {
-                    $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.province_id', '=', $user_info['province_id'])->limit(0, 8)->get());
+                    $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.province_id', '=', $user_info['province_id'])->where('a.is_hidden', '=', 0)->where('a.status', '=', 1)->limit(0, 8)->get());
                     $car_list_count = count($car_list['rs']);
                     //还不够
                     if ($car_list_count < $car_num) {
                         $car_id_arr_h = array_column($car_list['rs'], 'id');
                         // 可能用户省内就没有车
                         if (count($car_id_arr_h) > 0){
-                            $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr_h)->limit(0, $car_num - $car_list_count)->get());
+                            $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr_h)->where('a.is_hidden', '=', 0)->where('a.status', '=', 1)->limit(0, $car_num - $car_list_count)->get());
                         }else {
-                            $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->limit(0, $car_num - $car_list_count)->get());
+                            $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.is_hidden', '=', 0)->where('a.status', '=', 1)->limit(0, $car_num - $car_list_count)->get());
                         }
                     }
                 } else {
@@ -193,12 +193,12 @@ class Car
                         $car_id_arr = array_column($car_list['rs'], 'id');
                         // $city_arr =  array_column(CityModel::where(['pid' => CityModel::where(['id' => $user_info['area_id']])->value('pid')])->get(), 'id') ;
 
-                        $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr)->where('a.province_id', '=', $user_info['province_id'])->limit(0, $car_num - $car_list['total'])->get());
+                        $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr)->where('a.province_id', '=', $user_info['province_id'])->where('a.is_hidden', '=', 0)->where('a.status', '=', 1)->limit(0, $car_num - $car_list['total'])->get());
                         $car_list_count = count($car_list['rs']);
                         //还不够
                         if ($car_list_count < $car_num) {
                             $car_id_arr_h = array_column($car_list['rs'], 'id');
-                            $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr_h)->limit(0, $car_num - $car_list_count)->get());
+                            $car_list['rs'] =   array_merge($car_list['rs'], CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.id', 'not in', $car_id_arr_h)->where('a.is_hidden', '=', 0)->where('a.status', '=', 1)->limit(0, $car_num - $car_list_count)->get());
                         }
                     }
                 }
@@ -218,7 +218,7 @@ class Car
                 $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
                 $value['images_url'] = explode('|', $value['images_url']) ? explode('|', $value['images_url'])[0] : [];
                 unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['TECHNOLOGY'], $value['VEHICLE_CLASS'], $value['TRANSMISSION'], $value['area_id'], $value['pl']);
-                if ($value['shop_id'] == $shop_id &&  $value['shop_id'] != 0) {
+                if ($value['shop_id'] == $shop_id &&  $value['shop_id'] != 0 && $user_info['id'] != $value['user_id']) {
                     $same_shop_car[] = $value;
                     unset($car_list['rs'][$key]);
                 }
