@@ -199,7 +199,7 @@ class User
                 $value['biaoxianlicheng'] = date('Y', $value['shangpai_time']) . "年/{$value['biaoxianlicheng']}万公里";
                 $value['image'] = explode('|', $value['images_url']) ? explode('|', $value['images_url'])[0] : [];
                 $value['price_num'] = CarPriceModel::where(['user_id' => $user_id])->count();
-                $value['bangmai_num'] = \app\model\CarBm::where(['car_id' => $value['id']])->count();
+                $value['bangmai_num'] = \app\model\CarBM::where(['car_id' => $value['id']])->count();
                 unset($value['chexing_id'], $value['area_id'], $value['shangpai_time'], $value['MODEL_NAME'], $value['TYPE_SERIES'], $value['images_url'],$value['TECHNOLOGY'], $value['VEHICLE_CLASS'], $value['TRANSMISSION'], $value['pl']);
             }
         }
