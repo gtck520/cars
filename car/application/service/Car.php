@@ -700,7 +700,7 @@ class Car
 
         $field = ['a.id', 'a.area_id', 'a.price', 'a.chexing_id', 'shangpai_time', 'a.biaoxianlicheng', 'a.create_time', 'a.images_url', 'a.pl', 'b.MODEL_NAME', 'b.TYPE_SERIES', 'b.TECHNOLOGY', 'b.VEHICLE_CLASS', 'b.TRANSMISSION'];
 
-        $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.user_id', '=', $user_id)->where('a.status', '=', 1)->where('a.is_hidden', '=', 0)->get();
+        $car_list = CarModel::setTable('car a')->field($field)->join('car_type b', 'a.chexing_id = b.ID')->where('a.user_id', '=', $user_id)->where('a.status', '=', 1)->where('a.is_hidden', '=', 0)->orderby($orderby)->get();
 
         if ($car_list) {
             foreach ($car_list as &$value) {
@@ -729,6 +729,8 @@ class Car
         }
         CarModel::where(['id' => $car_id])->update(['is_hidden' => $is_hidden]);
         CarModel::where(['id' => $car_id])->update(['status' => 0]);
+
+        CarCache::setCarInfo($car_id);
         return ['code' => 200, 'data' => ''];
     }
 
