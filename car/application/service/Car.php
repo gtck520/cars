@@ -156,18 +156,19 @@ class Car
             switch ($req['sort']) {
                 case '1':
                     // 价格最低
-                    $orderby = ['price' => 'SORT_ASC'];
+                    $orderby = ['price', SORT_ASC];
                     break;
                 case '2':
                     // 价格最高
-                    $orderby = ['price' => 'SORT_DESC'];
+                    $orderby = ['price', SORT_DESC];
                     break;
                 case '3':
                     // 最新发布
-                    $orderby = ['create_time' => 'SORT_DESC'];
+                    $orderby = ['create_time', SORT_DESC];
                     break;
             }
         }
+
 
         //查询已上架已审核车辆
         $car_list = $query->field($field)->where('a.is_hidden', '=', 0)->where('a.status', '=', 1)->orderby(['a.update_time' => 'desc', 'a.id' => 'asc'])->page($req['c'], $req['p']);
@@ -208,7 +209,7 @@ class Car
         $same_shop_car = [];
         if ($car_list) {
             // 排序
-            $orderby ?? $car_list['rs'] = Helper::arraySort($car_list['rs'], $orderby[0], $orderby[1]);
+            $orderby && $car_list['rs'] = Helper::arraySort($car_list['rs'], $orderby[0], $orderby[1]);
             foreach ($car_list['rs'] as $key => &$value) {
                 //格式化返回
                 $shop_id = $user_info['shop_id'];
