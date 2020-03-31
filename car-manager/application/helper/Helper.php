@@ -248,4 +248,34 @@ class Helper
 
         return $arr;
     }
+    
+    //PHP中文名加密
+    public static function encryptName($name) {
+        $encrypt_name = '';
+        //判断是否包含中文字符
+        if(preg_match("/[\x{4e00}-\x{9fa5}]+/u", $name)) {
+            //按照中文字符计算长度
+            $len = mb_strlen($name, 'UTF-8');
+            //echo '中文';
+            if($len >= 3){
+                //三个字符或三个字符以上掐头取尾，中间用*代替
+                $encrypt_name = mb_substr($name, 0, 1, 'UTF-8') .str_repeat('*',$len-2). mb_substr($name, -1, 1, 'UTF-8');
+            } elseif($len === 2) {
+                //两个字符
+                $encrypt_name = mb_substr($name, 0, 1, 'UTF-8') . '*';
+            }
+        } else {
+            //按照英文字串计算长度
+            $len = strlen($name);
+            //echo 'English';
+            if($len >= 3) {
+                //三个字符或三个字符以上掐头取尾，中间用*代替
+                $encrypt_name = substr($name, 0, 1)  .str_repeat('*',$len-2). substr($name, -1);
+            } elseif($len === 2) {
+                //两个字符
+                $encrypt_name = substr($name, 0, 1) . '*';
+            }
+        }
+        return $encrypt_name;
+    }
 }
