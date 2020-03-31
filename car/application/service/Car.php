@@ -323,6 +323,9 @@ class Car
     //车辆详情
     public static function getCarInfo($user_id, $car_id)
     {
+        if (!CarModel::where(['id' => $car_id])->find()) {
+            return ['code' => 400, 'data' => '无此车辆！'];
+        }
         //添加浏览记录
         $user_browse = CarBrowseModel::where(['user_id' =>  $user_id, 'car_id' => $car_id])->find();
         if (!$user_browse) {
@@ -349,7 +352,7 @@ class Car
     //车辆详情
     public static function CarInfo($car_id)
     {
-        $field = ['user_id', 'chejiahao', 'pinpai', 'chexing_id', 'shangpai_time', 'area_id', 'price', 'biaoxianlicheng', 'nianjiandaoqi', 'qiangxiandaoqi', 'weixiujilu', 'pengzhuangjilu', 'notes', 'images_url', 'status', 'is_hidden', 'biansu', 'zhengming', 'yanse_id', 'pl'];
+        $field = ['user_id', 'chejiahao', 'pinpai', 'chexing_id', 'shangpai_time', 'area_id', 'price', 'biaoxianlicheng', 'nianjiandaoqi', 'qiangxiandaoqi', 'weixiujilu', 'pengzhuangjilu', 'notes', 'images_url', 'status', 'is_hidden', 'create_time', 'biansu', 'zhengming', 'yanse_id', 'pl', 'update_time'];
         $car_info = CarModel::field($field)->where(['id' => $car_id])->find();
         $car_info = Helper::formatTimt($car_info, ['shangpai_time', 'nianjiandaoqi', 'qiangxiandaoqi'], 'Y-m-d');
         $car_info['yanse'] = CarColourModel::where(['id' => $car_info['yanse_id']])->value('name');
@@ -741,6 +744,7 @@ class Car
             return ['code' => 400, 'data' => '用户无此车辆'];
         }
         CarModel::where(['id' => $car_id])->update(['update_time' => time()]);
+        CarCache::setCarInfo($car_id);
         return ['code' => 200, 'data' => ''];
     }
 }
