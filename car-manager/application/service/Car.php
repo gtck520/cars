@@ -10,6 +10,7 @@ use app\model\CarColour as CarColourModel;
 use app\model\CarBrowse as CarBrowseModel;
 use app\model\CarSc as CarScModel;
 use app\model\Car as CarModel;
+use app\cache\Car as CarCache;
 use app\service\CityActive as CityActiveService;
 
 class Car
@@ -173,6 +174,7 @@ class Car
         $where['status']=$where['status'] ?? '未修改';
         $where['is_hidden']=$where['is_hidden'] ?? '未修改';
         Helper::saveToLog($admin_id, '',"下架状态：".$old_value['is_hidden']."审核状态：".$old_value['status'], "下架状态：".$where['is_hidden']."审核状态：".$where['status'], "管理员ID:$admin_id 修改车辆颜色ID:$id [下架状态：".$where['is_hidden']."审核状态".$where['status']."]");
+        CarCache::setCarInfo($id);
         return ['code' => 200, 'data' => ''];
     }
 
