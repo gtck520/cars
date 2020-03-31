@@ -728,6 +728,7 @@ class Car
             return ['code' => 400, 'data' => '用户无此车辆'];
         }
         CarModel::where(['id' => $car_id])->update(['is_hidden' => $is_hidden]);
+        CarModel::where(['id' => $car_id])->update(['status' => 0]);
         return ['code' => 200, 'data' => ''];
     }
 
