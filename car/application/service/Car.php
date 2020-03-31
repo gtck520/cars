@@ -67,8 +67,8 @@ class Car
             }
             $query->where($city, '=', $req['city_id']);
         } else {
-            $area_id = $user_info['area_id'] ?: 350102;
-            $query = CarModel::setTable('car a')->join('car_type b', 'a.chexing_id = b.ID')->where('a.area_id', '=', $area_id);
+            $province_id = $user_info['province_id'] ?: 350000;
+            $query = CarModel::setTable('car a')->join('car_type b', 'a.chexing_id = b.ID')->where('a.province_id', '=', $province_id);
         }
         // 关键字搜索
         if (isset($req['search']) && !empty($req['search'])) {
@@ -168,8 +168,7 @@ class Car
                     break;
             }
         }
-
-
+        
         //查询已上架已审核车辆
         $car_list = $query->field($field)->where('a.is_hidden', '=', 0)->where('a.status', '=', 1)->orderby(['a.update_time' => 'desc', 'a.id' => 'asc'])->page($req['c'], $req['p']);
         if ($is_bu) {
