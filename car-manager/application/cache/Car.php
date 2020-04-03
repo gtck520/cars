@@ -13,7 +13,7 @@ use app\model\User as UserModel;
 class Car extends Cache
 {
     private static $car_inro_key = 'car:info:';
-    
+
     //获取车辆详情
     public static function getCarInfo($car_id)
     {

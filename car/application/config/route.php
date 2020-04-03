@@ -96,4 +96,6 @@ return [
     'get::city' => 'Car/getCity',
     //微信支付回调
     'post::pay/wechatNotify$' => 'Pay/wechatNotify',
+    //客服发送内容
+    'get::(\d+)/sendMsg' => 'User/sendMsg',
 ];

@@ -4,6 +4,7 @@ namespace app\service;
 
 use app\helper\Helper;
 use king\lib\Jwt;
+use king\lib\Weixin;
 use app\cache\Car as CarCache;
 use app\model\User as UserModel;
 

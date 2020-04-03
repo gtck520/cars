@@ -33,12 +33,12 @@ class Weixin extends Instance
         if (!$token) {
             $url = $this->wx_url . 'token?grant_type=client_credential&appid=' . $app_id . '&secret=' . $app_secret;
             $rs = $this->requestUrl($url, '', 'get');
-            if (isset($rs->errcode) && $rs->errcode == 0) {
+//            if ($rs->errcode == 0) {
                 $token = $rs->access_token;
                 Cache::set($cache_key, $token, $this->second);
-            } else {
+//            } else {
                 // throw new BadRequestHttpException('access_token get failed');
-            }
+//            }
         }
         $this->access_token = $token;
     }
@@ -445,8 +445,8 @@ class Weixin extends Instance
     private function requestUrl($url, $data, $type = 'post')
     {
         $req = Request::getClass($url, $type);
-        if ($type == 'post') {
-            $req->setBody($data);
+        if (strtolower($type) == 'post') {
+            $req->body = $data;
         }
         $req->sendRequest();
         return json_decode($req->getResponseBody());

@@ -103,5 +103,12 @@ class User extends UserController
     {
         $res = UserService::getUserInfo($user_id);
         Response::SendResponseJson($res['code'], $res['data']);
-    }   
+    }
+
+    //发送客服消息
+    public function sendMsg($user_id)
+    {
+        $res = UserService::sendMsg($user_id);
+        Response::SendResponseJson($res['code'], $res['data']);
+    }
 }

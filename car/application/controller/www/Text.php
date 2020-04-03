@@ -8,6 +8,6 @@ use app\model\Text  as TextModel;
 class Text
 {
     public function get(){
-        Response::SendResponseJson(200, TextModel::find());
+        Response::SendResponseJson(200, TextModel::field(['text'])->where(['id' => 1])->find());
     } 
 }
