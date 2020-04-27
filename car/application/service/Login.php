@@ -46,26 +46,10 @@ class Login
                 'token' => $jwt
             ];
         }else{
-            if (!isset($req['mobile']) || empty($req['mobile'])){
-                $mobile = '';
-            }else{
-                $mobile = $req['mobile'];
-            }
-            if (!isset($req['nickname']) || empty($req['nickname'])){
-                $nickname = '';
-            }else{
-                $nickname = $req['nickname'];
-            }
-            if (!isset($req['avatar']) || empty($req['avatar'])){
-                $avatar = '';
-            }else{
-                $avatar = $req['avatar'];
-            }
-
             $user_id = UserModel::insert([
-                'mobile'=>$mobile,
-                'nickname'=>$nickname,
-                'avatar'=>$avatar,
+                'mobile'=> '',
+                'nickname'=> '',
+                'avatar'=> '',
                 'realname'=>  '',
                 'level_id'=>0,
                 'openid'=>$res['openid'],
@@ -89,6 +73,19 @@ class Login
             ];
         }
 
+        $update = [];
+        if (isset($req['mobile']) && !empty($req['mobile'])){
+            $update['mobile'] = $req['mobile'];
+        }
+
+        if (isset($req['nickname']) && !empty($req['nickname'])){
+            $update['nickname'] = $req['nickname'];
+        }
+        if (!isset($req['avatar']) && empty($req['avatar'])){
+            $update['avatar'] = $req['avatar'];
+        }
+
+        UserModel::where(['openid' => $res['openid']])->update($update);
 
             // 测试登录
         // $payload = [
