@@ -81,7 +81,7 @@ class Login
         if (isset($req['nickname']) && !empty($req['nickname'])){
             $update['nickname'] = $req['nickname'];
         }
-        if (!isset($req['avatar']) && empty($req['avatar'])){
+        if (isset($req['avatar']) && !empty($req['avatar'])){
             $update['avatar'] = $req['avatar'];
         }
 
