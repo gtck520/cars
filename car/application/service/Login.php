@@ -47,10 +47,10 @@ class Login
             ];
         }else{
             $user_id = UserModel::insert([
-                'mobile'=>$req['mobile'] ?? '',
-                'nickname'=>$req['nickname'] ?? '',
-                'avatar'=>$req['avatar'] ?? '',
-                'realname'=>$req['realname'] ?? '',
+                'mobile'=>$req['mobile'] ?: '',
+                'nickname'=>$req['nickname'] ?: '',
+                'avatar'=>$req['avatar'] ?: '',
+                'realname'=>$req['realname'] ?: '',
                 'level_id'=>0,
                 'openid'=>$res['openid'],
                 'images_url'=>'',
