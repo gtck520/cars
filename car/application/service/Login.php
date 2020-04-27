@@ -46,11 +46,27 @@ class Login
                 'token' => $jwt
             ];
         }else{
+            if (!isset($req['mobile']) || empty($req['mobile'])){
+                $mobile = '';
+            }else{
+                $mobile = $req['mobile'];
+            }
+            if (!isset($req['nickname']) || empty($req['nickname'])){
+                $nickname = '';
+            }else{
+                $nickname = $req['nickname'];
+            }
+            if (!isset($req['avatar']) || empty($req['avatar'])){
+                $avatar = '';
+            }else{
+                $avatar = $req['avatar'];
+            }
+
             $user_id = UserModel::insert([
-                'mobile'=>$req['mobile'] ?: '',
-                'nickname'=>$req['nickname'] ?: '',
-                'avatar'=>$req['avatar'] ?: '',
-                'realname'=>$req['realname'] ?: '',
+                'mobile'=>$mobile,
+                'nickname'=>$nickname,
+                'avatar'=>$avatar,
+                'realname'=>  '',
                 'level_id'=>0,
                 'openid'=>$res['openid'],
                 'images_url'=>'',
