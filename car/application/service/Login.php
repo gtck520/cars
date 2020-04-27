@@ -85,7 +85,9 @@ class Login
             $update['avatar'] = $req['avatar'];
         }
 
-        UserModel::where(['openid' => $res['openid']])->update($update);
+        if ($update) {
+            UserModel::where(['openid' => $res['openid']])->update($update);
+        }
 
             // 测试登录
         // $payload = [
